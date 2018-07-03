@@ -1,0 +1,10 @@
+# Update NPM to the latest version
+npm install -g npm
+
+# Install global utils
+npm install -g bower
+npm install -g grunt-cli
+npm install -g gulp
+
+# Clean cache
+npm cache clean -f
