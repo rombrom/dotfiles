@@ -13,12 +13,14 @@ function doIt() {
   # Install utilities via Homebrew
   echo "Installing Homebrew packages...";
   echo "";
-  source init/brew
+  source ./init/brew.sh
 
   # Install essential Node utils
   echo "Installing Node packages...";
   echo "";
-  source init/node
+  source ./init/node.sh
+
+
 
   # Install oh-my-zsh
   echo "Installing Oh My ZSH!...";
@@ -29,6 +31,15 @@ function doIt() {
   echo "Synchronizing dotfiles...";
   echo "";
 	rsync -avh --no-perms ./dotfiles ~;
+
+  # Sync settings
+  cp ./settings/vscode.json ~/Library/Application Support/Code/User/settings.json
+
+  # Execute macos defaults
+  echo "Setting mac defaults";
+  echo "";
+  source ./init/macos.sh
+
   echo "Done.";
   echo "";
 }

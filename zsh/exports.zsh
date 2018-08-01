@@ -1,5 +1,8 @@
-# Set defailt editor to atom
-export EDITOR="atom"
+# Set default language
+export LANG=en_US.UTF-8
+
+# Set defailt editor
+export EDITOR="code"
 
 # Always enable colored `grep` output
 export GREP_OPTIONS="--color=auto"
