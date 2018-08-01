@@ -1,0 +1,62 @@
+// Place your settings in this file to overwrite the default settings
+{
+  // Disable annoying color squares
+  // "editor.colorDecorators": false,
+  "editor.cursorBlinking": "solid",
+  "editor.cursorStyle": "block",
+  "editor.fontFamily": "'Input Mono', Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontSize": 11,
+  "editor.minimap.enabled": true,
+  "editor.minimap.renderCharacters": false,
+  "editor.renderIndentGuides": true,
+  "editor.rulers": [80],
+  "editor.tabSize": 2,
+
+  // Emmet settings
+  "emmet.includeLanguages": {
+    "twig": "html"
+  },
+  "emmet.triggerExpansionOnTab": true,
+  
+  // Workbench
+  "workbench.activityBar.visible": true,
+  "workbench.iconTheme": "vs-seti",
+  "workbench.colorTheme": "Gruvbox Dark (Medium)",
+  "workbench.startupEditor": "newUntitledFile",
+  
+  // Misc
+  "explorer.openEditors.visible": 0,
+  "files.trimTrailingWhitespace": true,
+  "terminal.integrated.fontSize": 11,
+  "window.zoomLevel": 0,
+  "zenMode.hideTabs": false,
+
+  // Plugins
+  // =========================================================================
+
+  // Gitlens
+  "gitlens.advanced.messages": {
+    "suppressCommitHasNoPreviousCommitWarning": false,
+    "suppressCommitNotFoundWarning": false,
+    "suppressFileNotUnderSourceControlWarning": false,
+    "suppressGitVersionWarning": false,
+    "suppressLineUncommittedWarning": true,
+    "suppressNoRepositoryWarning": false,
+    "suppressResultsExplorerNotice": false,
+    "suppressShowKeyBindingsNotice": true,
+    "suppressUpdateNotice": false,
+    "suppressWelcomeNotice": false
+  },
+  "git.autofetch": true,
+  "gitlens.codeLens.authors.enabled": false,
+  "gitlens.codeLens.recentChange.enabled": false,
+  "gitlens.currentLine.enabled": false,
+  "gitlens.historyExplorer.enabled": false,
+  "gitlens.hovers.currentLine.enabled": false,
+  "gitlens.keymap": "chorded",
+
+  // Prettier
+  "prettier.semi": false,
+  "prettier.trailingComma": "es5",
+  "prettier.singleQuote": true,
+}
