@@ -20,12 +20,15 @@ function doIt() {
   echo "";
   source ./init/node.sh
 
-
-
   # Install oh-my-zsh
   echo "Installing Oh My ZSH!...";
   echo "";
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+  # Add zsh scripts to oh-my-zsh custom directory
+  echo "Synchronizing Oh My ZSH Custom folder"
+  echo ""
+  rsync -avh --no-perms ./zsh ~/.oh-my-zsh/custom
 
   # Sync dotfiles
   echo "Synchronizing dotfiles...";
