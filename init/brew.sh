@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Make sure we’re using the latest Homebrew.
 brew update
 
@@ -23,9 +25,12 @@ brew install grep
 brew install openssh
 
 # Install other useful binaries.
+brew install composer
+brew install dnsmasq
 brew install git
 brew install gnupg
-brew install dnsmasq
+brew install kubectx
+brew install kubernetes-helm
 brew install node
 brew install the_silver_searcher
 brew install tmux

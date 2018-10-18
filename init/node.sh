@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Update NPM to the latest version
 npm install -g npm
 

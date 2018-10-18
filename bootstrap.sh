@@ -4,6 +4,9 @@ cd "$(dirname "${BASH_SOURCE}")";
 
 git pull origin master;
 
+# Ask for the administrator password upfront
+sudo -v;
+
 function doIt() {
   # Install Homebrew first
   echo "Installing Homebrew...";
@@ -13,22 +16,22 @@ function doIt() {
   # Install utilities via Homebrew
   echo "Installing Homebrew packages...";
   echo "";
-  source ./init/brew.sh
+  source ./init/brew.sh;
 
   # Install essential Node utils
   echo "Installing Node packages...";
   echo "";
-  source ./init/node.sh
+  source ./init/node.sh;
 
   # Install oh-my-zsh
   echo "Installing Oh My ZSH!...";
   echo "";
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)";
 
   # Add zsh scripts to oh-my-zsh custom directory
   echo "Synchronizing Oh My ZSH Custom folder"
   echo ""
-  rsync -avh --no-perms ./zsh ~/.oh-my-zsh/custom
+  rsync -avh --no-perms ./zsh ~/.oh-my-zsh/custom;
 
   # Sync dotfiles
   echo "Synchronizing dotfiles...";
@@ -36,7 +39,12 @@ function doIt() {
 	rsync -avh --no-perms ./dotfiles ~;
 
   # Sync settings
-  cp ./settings/vscode.json ~/Library/Application Support/Code/User/settings.json
+  cp ./settings/vscode.json ~/Library/Application Support/Code/User/settings.json;
+  cp ./settings/dnsmasq.conf /usr/local/etc/dnsmasq.conf;
+  cp ./settings/local.resolver /etc/resolver/local;
+
+  # Kick off dnsmasq
+  brew services start dnsmasq
 
   # Execute macos defaults
   echo "Setting mac defaults";
