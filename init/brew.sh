@@ -25,6 +25,7 @@ brew install grep
 brew install openssh
 
 # Install other useful binaries.
+brew install ansible
 brew install composer
 brew install dnsmasq
 brew install git
@@ -33,6 +34,7 @@ brew install kubectx
 brew install kubernetes-helm
 brew install node
 brew install the_silver_searcher
+brew install terraform
 brew install tmux
 brew install tree
 
