@@ -16,10 +16,13 @@ ZSH_THEME="robbyrussell"
 plugins=(
   brew
   cp
+  docker
+  doctl
   git
   git-extras
   kubectl
   npm
+  terraform
   urltools
   z
 )
