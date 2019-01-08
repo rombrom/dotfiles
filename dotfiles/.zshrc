@@ -27,4 +27,10 @@ plugins=(
   z
 )
 
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/usr/local/lib/google-cloud-sdk/path.zsh.inc' ]; then . '/usr/local/lib/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/usr/local/lib/google-cloud-sdk/completion.zsh.inc' ]; then . '/usr/local/lib/google-cloud-sdk/completion.zsh.inc'; fi
+
 source $ZSH/oh-my-zsh.sh
