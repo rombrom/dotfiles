@@ -1,6 +1,3 @@
-# If you come from bash you might have to change your $PATH.
-export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
-
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
@@ -14,23 +11,10 @@ ZSH_THEME="robbyrussell"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  brew
-  cp
-  docker
-  doctl
   git
   git-extras
-  kubectl
-  npm
-  terraform
   urltools
   z
 )
-
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/usr/local/lib/google-cloud-sdk/path.zsh.inc' ]; then . '/usr/local/lib/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/usr/local/lib/google-cloud-sdk/completion.zsh.inc' ]; then . '/usr/local/lib/google-cloud-sdk/completion.zsh.inc'; fi
 
 source $ZSH/oh-my-zsh.sh

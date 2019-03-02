@@ -3,6 +3,9 @@
 # Make sure we’re using the latest Homebrew.
 brew update
 
+# Upgrade any already-installed formulae.
+brew upgrade
+
 # Install GNU core utilities (those that come with macOS are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
 brew install coreutils
@@ -19,24 +22,31 @@ chsh -s "$(which zsh)"
 # Install `wget` with IRI support.
 brew install wget --with-iri
 
+# Install GnuPG to enable PGP-signing commits.
+brew install gnupg
+
 # Install more recent versions of some macOS tools.
 brew install vim --with-override-system-vi
 brew install grep
 brew install openssh
 
 # Install other useful binaries.
-brew install ansible
+brew install ack
 brew install composer
 brew install dnsmasq
 brew install git
-brew install gnupg
+brew install jq
 brew install kubectx
-brew install kubernetes-helm
 brew install node
-brew install the_silver_searcher
+brew install ripgrep
 brew install terraform
 brew install tmux
 brew install tree
+
+# Install fuzzyfinder and setup fuzzy completion
+brew install fzf
+$(brew --prefix)/opt/fzf/install
+
 
 # Remove outdated versions from the cellar.
 brew cleanup
