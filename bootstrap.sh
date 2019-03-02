@@ -36,7 +36,7 @@ function doIt() {
   # Sync dotfiles
   echo "Synchronizing dotfiles...";
   echo "";
-	rsync -avh --no-perms ./dotfiles ~;
+	rsync -avh --no-perms ./dotfiles/ ~/;
 
   # Sync settings
   cp ./settings/vscode.json ~/Library/Application Support/Code/User/settings.json;
