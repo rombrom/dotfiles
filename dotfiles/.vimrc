@@ -1,18 +1,51 @@
 " General Vim Settings
+" ---------------------------------------------------------------------------- "
 let mapleader=","                   " Leader key = ,
 
-set clipboard=unnamed               " Use the macOS clipboard
+set backspace=indent,eol,start      " Allow backspace in insert mode
+set clipboard=unnamedplus           " Use the macOS clipboard
+set colorcolumn=80                  " Show a coloumn indicating 80 char width
 set encoding=utf-8 nobomb
+set esckeys                         " Allow arrow keys in insert mode
+set expandtab
+set foldenable                      " enable folding
+set foldlevelstart=99               " open all folds by default
+set foldmethod=manual
+set foldnestmax=10                  " 10 nested fold max; > 10 == absurd
+set gdefault                        " Use /g flag for RegExp by default
+set hlsearch                        " highlight matches
+set ignorecase
+set incsearch                       " search as characters are entered
+set laststatus=2                    " Always show status line
+set lazyredraw
+set linebreak                       " Break after words
+set list
+set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
+set mouse=a                         " Enable mouse in all modes
 set nocompatible                    " Make Vi Improved
 set nohidden                        " When I close a tab, remove the buffer
-set mouse=a                         " Enable mouse in all modes
+set noshowmode
+set nostartofline
+set number
+set ruler
+set shiftwidth=2
 set shortmess=atI                   " Don’t show the intro message
 set showcmd                         " Show (partial) command as it’s being typed
-set showmode                        " Show the current mode
+set showmatch                       " highlight matching [{()}]
+set signcolumn=yes
+set smartcase
+set smarttab
+set softtabstop=2
+set splitbelow                      " split below instead of above
+set splitright                      " split after instead of before
+set tabstop=2
 set title                           " Show the filename in the window titlebar
 set ttyfast                         " Optimize for fast terminal connections
+set vb t_vb=                        " Remove 'bell' in vim
+set wildmenu                        " visual autocomplete for command menu
 
-" Vim Backup Settings
+" Vim backup settings
+" ---------------------------------------------------------------------------- "
 set backup
 set backupdir=~/.vim/backup
 set directory=~/.vim/swap
@@ -21,83 +54,63 @@ if exists("&undodir")
 	set undodir=~/.vim/undo
 endif
 
+" Theme settings
+" ---------------------------------------------------------------------------- "
+set background=dark
+filetype on " Enable file type detection
+
 " Enable italics support in Terminal.app
 let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
-let g:gruvbox_italic=1
+let g:gruvbox_italic = 1                " Needs to be set before the theme loads
 
-" Colors, Themes, etc.
-set background=dark
 try
 	colorscheme gruvbox
 catch
 endtry
+
 syntax enable
 
-" Spaces, Tabs, Wrapping
-set expandtab
-set smarttab
-set softtabstop=2
-set tabstop=2
-set lbr															" Break lines
-set tw=80														" At 80 characters"
-set ai 															" Auto indent
-set si 															" Smart indent
-set wrap 														" Wrap lines
-
-" Vim Keys
-nnoremap <leader>u :GundoToggle<CR> " toggle Gundo.vim
-nnoremap j gj                       " move down by visual line
-nnoremap k gk                       " move up by visual line
-nnoremap <leader>s :mksession<CR>   " save session, reopen with vim -S
-
-" Return to last edit position when opening files (You want this!)
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
+" Keybindings
+" ---------------------------------------------------------------------------- "
 " :W sudo saves the file
 command W w !sudo tee % > /dev/null
-
-set backspace=indent,eol,start      " Allow backspace in insert mode
-set nostartofline
-
-" Vim UI
-set backspace=indent,eol,start      " Allow backspace in insert mode
-set esckeys                         " Allow arrow keys in insert mode
-set foldenable                      " enable folding
-set foldlevelstart=99               " open all folds by default
-set foldnestmax=10                  " 10 nested fold max; > 10 == absurd
-set foldmethod=manual
-set laststatus=2                    " Always show status line
-set number
-set lazyredraw
-set ruler
-set showcmd
-set showmatch                       " highlight matching [{()}]
-set wildmenu                        " visual autocomplete for command menu
-
-" Vim Search
-set ignorecase
-set incsearch                       " search as characters are entered
-set gdefault                        " Use /g flag for RegExp by default
-set hlsearch                        " highlight matches
+command Q q
 
 " Invoke :Files finder on ctrl-p
 nnoremap <C-p> :Files<Cr>
 nnoremap <C-g> :Rg<Cr>
 
-" Enable JSDoc highlighting
-let g:javascript_plugin_jsdoc = 1
+" use tab and shift tab to indent and de-indent code
+nnoremap <Tab> >>
+nnoremap <S-Tab> <<
+vnoremap <Tab> >><Esc>gv
+vnoremap <S-Tab> <<<Esc>gv
+inoremap <S-Tab> <C-d>
 
-" make emmet behave well with JSX in JS and TS files
-let g:user_emmet_settings = {
-\  'javascript' : {
-\      'extends' : 'jsx',
-\  },
-\  'typescript' : {
-\      'extends' : 'tsx',
-\  },
-\}
+" use `u` to undo, use `U` to redo, mind = blown
+nnoremap U <C-r>
 
+let g:netrw_banner = 0
+let g:netrw_winsize = 20
+let g:netrw_liststyle = 3
+let g:netrw_altv = 1
+let g:netrw_browse_split = 4
+
+" Plugins
+" ---------------------------------------------------------------------------- "
+" Auto-install plug
+" https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Start plug
+call plug#begin('~/.vim/bundle')
+
+" Plugin: worp/ale - linting
 " fix files on save
 let g:ale_fix_on_save = 1
 
@@ -114,51 +127,115 @@ let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \}
 
-" Strip trailing whitespace (,ss)
-function! StripWhitespace()
-	let save_cursor = getpos(".")
-	let old_query = getreg('/')
-	:%s/\s\+$//e
-	call setpos('.', save_cursor)
-	call setreg('/', old_query)
-endfunction
-noremap <leader>ss :call StripWhitespace()<CR>
-
-" Automatic commands
-if has("autocmd")
-	" Enable file type detection
-	filetype on
-	" Treat .json files as .js
-	autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
-	" Treat .md files as Markdown
-	autocmd BufNewFile,BufRead *.md setlocal filetype=markdown
-endif
-
-" Auto-install plug
-" https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-
-" Vim-Plug Plugins
-call plug#begin('~/.vim/bundle')
-
-" List of plugins
 Plug 'w0rp/ale'
+
+" Plugin: tmux-navigator
+Plug 'christoomey/vim-tmux-navigator'
+
+" Plugin: editorconfig
 Plug 'editorconfig/editorconfig-vim'
+
+" Plugim: lightline
+let g:lightline = {
+  \ 'colorscheme': 'wombat',
+  \ 'active': {
+  \   'left': [ [ 'mode', 'paste' ],
+  \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+  \ },
+  \ 'component_function': {
+  \   'gitbranch': 'fugitive#head'
+  \ },
+\ }
 Plug 'itchyny/lightline.vim'
+
+" Plugin: git gutter
+" Sethighlight options
+hi! link SignColumn LineNr
+highlight link GitGutterAdd GruvboxGreen
+highlight link GitGutterChange GruvboxAqua
+highlight link GitGutterDelete GruvboxRed
+highlight link GitGutterChangeDelete GruvboxAqua
+
+Plug 'airblade/vim-gitgutter'
+
+" Plugin: fuzzyfinder
+let g:fzf_layout = { 'up': '~40%' }
+
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
+
+" Plugin: rainbow parentheses
+" Enable Rainbow Parentheses by default
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+
 Plug 'kien/rainbow_parentheses.vim'
+
+" Plugin: emmet
+" make emmet behave well with JSX in JS and TS files
+let g:user_emmet_settings = {
+\  'javascript' : {
+\      'extends' : 'jsx',
+\  },
+\  'typescript' : {
+\      'extends' : 'tsx',
+\  },
+\}
+
 Plug 'mattn/emmet-vim'
+
+" Plugin: javascript
+" Enable JSDoc highlighting
+let g:javascript_plugin_jsdoc = 1
+
 Plug 'pangloss/vim-javascript'
+
+" Plugin: gundo
 Plug 'sjl/gundo.vim'
+
+" Plugin: commentary - toggle comment blocks
 Plug 'tpope/vim-commentary'
+
+" Plugin: fugitive - git interface
 Plug 'tpope/vim-fugitive'
+
+" Plugin: surround - surround words with text
 Plug 'tpope/vim-surround'
 
-
-" Initialize plugin system
 call plug#end()
+
+" Automatic commands
+" ---------------------------------------------------------------------------- "
+" Return to last edit position when opening files (You want this!)
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+" Treat .json files as .js
+autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
+" Treat .md files as Markdown
+autocmd BufNewFile,BufRead *.md setlocal filetype=markdown
+
+" augroup highlighlongline
+"   autocmd BufEnter * highlight OverLength ctermbg=darkgrey
+"   autocmd BufEnter * match OverLength /\%>80v.\+/
+" augroup END
+
+" Open file browser on opening Vim
+augroup ProjectDrawer
+  autocmd!
+  autocmd VimEnter * :Vexplore
+augroup END
+
+" Auto-reload vim when ~/.vimrc is saved
+augroup vimrc
+  au!
+  autocmd BufWritePost .vimrc source ~/.vimrc
+  autocmd BufWritePost .vimrc call ReloadLightline()
+augroup END
+
+function ReloadLightline()
+  call lightline#init()
+  call lightline#colorscheme()
+  call lightline#update()
+endfunction
