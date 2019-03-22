@@ -55,6 +55,11 @@ function doIt() {
   echo "";
 }
 
+# Make italics work in macOS terminal
+tic -o $HOME/.terminfo ./terminfo/tmux.terminfo
+tic -o $HOME/.terminfo ./terminfo/tmux-256color.terminfo
+tic -o $HOME/.terminfo ./terminfo/xterm-256color.terminfo
+
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
 	doIt;
 else
@@ -64,4 +69,5 @@ else
 		doIt;
 	fi;
 fi;
+
 unset doIt;
