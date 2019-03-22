@@ -1,3 +1,8 @@
+# Use ls colors by default
+# Need to use gls due to coreutils install from brew
+alias ls="gls --color=always --group-directories-first"
+alias lc="ls --format=single-column"
+
 # this always happens
 alias cp='cp -R'
 
@@ -19,3 +24,8 @@ alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/La
 # Also, clear Apple’s System Logs to improve shell startup speed.
 # Finally, clear download history from quarantine. https://mths.be/bum
 alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"
+
+# Intuitive map function
+# For example, to list all directories that contain a certain file:
+# find . -name .gitattributes | map dirname
+alias map="xargs -n1"
