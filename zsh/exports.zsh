@@ -3,12 +3,12 @@ export LANG=en_US.UTF-8
 export LC_ALL='en_US.UTF-8';
 
 # Set defailt editor
-export EDITOR="code"
+export EDITOR="vim"
 
-# Always enable colored `grep` output
-export GREP_OPTIONS="--color=auto"
+# Make commands use colors if possible
+export CLICOLOR=yes
 
-# Highlight section titles in manual pages.
+#  Highlight section titles in manual pages.
 export LESS_TERMCAP_md="${yellow}";
 
 # Don’t clear the screen after quitting a manual page
@@ -23,4 +23,7 @@ export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
 export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 
 # Update $PATH with homebrew coreutils
-export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
+# The following line increases zsh startup with ~1s
+# export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
+# So instead we'll roll with the absolute option
+export PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
