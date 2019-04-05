@@ -85,7 +85,12 @@ command Q q
 inoremap jj <Esc>
 
 " Tab completion of first suggestion
-inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n><C-y>" : "\<Tab>"
+" inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n><C-y>" : "\<Tab>"
+
+" Completion modifications with FZF
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-l> <plug>(fzf-complete-line)
 
 " Invoke :Files finder on ctrl-p
 nnoremap <C-p> :Files<Cr>
@@ -104,7 +109,7 @@ command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd
 " Plugin: worp/ale - linting
 " ---------------------------------------------------------------------------- "
 " use ale's completion engine
-let g:ale_completion_enabled = 1
+" let g:ale_completion_enabled = 1
 " fix agressive completion (see :help ale-completion-completopt-bug)
 set completeopt=menu,menuone,preview,noselect,noinsert
 
