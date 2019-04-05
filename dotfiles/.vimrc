@@ -30,7 +30,9 @@ set nohidden                        " When I close a tab, remove the buffer
 set noshowmode
 set nostartofline
 set number
+set relativenumber
 set ruler
+set scrolloff=5                     " Keep 5 lines above/below cursor visible
 set shiftwidth=2
 set shortmess=atI                   " Don’t show the intro message
 set showcmd                         " Show (partial) command as it’s being typed
@@ -67,6 +69,11 @@ let g:netrw_winsize = 20
 let g:netrw_liststyle = 3
 let g:netrw_altv = 1
 let g:netrw_browse_split = 4
+
+" Useful macros
+" ---------------------------------------------------------------------------- "
+packadd! editexisting               " Open existing vim instance if open
+packadd! matchit                    " Make % command work better
 
 " Keybindings
 " ---------------------------------------------------------------------------- "
@@ -138,6 +145,13 @@ let g:lightline = {
 " ---------------------------------------------------------------------------- "
 let g:fzf_layout = { 'up': '~40%' }
 
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump = 1
+
+" Use preview with :Files
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
 " Plugin: rainbow parentheses
 " ---------------------------------------------------------------------------- "
 " Enable Rainbow Parentheses by default
@@ -196,6 +210,7 @@ call plug#begin('~/.vim/bundle')
 Plug '/usr/local/opt/fzf'
 
 Plug 'airblade/vim-gitgutter'
+Plug 'chr4/nginx.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'itchyny/lightline.vim'
@@ -253,6 +268,8 @@ endfunction
 " ---------------------------------------------------------------------------- "
 set background=dark
 filetype on " Enable file type detection
+
+let html_wrong_comments=1
 
 " Enable italics support in Terminal.app
 let &t_ZH="\e[3m"
