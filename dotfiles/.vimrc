@@ -43,6 +43,7 @@ set splitbelow                      " split below instead of above
 set splitright                      " split after instead of before
 set synmaxcol=1000                  " We don't need that much syntax per line
 set tabstop=2
+set tag=.git/tags,./tags,tags
 set ttimeoutlen=100                 " Return to NORMAL quicklt after <ESC>
 set title                           " Show the filename in the window titlebar
 set ttyfast                         " Optimize for fast terminal connections
@@ -82,6 +83,7 @@ inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n><C-y>" : "\<Tab>"
 " Invoke :Files finder on ctrl-p
 nnoremap <C-p> :Files<Cr>
 nnoremap <C-g> :Rg<Cr>
+" nnoremap <C-t> :Tags<Cr>
 
 " use `u` to undo, use `U` to redo, mind = blown
 nnoremap U <C-r>
@@ -164,6 +166,21 @@ let g:user_emmet_settings = {
 " Enable JSDoc highlighting
 let g:javascript_plugin_jsdoc = 1
 
+" Plugin: tagbar
+" ---------------------------------------------------------------------------- "
+let g:tagbar_type_scss = {
+\  'ctagstype' : 'scss',
+\  'kinds' : [
+\    'm:mixins',
+\    'f:functions',
+\    'v:variables',
+\    'c:classes',
+\    'i:ids',
+\    't:tags',
+\    'd:media'
+\  ]
+\}
+
 " Plugins
 " ---------------------------------------------------------------------------- "
 " Auto-install plug
@@ -184,6 +201,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'itchyny/lightline.vim'
 Plug 'junegunn/fzf.vim'
 Plug 'kien/rainbow_parentheses.vim'
+Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'morhetz/gruvbox'
 Plug 'mustache/vim-mustache-handlebars'
