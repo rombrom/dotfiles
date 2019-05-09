@@ -164,14 +164,6 @@ let g:fzf_buffers_jump = 1
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
-" Plugin: rainbow parentheses
-" ---------------------------------------------------------------------------- "
-" Enable Rainbow Parentheses by default
-au VimEnter * RainbowParenthesesToggle
-au Syntax * RainbowParenthesesLoadRound
-au Syntax * RainbowParenthesesLoadSquare
-au Syntax * RainbowParenthesesLoadBraces
-
 " Plugin: emmet
 " ---------------------------------------------------------------------------- "
 " Use double <Leader> for expansion
@@ -227,7 +219,6 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'itchyny/lightline.vim'
 Plug 'junegunn/fzf.vim'
-Plug 'kien/rainbow_parentheses.vim'
 Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
 Plug 'morhetz/gruvbox'
