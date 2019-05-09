@@ -213,6 +213,7 @@ call plug#begin('~/.vim/bundle')
 
 Plug '/usr/local/opt/fzf'
 
+Plug 'tpope/vim-unimpaired'
 Plug 'airblade/vim-gitgutter'
 Plug 'chr4/nginx.vim'
 Plug 'christoomey/vim-tmux-navigator'
@@ -228,6 +229,7 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
+Plug 'cakebaker/scss-syntax.vim'
 Plug 'tpope/vim-surround'
 Plug 'w0rp/ale'
 
@@ -253,6 +255,12 @@ au BufNewFile,BufRead *.md setlocal filetype=markdown
 "   au!
 "   au VimEnter * :Vexplore
 " augroup END
+
+" Treat kebab-case in CSS as one word
+augroup CSSKebabCase
+  au!
+  au FileType css,less,sass,scss setlocal iskeyword+=-
+augroup END
 
 " Auto-reload vim when ~/.vimrc is saved
 augroup vimrc
