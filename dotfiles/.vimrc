@@ -118,8 +118,8 @@ set completeopt=menu,menuone,preview,noselect,noinsert
 let g:ale_fix_on_save = 1
 
 " lint after 1000ms after changes are made both on insert mode and normal mode
-let g:ale_lint_on_text_changed = 'always'
-let g:ale_lint_delay = 500
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_delay = 1000
 
 " use nice symbols for errors and warnings
 let g:ale_sign_error = '✗\ '
@@ -132,6 +132,7 @@ let g:ale_fixers = {
 \   'css': ['prettier'],
 \   'html': ['prettier'],
 \   'javascript': ['prettier'],
+\   'scss': ['prettier'],
 \}
 
 " Plugim: lightline
