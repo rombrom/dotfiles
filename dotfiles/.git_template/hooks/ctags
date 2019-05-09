@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e;
 
-dir="$(git rev-parse --git-dir)";
-trap 'rm -f "$dir/$$.tags"' EXIT;
+dir="$(git rev-parse --git-dir)"
+trap 'rm -f "$dir/$$.tags"' EXIT
 
-git ls-files | ctags --tag-relative=yes -L - -f "$dir/$$.tags";
-mv "$dir/$$.tags" "$dir/tags";
+git ls-files . ':!:package-lock.json' | ctags --tag-relative=yes -L - -f "$dir/$$.tags"
+mv "$dir/$$.tags" "$dir/tags"
