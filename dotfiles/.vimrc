@@ -17,6 +17,7 @@ set foldlevelstart=99               " open all folds by default
 set foldmethod=manual
 set foldnestmax=10                  " 10 nested fold max; > 10 == absurd
 set gdefault                        " Use /g flag for RegExp by default
+set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 set hlsearch                        " highlight matches
 set ignorecase
 set incsearch                       " search as characters are entered
