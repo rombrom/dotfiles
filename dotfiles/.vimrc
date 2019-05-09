@@ -256,6 +256,12 @@ au BufNewFile,BufRead *.md setlocal filetype=markdown
 "   au VimEnter * :Vexplore
 " augroup END
 
+" Attempt to rename vim pane title
+if &term == "tmux-256color"
+  set t_ts=]2
+  set t_fs=\\
+endif
+
 " Treat kebab-case in CSS as one word
 augroup CSSKebabCase
   au!
