@@ -7,8 +7,7 @@ set autoread                        " Re-read files when changed outside vim
 set backspace=indent,eol,start      " Allow backspace in insert mode
 set cindent                         " Smart autmatic indentation
 set clipboard=unnamed               " Use the macOS clipboard
-set colorcolumn=80                  " Show a coloumn indicating 80 char width
-set cursorline                      " Show line where cursor is
+set colorcolumn=81                  " Show a coloumn indicating 80 char width
 set encoding=utf-8 nobomb
 set esckeys                         " Allow arrow keys in insert mode
 set expandtab
@@ -31,6 +30,7 @@ set nohidden                        " When I close a tab, remove the buffer
 set noshowmode
 set nostartofline
 set number
+set numberwidth=5                   " make the current line stand out
 set relativenumber
 set ruler
 set scrolloff=5                     " Keep 5 lines above/below cursor visible
@@ -50,7 +50,6 @@ set tag=.git/tags,./tags,tags
 set ttimeoutlen=100                 " Return to NORMAL quicklt after <ESC>
 set title                           " Show the filename in the window titlebar
 set ttyfast                         " Optimize for fast terminal connections
-set t_Co=256
 set vb t_vb=                        " Remove 'bell' in vim
 set wildmenu                        " visual autocomplete for command menu
 
