@@ -95,7 +95,8 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 " Invoke :Files finder on ctrl-p
 nnoremap <C-p> :Files<Cr>
 nnoremap <C-g> :Rg<Cr>
-" nnoremap <C-t> :Tags<Cr>
+nnoremap <C-o> :Tags<Cr>
+nnoremap <S-Tab> <C-o>
 
 " use `u` to undo, use `U` to redo, mind = blown
 nnoremap U <C-r>
