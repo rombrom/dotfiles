@@ -142,6 +142,11 @@ let g:lightline = {
   \   'left': [ [ 'mode', 'paste' ],
   \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
   \ },
+  \ 'inactive': {
+  \   'left': [ [ 'filename', 'modified' ] ],
+  \   'right': [ [ 'lineinfo' ],
+  \              [ 'percent' ] ]
+  \ },
   \ 'component_function': {
   \   'gitbranch': 'fugitive#head'
   \ },
