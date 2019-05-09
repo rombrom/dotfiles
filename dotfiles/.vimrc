@@ -84,7 +84,8 @@ command Q q
 inoremap jj <Esc>
 
 " Tab completion of first suggestion
-" inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n><C-y>" : "\<Tab>"
+inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n><C-y>" : "\<Tab>"
+inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p><C-y>" : "\<S-Tab>"
 
 " Completion modifications with FZF
 imap <c-x><c-k> <plug>(fzf-complete-word)
