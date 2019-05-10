@@ -17,7 +17,7 @@
   set expandtab
   set foldenable                    " enable folding
   set foldlevelstart=99             " open all folds by default
-  set foldmethod=manual
+  set foldmethod=indent
   set foldnestmax=10                " 10 nested fold max; > 10 == absurd
   set formatoptions+=j              " Delete comment character when joining lines
   set gdefault                      " Use /g flag for RegExp by default
@@ -300,14 +300,17 @@ call plug#end()
   " <ESC> on jj in insert
   inoremap jj <Esc>
 
+  " Clear highlight with leader
+  nnoremap <Silent> <Leader>c :noh<Cr>
+
   " Tab completion of first suggestion
   " inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n><C-y>" : "\<Tab>"
   " inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p><C-y>" : "\<S-Tab>"
 
   " Completion modifications with FZF
-  imap <c-x><c-k> <plug>(fzf-complete-word)
-  imap <c-x><c-f> <plug>(fzf-complete-path)
-  imap <c-x><c-l> <plug>(fzf-complete-line)
+  imap <C-x><C-k> <plug>(fzf-complete-word)
+  imap <C-x><C-f> <plug>(fzf-complete-path)
+  imap <C-x><C-l> <plug>(fzf-complete-line)
 
   " Invoke :Files finder on ctrl-p
   nnoremap <C-p> :Files<Cr>
@@ -315,7 +318,7 @@ call plug#end()
   nnoremap <C-o> :Tags<Cr>
   nnoremap <S-Tab> <C-o>
 
-  " use `u` to undo, use `U` to redo, mind = blown
+  " use `u` to undo, use `U` to redo
   nnoremap U <C-r>
 
 " }}}
@@ -361,10 +364,10 @@ call plug#end()
 
 " }}}
 
-" Theme {{{
+" Theme {{
 
   set background=dark
-  filetype on " Enable file type detection
+  filetype plugin indent on " Enable file type detection
 
   " Use <!-- --> comments in HTML
   let html_wrong_comments=1
@@ -377,11 +380,11 @@ call plug#end()
   syntax enable
 
   " Set highlight options
-  highlight! link SignColumn LineNr
-  highlight link GitGutterAdd GruvboxGreen
-  highlight link GitGutterChange GruvboxAqua
-  highlight link GitGutterDelete GruvboxRed
-  highlight link GitGutterChangeDelete GruvboxAqua
+  hi! link SignColumn LineNr
+  hi! link GitGutterAdd GruvboxGreen
+  hi! link GitGutterChange GruvboxAqua
+  hi! link GitGutterDelete GruvboxRed
+  hi! link GitGutterChangeDelete GruvboxAqua
 
 " }}}
 
