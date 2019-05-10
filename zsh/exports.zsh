@@ -22,7 +22,6 @@ export GPG_TTY=$(tty);
 # Make fzf use ripgrep by default
 export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
 export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
-export FZF_TMUX=1
 
 # Update $PATH with homebrew coreutils
 # The following line increases zsh startup with ~1s
