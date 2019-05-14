@@ -380,11 +380,12 @@ call plug#end()
   syntax enable
 
   " Set highlight options
-  hi! link SignColumn LineNr
+  hi! link Folded LineNr
   hi! link GitGutterAdd GruvboxGreen
   hi! link GitGutterChange GruvboxAqua
   hi! link GitGutterDelete GruvboxRed
   hi! link GitGutterChangeDelete GruvboxAqua
+  hi! link SignColumn LineNr
 
 " }}}
 
