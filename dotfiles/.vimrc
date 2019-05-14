@@ -364,7 +364,7 @@ call plug#end()
 
 " }}}
 
-" Theme {{
+" Theme {{{
 
   set background=dark
   filetype plugin indent on " Enable file type detection
