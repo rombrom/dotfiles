@@ -32,8 +32,8 @@ function main() {
   echo "Synchronizing Oh My ZSH Custom folder"
   echo ""
   for f in ./zsh/*; do
-    local name=$(basename "$f");
-    local src=$(realpath "$f");
+    local name="$(basename $f)";
+    local src="$(realpath $f)";
     local dest="~/.oh-my-zsh/custom/$name";
 
     ln -sFi "$src" "$dest";
@@ -43,11 +43,11 @@ function main() {
   echo "Synchronizing dotfiles...";
   echo "";
   for f in ./dotfiles/.*; do
-    local name=$(basename "$f");
-    local src=$(realpath "$f");
+    local name="$(basename $f)";
+    local src="$(realpath $f)";
     local dest="~/$name";
 
-    if [[ -d "$name" ]] && [[ $name = ".vim" ]]; then
+    if [[ -d "$name" ]] && [[ "$name" = ".vim" ]]; then
       cp -fir "$src" "$dest";
     else
       ln -sFi "$path" "$dest";
@@ -55,8 +55,8 @@ function main() {
   done;
 
   # Sync settings
-  ln -sFi $(realpath ./settings/dnsmasq.conf) /usr/local/etc/dnsmasq.conf;
-  ln -sFi $(realpath ./settings/resolver) /etc/resolver;
+  ln -sFi "$(realpath ./settings/dnsmasq.conf)" /usr/local/etc/dnsmasq.conf;
+  ln -sFi "$(realpath ./settings/resolver)" /etc/resolver;
 
   # Kick off dnsmasq
   brew services start dnsmasq
@@ -71,16 +71,16 @@ function main() {
 }
 
 # Make italics work in macOS terminal
-tic -o $HOME/.terminfo ./terminfo/tmux.terminfo
-tic -o $HOME/.terminfo ./terminfo/tmux-256color.terminfo
-tic -o $HOME/.terminfo ./terminfo/xterm-256color.terminfo
+tic -o "$HOME/.terminfo" ./terminfo/tmux.terminfo
+tic -o "$HOME/.terminfo" ./terminfo/tmux-256color.terminfo
+tic -o "$HOME/.terminfo" ./terminfo/xterm-256color.terminfo
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
 	main;
 else
 	read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1;
 	echo "";
-	if [[ $REPLY =~ ^[Yy]$ ]]; then
+	if [[ "$REPLY" =~ ^[Yy]$ ]]; then
 		main;
 	fi;
 fi;
