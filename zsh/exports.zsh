@@ -6,6 +6,9 @@ export LC_ALL='en_US.UTF-8';
 export VISUAL="vim"
 export EDITOR="vim"
 
+# Reduce ESC delay in zsh vi-mode
+export KEYTIMEOUT=1
+
 # Make commands use colors if possible
 export CLICOLOR=yes
 

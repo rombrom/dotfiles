@@ -8,6 +8,11 @@ function manp() {
   man -w "$@" | xargs groff -Tps -mandoc -c -f C | open -f -a Preview;
 }
 
+# cd to dir and ls afterwards
+function cl() {
+  cd "$1" && ls -Ap;
+}
+
 # Create a data URL from a file
 function datauri() {
 	local mimeType=$(file -b --mime-type "$1");
