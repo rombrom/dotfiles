@@ -113,7 +113,7 @@
 
   " }}}
 
-  " Plugin: editexistinng & matchit {{{
+  " Plugin: editexisting & matchit {{{
 
     packadd! editexisting               " Open existing vim instance if open
     packadd! matchit                    " Make % command work better
@@ -367,7 +367,9 @@ call plug#end()
 " Theme {{{
 
   set background=dark
-  filetype plugin indent on " Enable file type detection
+
+  " Enable file type detection
+  filetype plugin indent on
 
   " Use <!-- --> comments in HTML
   let html_wrong_comments=1
