@@ -344,6 +344,9 @@ call plug#end()
     " Treat kebab-case in CSS as one word
     au FileType css,less,sass,scss setlocal iskeyword+=-
 
+    " TODO: make this work?
+    au FileType css,html,less,sass,scss EmmetInstall
+
   augroup END
 
   " Auto-reload vim when ~/.vimrc is saved
