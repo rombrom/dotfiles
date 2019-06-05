@@ -40,6 +40,7 @@ brew install node
 brew install terraform
 brew install tmux
 brew install tree
+brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
 # Install fuzzyfinder and setup fuzzy completion
 brew install fzf
