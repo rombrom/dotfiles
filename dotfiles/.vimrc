@@ -297,11 +297,8 @@ call plug#end()
   command W w !sudo tee % > /dev/null
   command Q q
 
-  " <ESC> on jj in insert
-  inoremap jj <Esc>
-
   " Clear highlight with leader
-  nnoremap <Silent> <Leader>c :noh<Cr>
+  nnoremap <Leader>c :noh<Cr>
 
   " Tab completion of first suggestion
   " inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n><C-y>" : "\<Tab>"
