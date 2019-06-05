@@ -162,7 +162,7 @@
 
   " Plugin: gruvbox {{{
 
-    Plug 'morhetz/gruvbox'
+    Plug 'gruvbox-community/gruvbox'
 
     " Needs to be set before the theme loads
     let g:gruvbox_italic = 1
@@ -356,7 +356,7 @@ call plug#end()
     au BufWritePost .vimrc call ReloadLightline()
   augroup END
 
-  function ReloadLightline()
+  function! ReloadLightline()
     call lightline#init()
     call lightline#colorscheme()
     call lightline#update()
@@ -388,6 +388,7 @@ call plug#end()
   hi! link GitGutterDelete GruvboxRed
   hi! link GitGutterChangeDelete GruvboxAqua
   hi! link SignColumn LineNr
+  hi! link EndOfBuffer NonText
 
 " }}}
 
