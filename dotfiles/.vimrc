@@ -369,6 +369,10 @@ call plug#end()
   " Use <!-- --> comments in HTML
   let html_wrong_comments=1
 
+  " fix indenting of css/js syntax in script/style tags
+  let g:html_indent_script1 = "inc"
+  let g:html_indent_style1 = "inc"
+
   " Enable italics support in Terminal.app
   let &t_ZH="\e[3m"
   let &t_ZR="\e[23m"
