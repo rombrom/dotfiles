@@ -146,8 +146,6 @@
 
     Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 
-    let g:fzf_layout = { 'up': '~40%' }
-
     " [Buffers] Jump to the existing window if possible
     let g:fzf_buffers_jump = 1
 
@@ -302,9 +300,9 @@ call plug#end()
   " inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p><C-y>" : "\<S-Tab>"
 
   " Completion modifications with FZF
-  imap <C-x><C-k> <plug>(fzf-complete-word)
-  imap <C-x><C-f> <plug>(fzf-complete-path)
-  imap <C-x><C-l> <plug>(fzf-complete-line)
+  " imap <C-x><C-k> <plug>(fzf-complete-word)
+  " imap <C-x><C-f> <plug>(fzf-complete-path)
+  " imap <C-x><C-l> <plug>(fzf-complete-line)
 
   " Invoke :Files finder on ctrl-p
   nnoremap <C-p> :Files<Cr>
