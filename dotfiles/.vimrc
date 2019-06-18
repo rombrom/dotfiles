@@ -347,8 +347,8 @@ call plug#end()
   " Auto-reload vim when ~/.vimrc is saved
   augroup ReloadVimrc
     au!
-    au BufWritePost .vimrc source ~/.vimrc
-    au BufWritePost .vimrc call ReloadLightline()
+    au BufWritePost $MYVIMRC source $MYVIMRC
+    au BufWritePost $MYVIMRC call ReloadLightline()
   augroup END
 
   function! ReloadLightline()
