@@ -3,8 +3,6 @@
 
 " {{{ General
 
-  set nocompatible                  " Make Vi Improved
-
   set autoindent                    " Automatic indentation in insert mode
   set autoread                      " Re-read files when changed outside vim
   set backspace=indent,eol,start    " Allow backspace in insert mode
@@ -50,7 +48,6 @@
   set splitbelow                    " split below instead of above
   set splitright                    " split after instead of before
   set synmaxcol=1000                " We don't need that much syntax per line
-  set tabstop=2
   set tag+=.git/tags
   set ttimeoutlen=100               " Return to NORMAL quicklt after <ESC>
   set title                         " Show the filename in the window titlebar
