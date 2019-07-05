@@ -1,4 +1,3 @@
-" vim: fdm=marker foldenable
 " Rommert Zijlstra's .vimrc
 
 " {{{ General
@@ -30,6 +29,7 @@
   set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
   set mouse=a                       " Enable mouse in all modes
   set nohidden                      " When I close a tab, remove the buffer
+  set nomodeline                    " Prevent weird stuff with modelines
   set noshowmode
   set nostartofline
   set number
@@ -347,8 +347,8 @@ call plug#end()
   " Auto-reload vim when ~/.vimrc is saved
   augroup ReloadVimrc
     au!
-    au BufWritePost $MYVIMRC source $MYVIMRC
-    au BufWritePost $MYVIMRC call ReloadLightline()
+    au BufRead .vimrc setlocal foldmethod=marker
+    au BufWritePost $MYVIMRC source $MYVIMRC | call ReloadLightline()
   augroup END
 
   function! ReloadLightline()
