@@ -259,6 +259,12 @@
 
   " }}}
 
+  " Plugin: vim-jsx {{{
+
+    Plug 'mxw/vim-jsx'
+
+  " }}}
+
   " Plugin: vim-mustache-handlebars {{{
 
     Plug 'mustache/vim-mustache-handlebars'
@@ -334,7 +340,10 @@ call plug#end()
     au BufNewFile,BufRead *.json setfiletype json syntax=javascript
 
     " Treat .md files as Markdown
-    au BufNewFile,BufRead *.md setlocal filetype=markdown
+    au BufNewFile,BufRead *.md setfiletype markdown
+
+    " Treat .svelte files as HTML
+    au BufNewFile,BufRead *.svelte setfiletype html
 
     " Treat kebab-case in CSS as one word
     au FileType css,less,sass,scss setlocal iskeyword+=-
