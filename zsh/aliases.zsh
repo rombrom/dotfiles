@@ -6,6 +6,9 @@ alias lc="ls --format=single-column"
 # this always happens
 alias cp='cp -R'
 
+# alias to todo.txt cli
+alias t='todo.sh'
+
 # Moar git aliases
 compdef _git gc=git-commit
 
