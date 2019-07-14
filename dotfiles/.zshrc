@@ -1,3 +1,6 @@
+# Disable completion permission check (when current user has not installed zsh)
+ZSH_DISABLE_COMPFIX=true
+
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
