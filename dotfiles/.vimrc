@@ -1,9 +1,6 @@
-" vim: fdm=marker foldenable
 " Rommert Zijlstra's .vimrc
 
 " {{{ General
-
-  set nocompatible                  " Make Vi Improved
 
   set autoindent                    " Automatic indentation in insert mode
   set autoread                      " Re-read files when changed outside vim
@@ -32,6 +29,7 @@
   set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
   set mouse=a                       " Enable mouse in all modes
   set nohidden                      " When I close a tab, remove the buffer
+  set nomodeline                    " Prevent weird stuff with modelines
   set noshowmode
   set nostartofline
   set number
@@ -50,7 +48,6 @@
   set splitbelow                    " split below instead of above
   set splitright                    " split after instead of before
   set synmaxcol=1000                " We don't need that much syntax per line
-  set tabstop=2
   set tag+=.git/tags
   set ttimeoutlen=100               " Return to NORMAL quicklt after <ESC>
   set title                         " Show the filename in the window titlebar
@@ -148,8 +145,6 @@
   " Plugin: fzf {{{
 
     Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
-
-    let g:fzf_layout = { 'up': '~40%' }
 
     " [Buffers] Jump to the existing window if possible
     let g:fzf_buffers_jump = 1
@@ -264,6 +259,12 @@
 
   " }}}
 
+  " Plugin: vim-jsx {{{
+
+    Plug 'mxw/vim-jsx'
+
+  " }}}
+
   " Plugin: vim-mustache-handlebars {{{
 
     Plug 'mustache/vim-mustache-handlebars'
@@ -305,9 +306,9 @@ call plug#end()
   " inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p><C-y>" : "\<S-Tab>"
 
   " Completion modifications with FZF
-  imap <C-x><C-k> <plug>(fzf-complete-word)
-  imap <C-x><C-f> <plug>(fzf-complete-path)
-  imap <C-x><C-l> <plug>(fzf-complete-line)
+  " imap <C-x><C-k> <plug>(fzf-complete-word)
+  " imap <C-x><C-f> <plug>(fzf-complete-path)
+  " imap <C-x><C-l> <plug>(fzf-complete-line)
 
   " Invoke :Files finder on ctrl-p
   nnoremap <C-p> :Files<Cr>
@@ -339,7 +340,10 @@ call plug#end()
     au BufNewFile,BufRead *.json setfiletype json syntax=javascript
 
     " Treat .md files as Markdown
-    au BufNewFile,BufRead *.md setlocal filetype=markdown
+    au BufNewFile,BufRead *.md setfiletype markdown
+
+    " Treat .svelte files as HTML
+    au BufNewFile,BufRead *.svelte setfiletype html
 
     " Treat kebab-case in CSS as one word
     au FileType css,less,sass,scss setlocal iskeyword+=-
@@ -352,8 +356,8 @@ call plug#end()
   " Auto-reload vim when ~/.vimrc is saved
   augroup ReloadVimrc
     au!
-    au BufWritePost .vimrc source ~/.vimrc
-    au BufWritePost .vimrc call ReloadLightline()
+    au BufRead .vimrc setlocal foldmethod=marker
+    au BufWritePost $MYVIMRC source $MYVIMRC | call ReloadLightline()
   augroup END
 
   function! ReloadLightline()
@@ -373,6 +377,10 @@ call plug#end()
 
   " Use <!-- --> comments in HTML
   let html_wrong_comments=1
+
+  " fix indenting of css/js syntax in script/style tags
+  let g:html_indent_script1 = "inc"
+  let g:html_indent_style1 = "inc"
 
   " Enable italics support in Terminal.app
   let &t_ZH="\e[3m"

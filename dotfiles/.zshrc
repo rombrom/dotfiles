@@ -18,7 +18,7 @@ plugins=(
   git
   git-extras
   urltools
-  vi-mode
+  # vi-mode
   z
 )
 
