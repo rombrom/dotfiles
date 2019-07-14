@@ -17,6 +17,9 @@ alias grep='grep --color'
 alias fgrep='fgrep --color'
 alias egrep='egrep --color'
 
+# Ignore common "junk" folders
+alias tree='tree -I "node_modules"'
+
 # Enable aliases to be sudo’ed
 alias sudo='sudo '
 
