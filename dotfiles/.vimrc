@@ -85,10 +85,16 @@
 
   " Plugin: ale {{{
 
-    Plug 'w0rp/ale'
+    Plug 'dense-analysis/ale'
 
     " fix files on save
     let g:ale_fix_on_save = 1
+
+    " Use ALE completion
+    " let g:ale_completion_enabled = 1
+
+    " And ALE hover
+    " let g:ale_set_balloons = 1
 
     " lint 1000ms after changes are made both on insert mode and normal mode
     let g:ale_lint_on_text_changed = 'normal'
@@ -106,6 +112,7 @@
     \   'html': ['prettier'],
     \   'javascript': ['prettier'],
     \   'scss': ['prettier'],
+    \   'php': ['php_cs_fixer'],
     \}
 
   " }}}
