@@ -282,6 +282,14 @@ call plug#end()
 
 " Key bindings {{{
 
+  " Move visually instead of by line
+  nnoremap <silent> j gj
+  nnoremap <silent> k gk
+
+  " Center on n and N
+  map n nzz
+  map N Nzz
+
   " :W sudo saves the file
   command W w !sudo tee % > /dev/null
   command Q q
