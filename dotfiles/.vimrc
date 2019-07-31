@@ -367,6 +367,10 @@ call plug#end()
   let &t_ZH="\e[3m"
   let &t_ZR="\e[23m"
 
+  " Change cursor in insert mode
+  let &t_SI="\e[5 q"
+  let &t_EI="\e[2 q"
+
   colorscheme gruvbox
   syntax enable
 
