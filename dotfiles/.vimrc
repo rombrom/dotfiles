@@ -49,7 +49,7 @@
   set splitright                    " split after instead of before
   set synmaxcol=1000                " We don't need that much syntax per line
   set tag+=.git/tags
-  set ttimeoutlen=100               " Return to NORMAL quicklt after <ESC>
+  set ttimeoutlen=50                " Return to NORMAL quickly after <ESC>
   set title                         " Show the filename in the window titlebar
   set ttyfast                       " Optimize for fast terminal connections
   set vb t_vb=                      " Remove 'bell' in vim
