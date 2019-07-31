@@ -213,25 +213,6 @@
 
   " }}}
 
-  " Plugin: tagbar {{{
-
-    Plug 'majutsushi/tagbar'
-
-    let g:tagbar_type_scss = {
-    \  'ctagstype' : 'scss',
-    \  'kinds' : [
-    \    'm:mixins',
-    \    'f:functions',
-    \    'v:variables',
-    \    'c:classes',
-    \    'i:ids',
-    \    't:tags',
-    \    'd:media'
-    \  ]
-    \}
-
-  " }}}
-
   " Plugin: tmux navigator {{{
 
     Plug 'christoomey/vim-tmux-navigator'
