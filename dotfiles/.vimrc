@@ -289,15 +289,6 @@ call plug#end()
   " Clear highlight with leader
   nnoremap <Leader>c :noh<Cr>
 
-  " Tab completion of first suggestion
-  " inoremap <silent><expr> <Tab> pumvisible() ? "\<C-n><C-y>" : "\<Tab>"
-  " inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p><C-y>" : "\<S-Tab>"
-
-  " Completion modifications with FZF
-  " imap <C-x><C-k> <plug>(fzf-complete-word)
-  " imap <C-x><C-f> <plug>(fzf-complete-path)
-  " imap <C-x><C-l> <plug>(fzf-complete-line)
-
   " Invoke :Files finder on ctrl-p
   nnoremap <C-p> :Files<Cr>
   nnoremap <C-g> :Rg<Cr>
@@ -333,19 +324,13 @@ call plug#end()
     " Treat .svelte files as HTML
     au BufNewFile,BufRead *.svelte setfiletype html
 
-    " Treat kebab-case in CSS as one word
-    au FileType css,less,sass,scss setlocal iskeyword+=-
-
-    " TODO: make this work?
-    au FileType css,html,less,sass,scss EmmetInstall
-
   augroup END
 
   " Auto-reload vim when ~/.vimrc is saved
   augroup ReloadVimrc
     au!
     au BufRead .vimrc setlocal foldmethod=marker
-    au BufWritePost $MYVIMRC source $MYVIMRC | call ReloadLightline()
+    au BufWritePost .vimrc source $MYVIMRC | call ReloadLightline()
   augroup END
 
   function! ReloadLightline()
