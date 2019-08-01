@@ -206,6 +206,7 @@
     Plug 'mustache/vim-mustache-handlebars'
     Plug 'mxw/vim-jsx'
     Plug 'pangloss/vim-javascript'
+    Plug 'leafgarland/typescript-vim'
 
     " Enable JSDoc highlighting
     let g:javascript_plugin_jsdoc = 1
