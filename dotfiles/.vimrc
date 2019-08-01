@@ -59,12 +59,16 @@
 
 " {{{ Backup & undo
 
-  set backup
-  set backupdir=~/.vim/backup
-  set directory=~/.vim/swap
-  set writebackup
-  set undofile
-  set undodir=~/.vim/undo
+  set writebackup     " Protect files against crash-during-write
+  set nobackup        " but remove the backup after succesful write
+  set backupcopy=auto "  use rename-and-write-new method whenever safe
+  set backupdir=~/.vim/backup//
+
+  set swapfile        " write a swap every now and then
+  set directory=~/.vim/swap//
+
+  set undofile        " persistent undo is AWESOME
+  set undodir=~/.vim/undo//
 
 " }}}
 
