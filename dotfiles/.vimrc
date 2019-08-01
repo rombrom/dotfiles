@@ -254,20 +254,48 @@ call plug#end()
 
   augroup ImproveEditing
     au!
-
     " Return to last edit position when opening files
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    " Hack to make <C-x><C-f> work with files relative to current buffer
+    au InsertEnter * let cwd = getcwd() | lcd %:p:h
+    au InsertLeave * execute 'lcd' fnameescape(cwd)
 
     " Treat .json files as .js
     au BufNewFile,BufRead *.json setfiletype json syntax=javascript
-
     " Treat .md files as Markdown
     au BufNewFile,BufRead *.md setfiletype markdown
-
     " Treat .svelte files as HTML
     au BufNewFile,BufRead *.svelte setfiletype html
-
+    " Improve working with node_modules projects
+    au FileType js,json,jsx,sass,scss,ts,tsx call ImproveNodeEditing()
   augroup END
+
+  function! ImproveNodeEditing()
+    setlocal isfname+=@-@
+    setlocal suffixesadd+=.sass,.scss,.js,.json,.jsx
+    setlocal includeexpr=LookupNodeModule(v:fname)
+  endfunction
+
+  function! LookupNodeModule(fname)
+    let modulesPath = './node_modules/'
+
+    let basePath = modulesPath . a:fname
+    let indexFile = basePath . '/index.js'
+    let packageFile = basePath . '/package.json'
+
+    if filereadable(packageFile)
+      let package = json_decode(join(readfile(packageFile)))
+      if has_key(package, 'main')
+        return basePath . '/' . package.main
+      endif
+    endif
+
+    if filereadable(indexFile)
+      return indexFile
+    endif
+
+    return basePath
+  endfunction
 
   " Auto-reload vim when ~/.vimrc is saved
   augroup ReloadVimrc
