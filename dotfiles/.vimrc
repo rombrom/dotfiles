@@ -87,18 +87,39 @@
 
   call plug#begin('~/.vim/bundle')
 
-  " Plugin: ale {{{
+  " Plugins: editing {{{
+
+    packadd! editexisting               " Open existing vim instance if open
+    packadd! matchit                    " Make % command work better
+
+    Plug 'editorconfig/editorconfig-vim'
+    Plug 'mattn/emmet-vim'
+    Plug 'tpope/vim-abolish'
+    Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-surround'
+
+    " Use double <Leader> for expansion
+    let g:user_emmet_leader_key='<Leader>'
+
+    " make emmet behave well with JSX in JS and TS files
+    let g:user_emmet_settings = {
+    \  'javascript' : {
+    \      'extends' : 'jsx',
+    \  },
+    \  'typescript' : {
+    \      'extends' : 'tsx',
+    \  },
+    \}
+
+  " }}}
+
+  " Plugins: linting {{{
 
     Plug 'dense-analysis/ale'
 
     " fix files on save
     let g:ale_fix_on_save = 1
-
-    " Use ALE completion
-    " let g:ale_completion_enabled = 1
-
-    " And ALE hover
-    " let g:ale_set_balloons = 1
 
     " lint 1000ms after changes are made both on insert mode and normal mode
     let g:ale_lint_on_text_changed = 'normal'
@@ -121,40 +142,52 @@
 
   " }}}
 
-  " Plugin: editexisting & matchit {{{
+  " Plugins: UI {{{
 
-    packadd! editexisting               " Open existing vim instance if open
-    packadd! matchit                    " Make % command work better
+    " netrw UI tweaks
+    let g:netrw_banner = 0
+    let g:netrw_winsize = 20
+    let g:netrw_liststyle = 3
+    let g:netrw_altv = 1
 
-  " }}}
+    Plug 'airblade/vim-gitgutter'
+    Plug 'itchyny/lightline.vim'
 
-  " Plugin: editorconfig {{{
+    " Make vim + tmux awesome
+    Plug 'christoomey/vim-tmux-navigator'
+    Plug 'tmux-plugins/vim-tmux-focus-events'
 
-    Plug 'editorconfig/editorconfig-vim'
+    Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-unimpaired'
 
-  " }}}
+    let g:lightline = {
+    \   'active': {
+    \     'left': [ [ 'mode', 'paste' ],
+    \               [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ]
+    \   },
+    \   'inactive': {
+    \     'left': [ [ 'relativepath', 'modified' ] ],
+    \     'right': [ [ 'lineinfo' ],
+    \                [ 'percent' ] ]
+    \   },
+    \   'component_function': {
+    \     'gitbranch': 'fugitive#head'
+    \   },
+    \   'separator': {
+    \     'left': '', 'right': '',
+    \   },
+    \   'subseparator': {
+    \     'left': '▪', 'right': '▪',
+    \   }
+    \ }
 
-  " PLugin: emmet {{{
+    " Theme
+    Plug 'gruvbox-community/gruvbox'
 
-    Plug 'mattn/emmet-vim'
+    " Needs to be set before the theme loads
+    let g:gruvbox_italic = 1
 
-    " Use double <Leader> for expansion
-    let g:user_emmet_leader_key='<Leader>'
-
-    " make emmet behave well with JSX in JS and TS files
-    let g:user_emmet_settings = {
-    \  'javascript' : {
-    \      'extends' : 'jsx',
-    \  },
-    \  'typescript' : {
-    \      'extends' : 'tsx',
-    \  },
-    \}
-
-  " }}}
-
-  " Plugin: fzf {{{
-
+    " fzf fuzzyfinding
     Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 
     " [Buffers] Jump to the existing window if possible
@@ -166,118 +199,16 @@
 
   " }}}
 
-  " Plugin: gruvbox {{{
-
-    Plug 'gruvbox-community/gruvbox'
-
-    " Needs to be set before the theme loads
-    let g:gruvbox_italic = 1
-
-  " }}}
-
-  " Plugin: lightline {{{
-
-    Plug 'itchyny/lightline.vim'
-
-    let g:lightline = {
-    \   'active': {
-    \     'left': [ [ 'mode', 'paste' ],
-    \               [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-    \   },
-    \   'inactive': {
-    \     'left': [ [ 'filename', 'modified' ] ],
-    \     'right': [ [ 'lineinfo' ],
-    \                [ 'percent' ] ]
-    \   },
-    \   'component_function': {
-    \     'gitbranch': 'fugitive#head'
-    \   },
-    \ }
-
-  " }}}
-
-  " Plugin: netrw {{{
-
-    let g:netrw_banner = 0
-    let g:netrw_winsize = 20
-    let g:netrw_liststyle = 3
-    let g:netrw_altv = 1
-
-  " }}}
-
-  " Plugin: nginx {{{
-
-    Plug 'chr4/nginx.vim'
-
-  " }}}
-
-  " Plugin: scss-syntax {{{
+  " Plugins: syntax {{{
 
     Plug 'cakebaker/scss-syntax.vim'
-
-  " }}}
-
-  " Plugin: tmux navigator {{{
-
-    Plug 'christoomey/vim-tmux-navigator'
-    Plug 'tmux-plugins/vim-tmux-focus-events'
-
-  " }}}
-
-  " Plugin: vim-commentary {{{
-
-    Plug 'tpope/vim-commentary'
-
-  " }}}
-
-  " Plugin: vim-fugitive {{{
-
-    Plug 'tpope/vim-fugitive'
-
-  " }}}
-
-  " Plugin: vim-gitgutter {{{
-
-    Plug 'airblade/vim-gitgutter'
-
-  " }}}
-
-  " Plugin: vim-javascript {{{
-
+    Plug 'chr4/nginx.vim'
+    Plug 'mustache/vim-mustache-handlebars'
+    Plug 'mxw/vim-jsx'
     Plug 'pangloss/vim-javascript'
 
     " Enable JSDoc highlighting
     let g:javascript_plugin_jsdoc = 1
-
-  " }}}
-
-  " Plugin: vim-jsx {{{
-
-    Plug 'mxw/vim-jsx'
-
-  " }}}
-
-  " Plugin: vim-mustache-handlebars {{{
-
-    Plug 'mustache/vim-mustache-handlebars'
-
-  " }}}
-
-  " Plugin: vim-repeat {{{
-
-    Plug 'tpope/vim-repeat'
-
-  " }}}
-
-  " Plugin: vim-surround {{{
-
-    Plug 'tpope/vim-surround'
-
-  " }}}
-
-  " Plugin: vim-unimpaired {{{
-
-    Plug 'tpope/vim-unimpaired'
 
   " }}}
 
