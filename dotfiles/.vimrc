@@ -278,14 +278,17 @@ call plug#end()
   endfunction
 
   function! LookupNodeModule(fname)
-    let modulesPath = './node_modules/'
-
-    let basePath = modulesPath . a:fname
+    let basePath = finddir('node_modules', expand('%:p:h') . ';' . getcwd()) . '/' . a:fname
     let indexFile = basePath . '/index.js'
     let packageFile = basePath . '/package.json'
 
     if filereadable(packageFile)
       let package = json_decode(join(readfile(packageFile)))
+
+      if has_key(package, 'module')
+        return basePath . '/' . package.module
+      endif
+
       if has_key(package, 'main')
         return basePath . '/' . package.main
       endif
