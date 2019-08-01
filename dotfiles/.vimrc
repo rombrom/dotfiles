@@ -279,7 +279,8 @@ call plug#end()
 
   function! LookupNodeModule(fname)
     let basePath = finddir('node_modules', expand('%:p:h') . ';' . getcwd()) . '/' . a:fname
-    let indexFile = basePath . '/index.js'
+    let indexFileJs = basePath . '/index.js'
+    let indexFileTs = basePath . '/index.ts'
     let packageFile = basePath . '/package.json'
 
     if filereadable(packageFile)
@@ -294,8 +295,12 @@ call plug#end()
       endif
     endif
 
-    if filereadable(indexFile)
-      return indexFile
+    if filereadable(indexFileTs)
+      return indexFileTs
+    endif
+
+    if filereadable(indexFileJs)
+      return indexFileJs
     endif
 
     return basePath
