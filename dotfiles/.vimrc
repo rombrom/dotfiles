@@ -268,12 +268,12 @@ call plug#end()
     " Treat .svelte files as HTML
     au BufNewFile,BufRead *.svelte setfiletype html
     " Improve working with node_modules projects
-    au FileType javascript,json,jsx,sass,scss,typescript,tsx call ImproveNodeEditing()
+    au FileType javascript,json,jsx,typescript,tsx call ImproveNodeEditing()
   augroup END
 
   function! ImproveNodeEditing()
-    setlocal isfname+=@-@
-    setlocal suffixesadd+=.sass,.scss,.js,.json,.jsx,.ts,.tsx
+    setlocal isfname+=@-@ " some node_modules are namespaced with an @
+    setlocal suffixesadd+=.js,.json,.jsx,.ts,.tsx
     setlocal includeexpr=LookupNodeModule(v:fname)
   endfunction
 
