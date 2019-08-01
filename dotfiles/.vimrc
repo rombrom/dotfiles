@@ -19,6 +19,7 @@
   set formatoptions+=j              " Delete comment character when joining lines
   set gdefault                      " Use /g flag for RegExp by default
   set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+  set history=200                   " never found use of setting this higher
   set hlsearch                      " highlight matches
   set ignorecase
   set incsearch                     " search as characters are entered
@@ -35,7 +36,6 @@
   set number
   set numberwidth=5                 " make the current line stand out
   set relativenumber
-  set ruler
   set scrolloff=5                   " Keep 5 lines above/below cursor visible
   set shiftwidth=2
   set shortmess=atI                 " Don’t show the intro message
