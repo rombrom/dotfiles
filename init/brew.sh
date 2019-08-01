@@ -35,9 +35,7 @@ brew install composer
 brew install dnsmasq
 brew install git
 brew install jq
-brew install kubectx
 brew install node
-brew install terraform
 brew install tmux
 brew install tree
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
