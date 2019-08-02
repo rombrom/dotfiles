@@ -226,8 +226,8 @@ call plug#end()
   map n nzz
   map N Nzz
 
-  " :W sudo saves the file
-  command W w !sudo tee % > /dev/null
+  " These things happen too often
+  command W w
   command Q q
 
   " Clear highlight with leader
