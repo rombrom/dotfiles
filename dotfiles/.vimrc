@@ -7,7 +7,6 @@
   set backspace=indent,eol,start    " Allow backspace in insert mode
   set cindent                       " Smart autmatic indentation
   set clipboard=unnamed             " Use the macOS clipboard
-  set colorcolumn=81                " Show a coloumn indicating 80 char width
   set display+=lastline
   set encoding=utf-8 nobomb
   set esckeys                       " Allow arrow keys in insert mode
