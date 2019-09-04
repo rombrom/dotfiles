@@ -6,6 +6,9 @@ parserOptions:
     impliedStrict: true
     jsx: true
   sourceType: module
+plugins:
+  - prettier
+  - svelte3
 env:
   browser: true
   node: true

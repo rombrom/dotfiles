@@ -132,6 +132,9 @@
     let g:ale_sign_warning = '⚠ '
     let g:ale_sign_column_always = 1
 
+    let g:ale_linter_aliases = { 'svelte' : ['css', 'javascript'] }
+    let g:ale_linters = { 'svelte': ['stylelint', 'eslint'] }
+
     " fixer configurations
     let g:ale_fixers = {
     \   '*': ['remove_trailing_lines', 'trim_whitespace'],
@@ -139,6 +142,7 @@
     \   'html': ['prettier'],
     \   'javascript': ['prettier'],
     \   'scss': ['prettier'],
+    \   'svelte': ['prettier'],
     \   'php': ['php_cs_fixer'],
     \}
 
@@ -208,6 +212,7 @@
     Plug 'mustache/vim-mustache-handlebars'
     Plug 'mxw/vim-jsx'
     Plug 'pangloss/vim-javascript'
+    Plug 'evanleck/vim-svelte'
     Plug 'leafgarland/typescript-vim'
 
     " Enable JSDoc highlighting
@@ -268,7 +273,7 @@ call plug#end()
     " Treat .md files as Markdown and enable spell checking
     au BufNewFile,BufRead *.md setfiletype markdown | setlocal spell
     " Treat .svelte files as HTML
-    au BufNewFile,BufRead *.svelte setfiletype html
+    " au BufNewFile,BufRead *.svelte setfiletype html
     " Use spell checking on commits
     au FileType gitcommit setlocal spell
     " Improve working with node_modules projects

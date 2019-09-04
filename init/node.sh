@@ -14,6 +14,8 @@ npm install -g \
 npm i -g \
   eslint-config-prettier \
   eslint-plugin-prettier \
+  eslint-plugin-svelte3 \
+  prettier-plugin-svelte \
   stylelint-config-standard \
   stylelint-scss
 
