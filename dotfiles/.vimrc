@@ -7,6 +7,8 @@
   set backspace=indent,eol,start    " Allow backspace in insert mode
   set cindent                       " Smart autmatic indentation
   set clipboard=unnamed             " Use the macOS clipboard
+  set complete+=kspell              " Add dictionary to autocomplete options
+  set dictionary+=/usr/share/dict/words " Use the linked dictionary of macOS
   set display+=lastline
   set encoding=utf-8 nobomb
   set esckeys                       " Allow arrow keys in insert mode
@@ -44,6 +46,7 @@
   set smartcase
   set smarttab
   set softtabstop=2
+  set spelllang=en,nl               " Use English and Dutch
   set splitbelow                    " split below instead of above
   set splitright                    " split after instead of before
   set synmaxcol=1000                " We don't need that much syntax per line
@@ -262,10 +265,12 @@ call plug#end()
 
     " Treat .json files as .js
     au BufNewFile,BufRead *.json setfiletype json syntax=javascript
-    " Treat .md files as Markdown
-    au BufNewFile,BufRead *.md setfiletype markdown
+    " Treat .md files as Markdown and enable spell checking
+    au BufNewFile,BufRead *.md setfiletype markdown | setlocal spell
     " Treat .svelte files as HTML
     au BufNewFile,BufRead *.svelte setfiletype html
+    " Use spell checking on commits
+    au FileType gitcommit setlocal spell
     " Improve working with node_modules projects
     au FileType javascript,json,jsx,typescript,tsx call ImproveNodeEditing()
   augroup END

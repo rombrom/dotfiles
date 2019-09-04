@@ -9,6 +9,9 @@ Desktop.ini
 ._*
 Thumbs.db
 
+# Linter caches
+.php_cs.cache
+
 # Editor config files
 .vscode
 
