@@ -237,6 +237,7 @@
     Plug 'mustache/vim-mustache-handlebars'
     Plug 'mxw/vim-jsx'
     Plug 'pangloss/vim-javascript'
+    Plug 'digitaltoad/vim-pug'
     Plug 'evanleck/vim-svelte'
     Plug 'leafgarland/typescript-vim'
 
