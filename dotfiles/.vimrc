@@ -5,6 +5,8 @@
   set autoindent                    " Automatic indentation in insert mode
   set autoread                      " Re-read files when changed outside vim
   set backspace=indent,eol,start    " Allow backspace in insert mode
+  set ballooneval
+  set balloonevalterm
   set cindent                       " Smart autmatic indentation
   set clipboard=unnamed             " Use the macOS clipboard
   set complete+=kspell              " Add dictionary to autocomplete options
@@ -54,6 +56,7 @@
   set ttimeoutlen=50                " Return to NORMAL quickly after <ESC>
   set title                         " Show the filename in the window titlebar
   set ttyfast                       " Optimize for fast terminal connections
+  set ttymouse=sgr               " Enable proper mouse support
   set vb t_vb=                      " Remove 'bell' in vim
   set wildmenu                      " visual autocomplete for command menu
 
@@ -118,10 +121,30 @@
 
   " Plugins: linting {{{
 
+    " ALE needs the following globally installed binaries. Some of these are
+    " preferences (configs, etc.), others are required to lint and fix things
+    " node_modules:
+    " - eslint
+    " - eslint-config-prettier
+    " - eslint-plugin-prettier
+    " - eslint-plugin-svelte
+    " - prettier
+    " - prettier-plugin-svelte
+    " - stylelint
+    " - stylelint-config-standard
+    " - stylelint-scss
+    " - svelte (because its a compiler, the fixer/linter needs it)
+    " - typescript
+    " other (brew):
+    " - php-cs-fixer
+
     Plug 'dense-analysis/ale'
 
     " fix files on save
     let g:ale_fix_on_save = 1
+
+    " :h ale-hover
+    let g:ale_set_balloons = 1
 
     " lint 1000ms after changes are made both on insert mode and normal mode
     let g:ale_lint_on_text_changed = 'normal'
@@ -132,6 +155,7 @@
     let g:ale_sign_warning = '⚠ '
     let g:ale_sign_column_always = 1
 
+    " make svelte linting possible
     let g:ale_linter_aliases = { 'svelte' : ['css', 'javascript'] }
     let g:ale_linters = { 'svelte': ['stylelint', 'eslint'] }
 
@@ -141,6 +165,7 @@
     \   'css': ['prettier'],
     \   'html': ['prettier'],
     \   'javascript': ['prettier'],
+    \   'sass': ['prettier'],
     \   'scss': ['prettier'],
     \   'svelte': ['prettier'],
     \   'php': ['php_cs_fixer'],
