@@ -300,6 +300,8 @@ call plug#end()
     au BufNewFile,BufRead *.md setfiletype markdown | setlocal spell
     " Treat .svelte files as HTML
     " au BufNewFile,BufRead *.svelte setfiletype html
+    " Improve lookups when working with css @imports
+    au FileType css setlocal suffixesadd+=.css
     " Use spell checking on commits
     au FileType gitcommit setlocal spell
     " Improve working with node_modules projects
