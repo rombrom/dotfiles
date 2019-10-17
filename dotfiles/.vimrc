@@ -252,8 +252,8 @@ call plug#end()
 " Key bindings {{{
 
   " Move visually instead of by line
-  nnoremap <silent> j gj
-  nnoremap <silent> k gk
+  noremap <silent> j gj
+  noremap <silent> k gk
 
   " Center on n and N
   map n nzz
@@ -264,7 +264,7 @@ call plug#end()
   command Q q
 
   " Clear highlight with leader
-  nnoremap <Leader>c :noh<Cr>
+  nnoremap <silent> <Leader>c :noh<Cr>
 
   " Invoke :Files finder on ctrl-p
   nnoremap <C-p> :Files<Cr>
