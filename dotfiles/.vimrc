@@ -298,16 +298,21 @@ call plug#end()
 
     " Treat .json files as .js
     au BufNewFile,BufRead *.json setfiletype json syntax=javascript
-    " Treat .md files as Markdown and enable spell checking
-    au BufNewFile,BufRead *.md setfiletype markdown | setlocal spell
+    " Treat .md files as Markdown
+    au BufNewFile,BufRead *.md setfiletype markdown
     " Treat .svelte files as HTML
     " au BufNewFile,BufRead *.svelte setfiletype html
+
     " Improve lookups when working with css @imports
     au FileType css setlocal suffixesadd+=.css
+    " Make dash-delimited words count as words in styling languages
+    au FileType css,less,sass,scss,styl setlocal iskeyword+=-
     " Use spell checking on commits
     au FileType gitcommit setlocal spell
     " Improve working with node_modules projects
     au FileType javascript,json,jsx,typescript,tsx call ImproveNodeEditing()
+    " Improve markdown editing
+    au FileType markdown setlocal spell | setlocal textwidth=80
   augroup END
 
   function! ImproveNodeEditing()
