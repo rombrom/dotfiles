@@ -254,6 +254,8 @@ call plug#end()
   " Move visually instead of by line
   noremap <silent> j gj
   noremap <silent> k gk
+  noremap <silent> <Down> gj
+  noremap <silent> <Up> gk
 
   " Center on n and N
   map n nzz
