@@ -303,6 +303,8 @@ call plug#end()
     " au BufNewFile,BufRead *.svelte setfiletype html
     " Improve lookups when working with css @imports
     au FileType css setlocal suffixesadd+=.css
+    " Improve css wordhandling
+    au FileType css,less,scss,styl setlocal iskeyword+=-
     " Use spell checking on commits
     au FileType gitcommit setlocal spell
     " Improve working with node_modules projects
@@ -313,6 +315,7 @@ call plug#end()
     setlocal isfname+=@-@ " some node_modules are namespaced with an @
     setlocal suffixesadd+=.js,.json,.jsx,.ts,.tsx
     setlocal includeexpr=LookupNodeModule(v:fname)
+    setlocal include=from
   endfunction
 
   function! LookupNodeModule(fname)
