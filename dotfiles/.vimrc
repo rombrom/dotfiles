@@ -165,6 +165,7 @@
     \   'css': ['prettier'],
     \   'html': ['prettier'],
     \   'javascript': ['prettier'],
+    \   'markdown': ['prettier'],
     \   'sass': ['prettier'],
     \   'scss': ['prettier'],
     \   'svelte': ['prettier'],
