@@ -45,7 +45,7 @@ function main() {
   for f in ./dotfiles/.*; do
     local name="$(basename $f)";
     local src="$(realpath $f)";
-    local dest="~/$name";
+    local dest="$HOME/$name";
 
     if [[ -d "$name" ]] && [[ "$name" = ".vim" ]]; then
       cp -fir "$src" "$dest";
