@@ -6,9 +6,11 @@ npm install -g npm
 # Install useful binaries
 npm install -g \
   eslint \
+  gatsby-cli \
   prettier \
   stylelint \
-  typescript
+  typescript \
+  typescript-language-server
 
 # Install add-ons for eslint
 npm i -g \
