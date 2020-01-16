@@ -278,6 +278,9 @@ call plug#end()
   " use `u` to undo, use `U` to redo
   nnoremap U <C-r>
 
+  " CTRL-U in insert mode deletes a lot. Put an undo-point before it.
+  inoremap <C-u> <C-g>u<C-u>
+
 " }}}
 
 " Commands {{{
@@ -296,6 +299,9 @@ call plug#end()
     " Hack to make <C-x><C-f> work with files relative to current buffer
     au InsertEnter * let cwd = getcwd() | lcd %:p:h
     au InsertLeave * execute 'lcd' fnameescape(cwd)
+    " Create dir on save if it doesn't exist
+    " TODO: this trips up the lcd switching above.
+    au BufWritePre * call MakeDirIfNotExists(expand('<afile>'), +expand('<abuf>'))
 
     " Treat .json files as .js
     au BufNewFile,BufRead *.json setfiletype json syntax=javascript
@@ -304,10 +310,9 @@ call plug#end()
     " Treat .svelte files as HTML
     " au BufNewFile,BufRead *.svelte setfiletype html
 
-    " Improve lookups when working with css @imports
-    au FileType css setlocal suffixesadd+=.css
     " Make dash-delimited words count as words in styling languages
-    au FileType css,less,sass,scss,styl setlocal iskeyword+=-
+    " Improve lookups when working with css @imports
+    au FileType css,less,sass,scss,styl setlocal iskeyword+=- | setlocal suffixesadd+=.css,.less,.sass,.scss,.styl
     " Use spell checking on commits
     au FileType gitcommit setlocal spell
     " Improve working with node_modules projects
@@ -319,8 +324,8 @@ call plug#end()
   function! ImproveNodeEditing()
     setlocal isfname+=@-@ " some node_modules are namespaced with an @
     setlocal suffixesadd+=.js,.json,.jsx,.ts,.tsx
-    setlocal includeexpr=LookupNodeModule(v:fname)
     setlocal include=from
+    setlocal includeexpr=LookupNodeModule(v:fname)
   endfunction
 
   function! LookupNodeModule(fname)
@@ -350,6 +355,12 @@ call plug#end()
     endif
 
     return basePath
+  endfunction
+
+  function! MakeDirIfNotExists(file, buf)
+    if empty(getbufvar(a:buf, '&buftype')) && a:file !~# '\v^\w+\:\/'
+      call mkdir(fnamemodify(a:file, ':h'), 'p')
+    endif
   endfunction
 
   " Auto-reload vim when ~/.vimrc is saved
