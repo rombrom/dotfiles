@@ -2,63 +2,79 @@
 
 " {{{ General
 
-  set autoindent                    " Automatic indentation in insert mode
+  set nohidden                      " When I close a tab, remove the buffer
+  set nomodeline                    " Prevent weird stuff with modelines
+
+  " Editing
   set autoread                      " Re-read files when changed outside vim
   set backspace=indent,eol,start    " Allow backspace in insert mode
-  set ballooneval
-  set balloonevalterm
-  set cindent                       " Smart autmatic indentation
   set clipboard=unnamed             " Use the macOS clipboard
   set complete+=kspell              " Add dictionary to autocomplete options
   set dictionary+=/usr/share/dict/words " Use the linked dictionary of macOS
   set display+=lastline
   set encoding=utf-8 nobomb
   set esckeys                       " Allow arrow keys in insert mode
-  set expandtab
+  set formatoptions+=j              " Delete comment character when joining lines
+  set history=200                   " never found use of setting this higher
+  set nostartofline
+  set spelllang=en,nl               " Use English and Dutch
+
+  " Indentation and wrapping
+  set autoindent                    " Automatic indentation in insert mode
+  set breakindent                   " Indent text wrapping
+  set cindent                       " Smart autmatic indentation
+  set expandtab                     " Use spaces for tabs
+  set linebreak                     " Break after words
+  set shiftwidth=2                  " Use 2 spaces for indentation
+  let &showbreak='> '               " Show a > as wrapping indicator
+  set smarttab                      " Delete shiftwidth amount of chars
+  set wrap                          " Wrap it up
+
+  " Search & tags
+  set gdefault                      " Use /g flag for RegExp by default
+  set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+  set hlsearch                      " highlight matches
+  set ignorecase
+  set incsearch                     " search as characters are entered
+  set smartcase
+  set tag+=.git/tags
+
+  " Terminal behavior
+  set lazyredraw
+  set mouse=a                       " Enable mouse in all modes
+  set title                         " Show the filename in the window titlebar
+  set ttimeoutlen=50                " Return to NORMAL quickly after <ESC>
+  set ttyfast                       " Optimize for fast terminal connections
+  set ttymouse=sgr                  " Enable proper mouse support
+  set vb t_vb=                      " Remove 'bell' in vim
+
+  " UI
+  set ballooneval
+  set balloonevalterm
   set foldenable                    " enable folding
   set foldlevelstart=99             " open all folds by default
   set foldmethod=indent
   set foldnestmax=10                " 10 nested fold max; > 10 == absurd
-  set formatoptions+=j              " Delete comment character when joining lines
-  set gdefault                      " Use /g flag for RegExp by default
-  set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
-  set history=200                   " never found use of setting this higher
-  set hlsearch                      " highlight matches
-  set ignorecase
-  set incsearch                     " search as characters are entered
   set laststatus=2                  " Always show status line
-  set lazyredraw
-  set linebreak                     " Break after words
   set list
   set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
-  set mouse=a                       " Enable mouse in all modes
-  set nohidden                      " When I close a tab, remove the buffer
-  set nomodeline                    " Prevent weird stuff with modelines
   set noshowmode
-  set nostartofline
   set number
   set numberwidth=5                 " make the current line stand out
   set relativenumber
   set scrolloff=5                   " Keep 5 lines above/below cursor visible
-  set shiftwidth=2
   set shortmess=atI                 " Don’t show the intro message
   set showcmd                       " Show command as it’s being typed
   set showmatch                     " highlight matching [{()}]
   set signcolumn=yes
-  set smartcase
-  set smarttab
-  set softtabstop=2
-  set spelllang=en,nl               " Use English and Dutch
   set splitbelow                    " split below instead of above
   set splitright                    " split after instead of before
   set synmaxcol=1000                " We don't need that much syntax per line
-  set tag+=.git/tags
-  set ttimeoutlen=50                " Return to NORMAL quickly after <ESC>
-  set title                         " Show the filename in the window titlebar
-  set ttyfast                       " Optimize for fast terminal connections
-  set ttymouse=sgr               " Enable proper mouse support
-  set vb t_vb=                      " Remove 'bell' in vim
   set wildmenu                      " visual autocomplete for command menu
+
+  " Experimental
+  set path=.,,**                    " Let :find work as a fuzzy-matcher
+  set wildignore=**/dist/**,**/node_modules/** " and ignore some folders
 
 " }}}
 
@@ -174,6 +190,22 @@
 
   " }}}
 
+  " Plugins: syntax {{{
+
+    Plug 'cakebaker/scss-syntax.vim'
+    Plug 'chr4/nginx.vim'
+    Plug 'mustache/vim-mustache-handlebars'
+    Plug 'mxw/vim-jsx'
+    Plug 'pangloss/vim-javascript'
+    Plug 'digitaltoad/vim-pug'
+    Plug 'evanleck/vim-svelte'
+    Plug 'leafgarland/typescript-vim'
+
+    " Enable JSDoc highlighting
+    let g:javascript_plugin_jsdoc = 1
+
+  " }}}
+
   " Plugins: UI {{{
 
     " netrw UI tweaks
@@ -228,22 +260,6 @@
     " Use preview with :Files
     command! -bang -nargs=? -complete=dir Files
       \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-  " }}}
-
-  " Plugins: syntax {{{
-
-    Plug 'cakebaker/scss-syntax.vim'
-    Plug 'chr4/nginx.vim'
-    Plug 'mustache/vim-mustache-handlebars'
-    Plug 'mxw/vim-jsx'
-    Plug 'pangloss/vim-javascript'
-    Plug 'digitaltoad/vim-pug'
-    Plug 'evanleck/vim-svelte'
-    Plug 'leafgarland/typescript-vim'
-
-    " Enable JSDoc highlighting
-    let g:javascript_plugin_jsdoc = 1
 
   " }}}
 
