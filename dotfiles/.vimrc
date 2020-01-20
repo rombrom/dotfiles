@@ -108,6 +108,25 @@
 
   call plug#begin('~/.vim/bundle')
 
+  " Plugins: autocomplete & LSP {{{
+
+    Plug 'natebosch/vim-lsc'
+
+    let g:lsc_server_commands = {
+    \  'javascript': 'typescript-language-server --stdio',
+    \  'typescript': 'typescript-language-server --stdio',
+    \}
+
+    " TODO: the default mappings overwrite <C-p> which I want
+    " mapped to fzf. SAD!
+    let g:lsc_auto_map = {
+    \  'defaults': v:true,
+    \  'NextReference': '',
+    \  'PreviousReference': '',
+    \}
+
+  " }}}
+
   " Plugins: editing {{{
 
     packadd! editexisting               " Open existing vim instance if open
@@ -160,7 +179,7 @@
     let g:ale_fix_on_save = 1
 
     " :h ale-hover
-    let g:ale_set_balloons = 1
+    " let g:ale_set_balloons = 1
 
     " lint 1000ms after changes are made both on insert mode and normal mode
     let g:ale_lint_on_text_changed = 'normal'
