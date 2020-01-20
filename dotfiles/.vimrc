@@ -225,25 +225,22 @@
     Plug 'tpope/vim-unimpaired'
 
     let g:lightline = {
-    \   'active': {
-    \     'left': [ [ 'mode', 'paste' ],
-    \               [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ]
-    \   },
-    \   'inactive': {
-    \     'left': [ [ 'relativepath', 'modified' ] ],
-    \     'right': [ [ 'lineinfo' ],
-    \                [ 'percent' ] ]
-    \   },
-    \   'component_function': {
-    \     'gitbranch': 'fugitive#head'
-    \   },
-    \   'separator': {
-    \     'left': '', 'right': '',
-    \   },
-    \   'subseparator': {
-    \     'left': '▪', 'right': '▪',
-    \   }
-    \ }
+    \  'active': {
+    \    'left': [ [ 'mode', 'paste' ],
+    \              [ 'gitbranch', 'readonly', 'relativepath', 'modified' ] ]
+    \  },
+    \  'inactive': {
+    \    'left': [ [ 'relativepath', 'modified' ] ],
+    \    'right': [ [ 'lineinfo' ],
+    \               [ 'percent' ] ]
+    \  },
+    \  'component_function': {
+    \    'gitbranch': 'fugitive#head'
+    \  },
+    \  'separator': { 'left': '', 'right': '' },
+    \  'subseparator': { 'left': '▪', 'right': '▪', },
+    \  'tabline_separator': { 'left': '', 'right': '' },
+    \}
 
     " Theme
     Plug 'gruvbox-community/gruvbox'
