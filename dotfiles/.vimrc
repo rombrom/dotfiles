@@ -195,7 +195,7 @@
     Plug 'cakebaker/scss-syntax.vim'
     Plug 'chr4/nginx.vim'
     Plug 'mustache/vim-mustache-handlebars'
-    Plug 'mxw/vim-jsx'
+    Plug 'maxmellon/vim-jsx-pretty'
     Plug 'pangloss/vim-javascript'
     Plug 'digitaltoad/vim-pug'
     Plug 'evanleck/vim-svelte'
