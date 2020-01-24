@@ -217,7 +217,6 @@
     Plug 'maxmellon/vim-jsx-pretty'
     Plug 'pangloss/vim-javascript'
     Plug 'digitaltoad/vim-pug'
-    Plug 'evanleck/vim-svelte'
     Plug 'leafgarland/typescript-vim'
 
     " Enable JSDoc highlighting
@@ -228,10 +227,11 @@
   " Plugins: UI {{{
 
     " netrw UI tweaks
-    let g:netrw_banner = 0
-    let g:netrw_winsize = 20
-    let g:netrw_liststyle = 3
     let g:netrw_altv = 1
+    let g:netrw_banner = 0
+    let g:netrw_browse_split = 4
+    let g:netrw_liststyle = 3
+    let g:netrw_winsize = 20
 
     Plug 'airblade/vim-gitgutter'
     Plug 'itchyny/lightline.vim'
@@ -254,7 +254,7 @@
     \               [ 'percent' ] ]
     \  },
     \  'component_function': {
-    \    'gitbranch': 'fugitive#head'
+    \    'gitbranch': 'FugitiveHead'
     \  },
     \  'separator': { 'left': '', 'right': '' },
     \  'subseparator': { 'left': '▪', 'right': '▪', },
@@ -340,7 +340,10 @@ call plug#end()
     " Treat .md files as Markdown
     au BufNewFile,BufRead *.md setfiletype markdown
     " Treat .svelte files as HTML
-    " au BufNewFile,BufRead *.svelte setfiletype html
+    au BufNewFile,BufRead *.svelte setfiletype html
+
+    " fix common syntax highlighting issues in html files
+    au BufNewFile,BufRead *.html syntax sync fromstart
 
     " Make dash-delimited words count as words in styling languages
     " Improve lookups when working with css @imports
