@@ -62,15 +62,21 @@
   set number
   set numberwidth=5                 " make the current line stand out
   set relativenumber
-  set scrolloff=5                   " Keep 5 lines above/below cursor visible
+  set scrolloff=3                   " Keep 5 lines above/below cursor visible
   set shortmess=atI                 " Don’t show the intro message
   set showcmd                       " Show command as it’s being typed
   set showmatch                     " highlight matching [{()}]
   set signcolumn=yes
-  set splitbelow                    " split below instead of above
-  set splitright                    " split after instead of before
+  set smartcase
+  set smarttab
+  set softtabstop=2
+  set spelllang=en,nl               " Use English and Dutch
   set synmaxcol=1000                " We don't need that much syntax per line
   set wildmenu                      " visual autocomplete for command menu
+  set winheight=25
+  set winminheight=6
+  set winminwidth=20
+  set winwidth=87
 
   " Experimental
   set path=.,,**                    " Let :find work as a fuzzy-matcher
