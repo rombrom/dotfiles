@@ -376,6 +376,7 @@ call plug#end()
   function! ImproveCSSEditing()
     setlocal iskeyword+=-
     setlocal suffixesadd+=.css,.less,.sass,.scss,.styl
+    setlocal include=^\s*@import
     setlocal includeexpr=expand('<cfile>:p:h').'/_'.expand('<cfile>:t')
   endfunction
 
@@ -388,6 +389,7 @@ call plug#end()
 
   function! ImprovePHPEditing()
     " PHP includes often start with a slash so vim thinks the path is absolute
+    setlocal include=^\s*(include|require)(_once)?
     setlocal includeexpr=expand('%:p:h').v:fname
   endfunction
 
