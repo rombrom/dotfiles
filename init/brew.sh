@@ -12,7 +12,7 @@ brew install coreutils
 # Install GNU `find`, `locate`, `updatedb`, and `xargs`, `g`-prefixed.
 brew install findutils
 # Install GNU `sed`, overwriting the built-in `sed`.
-brew install gnu-sed --with-default-names
+brew install gnu-sed
 # Install zsh
 brew install zsh zsh-completions
 
@@ -20,13 +20,13 @@ brew install zsh zsh-completions
 chsh -s "$(which zsh)"
 
 # Install `wget` with IRI support.
-brew install wget --with-iri
+brew install wget
 
 # Install GnuPG to enable PGP-signing commits.
 brew install gnupg
 
 # Install more recent versions of some macOS tools.
-brew install vim --with-override-system-vi
+brew install vim
 brew install grep
 brew install openssh
 
@@ -35,7 +35,8 @@ brew install composer
 brew install dnsmasq
 brew install git
 brew install jq
-brew install node
+brew install node@12
+brew install pandoc
 brew install tmux
 brew install tree
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
