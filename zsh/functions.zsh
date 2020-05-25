@@ -22,6 +22,12 @@ function datauri() {
 	echo "data:${mimeType};base64,$(openssl base64 -in "$1" | tr -d '\n')";
 }
 
+function ddg() {
+  if [[ -n $1 ]]; then
+    open "https://duckduckgo.com/?q=$1";
+  fi;
+}
+
 # Run `dig` and display the most useful info
 function digga() {
 	dig +nocmd "$1" any +multiline +noall +answer;

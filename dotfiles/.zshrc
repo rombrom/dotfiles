@@ -16,6 +16,7 @@ ZSH_THEME="robbyrussell"
 plugins=(
   colored-man-pages
   docker
+  docker-compose
   git
   git-extras
   urltools
