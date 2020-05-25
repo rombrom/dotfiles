@@ -26,7 +26,7 @@
   set expandtab                     " Use spaces for tabs
   set linebreak                     " Break after words
   set shiftwidth=2                  " Use 2 spaces for indentation
-  let &showbreak='> '               " Show a > as wrapping indicator
+  let &showbreak='› '               " Show a wrapping indicator
   set smarttab                      " Delete shiftwidth amount of chars
   set wrap                          " Wrap it up
 
@@ -73,6 +73,9 @@
   set spelllang=en,nl               " Use English and Dutch
   set synmaxcol=1000                " We don't need that much syntax per line
   set wildmenu                      " visual autocomplete for command menu
+
+  " Windows
+  set splitbelow splitright         " The same behavior as tmux
   set winheight=25
   set winminheight=6
   set winminwidth=20
