@@ -117,24 +117,26 @@
 
   call plug#begin('~/.vim/bundle')
 
-  " Plugins: autocomplete & LSP {{{
+  "" Plugins: autocomplete & LSP {{{
+  "" TODO: find a better lsp/js autocomplete solution
+  "" the most important thing for me is completion of library stuff
 
-    Plug 'natebosch/vim-lsc'
+  "  Plug 'natebosch/vim-lsc'
 
-    let g:lsc_server_commands = {
-    \  'javascript': 'typescript-language-server --stdio',
-    \  'typescript': 'typescript-language-server --stdio',
-    \}
+  "  let g:lsc_server_commands = {
+  "  \  'javascript': 'typescript-language-server --stdio',
+  "  \  'typescript': 'typescript-language-server --stdio',
+  "  \}
 
-    " TODO: the default mappings overwrite <C-p> which I want
-    " mapped to fzf. SAD!
-    let g:lsc_auto_map = {
-    \  'defaults': v:true,
-    \  'NextReference': '',
-    \  'PreviousReference': '',
-    \}
+  "  " TODO: the default mappings overwrite <C-p> which I want
+  "  " mapped to fzf. SAD!
+  "  let g:lsc_auto_map = {
+  "  \  'defaults': v:true,
+  "  \  'NextReference': '',
+  "  \  'PreviousReference': '',
+  "  \}
 
-  " }}}
+  "" }}}
 
   " Plugins: editing {{{
 
@@ -200,20 +202,21 @@
     let g:ale_sign_column_always = 1
 
     " make svelte linting possible
-    let g:ale_linter_aliases = { 'svelte' : ['css', 'javascript'] }
+    let g:ale_linter_aliases = { 'svelte' : ['css', 'html', 'javascript'] }
     let g:ale_linters = { 'svelte': ['stylelint', 'eslint'] }
 
     " fixer configurations
     let g:ale_fixers = {
-    \   '*': ['remove_trailing_lines', 'trim_whitespace'],
-    \   'css': ['prettier'],
-    \   'html': ['prettier'],
-    \   'javascript': ['prettier'],
-    \   'markdown': ['prettier'],
-    \   'sass': ['prettier'],
-    \   'scss': ['prettier'],
-    \   'svelte': ['prettier'],
-    \   'php': ['php_cs_fixer'],
+    \  '*': ['remove_trailing_lines', 'trim_whitespace'],
+    \  'css': ['prettier'],
+    \  'html': ['prettier'],
+    \  'javascript': ['prettier'],
+    \  'typescript': ['prettier'],
+    \  'markdown': ['prettier'],
+    \  'sass': ['prettier'],
+    \  'scss': ['prettier'],
+    \  'svelte': ['prettier'],
+    \  'php': ['php_cs_fixer'],
     \}
 
   " }}}
