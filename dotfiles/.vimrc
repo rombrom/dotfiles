@@ -230,6 +230,7 @@
     Plug 'pangloss/vim-javascript'
     Plug 'digitaltoad/vim-pug'
     Plug 'leafgarland/typescript-vim'
+    Plug 'evanleck/vim-svelte'
 
     " Enable JSDoc highlighting
     let g:javascript_plugin_jsdoc = 1
@@ -262,16 +263,20 @@
     \  },
     \  'inactive': {
     \    'left': [ [ 'relativepath', 'modified' ] ],
-    \    'right': [ [ 'lineinfo' ],
-    \               [ 'percent' ] ]
+    \    'right': []
     \  },
     \  'component_function': {
+    \    'readonly': 'LightlineReadonly',
     \    'gitbranch': 'FugitiveHead'
     \  },
     \  'separator': { 'left': '', 'right': '' },
     \  'subseparator': { 'left': '▪', 'right': '▪', },
     \  'tabline_separator': { 'left': '', 'right': '' },
     \}
+
+    function! LightlineReadonly()
+      return &readonly ? '🔒' : ''
+    endfunction
 
     " Theme
     Plug 'gruvbox-community/gruvbox'
@@ -352,14 +357,14 @@ call plug#end()
     " Treat .md files as Markdown
     au BufNewFile,BufRead *.md setfiletype markdown
     " Treat .svelte files as HTML
-    au BufNewFile,BufRead *.svelte setfiletype html
+    " au BufNewFile,BufRead *.svelte setfiletype html
 
     " fix common syntax highlighting issues in html files
-    au BufNewFile,BufRead *.html syntax sync fromstart
+    au BufNewFile,BufRead *.html,*.svelte syntax sync fromstart
 
     " Make dash-delimited words count as words in styling languages
     " Improve lookups when working with css @imports
-    au FileType css,less,sass,scss,styl setlocal iskeyword+=- | setlocal suffixesadd+=.css,.less,.sass,.scss,.styl
+    au FileType css,less,sass,scss,styl call ImproveCSSEditing()
     " Use spell checking on commits
     au FileType gitcommit setlocal spell
     " Improve working with node_modules projects
@@ -368,11 +373,22 @@ call plug#end()
     au FileType markdown setlocal spell | setlocal textwidth=80
   augroup END
 
+  function! ImproveCSSEditing()
+    setlocal iskeyword+=-
+    setlocal suffixesadd+=.css,.less,.sass,.scss,.styl
+    setlocal includeexpr=expand('<cfile>:p:h').'/_'.expand('<cfile>:t')
+  endfunction
+
   function! ImproveNodeEditing()
     setlocal isfname+=@-@ " some node_modules are namespaced with an @
     setlocal suffixesadd+=.js,.json,.jsx,.ts,.tsx
     setlocal include=from
     setlocal includeexpr=LookupNodeModule(v:fname)
+  endfunction
+
+  function! ImprovePHPEditing()
+    " PHP includes often start with a slash so vim thinks the path is absolute
+    setlocal includeexpr=expand('%:p:h').v:fname
   endfunction
 
   function! LookupNodeModule(fname)
