@@ -41,7 +41,6 @@ function svg-sprite() {
 
       local viewBox=$(grep -oE 'viewBox="[^"]+"' < "$file")
       local symbol=$(cat "$file" \
-        | sed -E 's/#000(000)?/currentColor/g' \
         | sed -E "s#<svg[^>]+>#<symbol id=\"$name\" $viewBox>#g" \
         | sed -E 's#</svg>#</symbol>#g'
       )
