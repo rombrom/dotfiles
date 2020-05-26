@@ -24,39 +24,40 @@ function datauri() {
 
 function svg-sprite() {
   if [[ -z "$@" ]]; then
-    echo "No arguments given." >&2
-    return 1
-  fi
+    echo "No arguments given." >&2;
+    return 1;
+  fi;
 
-  local head='<svg xmlns="http://www.w3.org/2000/svg" style="display:none">'
-  local tail='</svg>'
-  local body=''
+  local head='<svg xmlns="http://www.w3.org/2000/svg" style="display:none">';
+  local tail='</svg>';
+  local body='';
 
   # Use shell's glob expansion
   for file in "$@"; do
     local mimeType=$(file -b --mime-type "$file");
-    if [[ "$mimeType" == "image/svg" ]]; then
-      local base="${file##*/}"
-      local name="${base%.*}"
-
-      local viewBox=$(grep -oE 'viewBox="[^"]+"' < "$file")
+    if [[ "$mimeType" =~ "^image/svg(\+xml)?$" ]]; then
+      local base="${file##*/}";
+      local name="${base%.*}";
+      local viewBox=$(grep -oE 'viewBox="[^"]+"' < "$file");
       local symbol=$(cat "$file" \
+        | tr '\n' ' ' \
+        | sed -E 's#<(\?xml|!)[^>]+>##g' \
         | sed -E "s#<svg[^>]+>#<symbol id=\"$name\" $viewBox>#g" \
         | sed -E 's#</svg>#</symbol>#g'
-      )
+      );
 
-      body+="$symbol"
+      body+="$symbol";
     else
-      echo "Skipping $file ($mimeType)" >&2
-    fi
+      echo "Skipping $file ($mimeType)" >&2;
+    fi;
   done;
 
   if [[ -z "$body" ]]; then
-    echo "SVG body empty." >&2
-    return 1
-  fi
+    echo "SVG body empty." >&2;
+    return 1;
+  fi;
 
-  echo "$head$body$tail"
+  echo "$head$body$tail";
 }
 
 function ddg() {
