@@ -10,7 +10,7 @@ function manp() {
 
 # cd to dir and ls afterwards
 function cl() {
-  cd "$1" && ls -Ap;
+  cd "$1" && ls -AGghp;
 }
 
 # Create a data URL from a file
