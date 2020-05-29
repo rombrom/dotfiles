@@ -144,6 +144,8 @@
     packadd! matchit                    " Make % command work better
 
     Plug 'editorconfig/editorconfig-vim'
+    let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+
     Plug 'mattn/emmet-vim'
     Plug 'tpope/vim-abolish'
     Plug 'tpope/vim-commentary'
