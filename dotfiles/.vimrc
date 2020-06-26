@@ -227,6 +227,7 @@
 
     Plug 'cakebaker/scss-syntax.vim'
     Plug 'chr4/nginx.vim'
+    Plug 'elixir-editors/vim-elixir'
     Plug 'mustache/vim-mustache-handlebars'
     Plug 'maxmellon/vim-jsx-pretty'
     Plug 'pangloss/vim-javascript'
