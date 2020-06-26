@@ -1,0 +1,93 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/82c8c85/
+<C-g>	dotfiles/.vimrc	/^  nnoremap <C-g> :Rg<Cr>$/;"	m
+<C-o>	dotfiles/.vimrc	/^  nnoremap <C-o> :Tags<Cr>$/;"	m
+<C-p>	dotfiles/.vimrc	/^  nnoremap <C-p> :Files<Cr>$/;"	m
+<C-u>	dotfiles/.vimrc	/^  inoremap <C-u> <C-g>u<C-u>$/;"	m
+<Down>	dotfiles/.vimrc	/^  noremap <silent> <Down> gj$/;"	m
+<Leader>c	dotfiles/.vimrc	/^  nnoremap <silent> <Leader>c :noh<Cr>$/;"	m
+<S-Tab>	dotfiles/.vimrc	/^  nnoremap <S-Tab> <C-o>$/;"	m
+<Up>	dotfiles/.vimrc	/^  noremap <silent> <Up> gk$/;"	m
+Applications	README.md	/^## Applications$/;"	s
+DiffOrig	dotfiles/.vimrc	/^  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis$/;"	c
+EOD	init/macos.sh	/^osascript <<EOD$/;"	h
+Files	dotfiles/.vimrc	/^    command! -bang -nargs=? -complete=dir Files$/;"	c
+I	dotfiles/.tmux.conf	/^set-window-option -g window-status-current-format " #I : #W #{?window_flags,#{window_flags}, } "$/;"	k
+I	dotfiles/.tmux.conf	/^set-window-option -g window-status-format " #I : #W #{?window_flags,#{window_flags}, } "$/;"	k
+ImproveCSSEditing	dotfiles/.vimrc	/^  function! ImproveCSSEditing()$/;"	f
+ImproveEditing	dotfiles/.vimrc	/^  augroup ImproveEditing$/;"	a
+ImproveNodeEditing	dotfiles/.vimrc	/^  function! ImproveNodeEditing()$/;"	f
+ImprovePHPEditing	dotfiles/.vimrc	/^  function! ImprovePHPEditing()$/;"	f
+LightlineReadonly	dotfiles/.vimrc	/^    function! LightlineReadonly()$/;"	f
+LookupNodeModule	dotfiles/.vimrc	/^  function! LookupNodeModule(fname)$/;"	f
+MakeDirIfNotExists	dotfiles/.vimrc	/^  function! MakeDirIfNotExists(file, buf)$/;"	f
+N	dotfiles/.vimrc	/^  map N Nzz$/;"	m
+P	dotfiles/.tmux.conf	/^set-window-option -g pane-border-format " #P : #{pane_current_command} "$/;"	k
+Q	dotfiles/.vimrc	/^  command Q q$/;"	c
+ReloadLightline	dotfiles/.vimrc	/^  function! ReloadLightline()$/;"	f
+ReloadVimrc	dotfiles/.vimrc	/^  augroup ReloadVimrc$/;"	a
+U	dotfiles/.vimrc	/^  nnoremap U <C-r>$/;"	m
+W	dotfiles/.vimrc	/^  command W w$/;"	c
+address	settings/dnsmasq.conf	/^address=\/localhost\/127.0.0.1$/;"	k
+bg	dotfiles/.tmux.conf	/^set -g message-command-style "bg=default,fg=blue"$/;"	k
+bg	dotfiles/.tmux.conf	/^set -g message-style "bg=default,fg=default"$/;"	k
+bg	dotfiles/.tmux.conf	/^set-window-option -g mode-style "bg=blue,fg=default"$/;"	k
+bg	dotfiles/.tmux.conf	/^set-window-option -g window-status-current-style "bg=blue,fg=white,bold,bright"$/;"	k
+cl	zsh/functions.zsh	/^function cl() {$/;"	f
+cp	zsh/aliases.zsh	/^alias cp='cp -R'$/;"	a
+datauri	zsh/functions.zsh	/^function datauri() {$/;"	f
+ddg	zsh/functions.zsh	/^function ddg() {$/;"	f
+digga	zsh/functions.zsh	/^function digga() {$/;"	f
+egrep	zsh/aliases.zsh	/^alias egrep='egrep --color'$/;"	a
+emptytrash	zsh/aliases.zsh	/^alias emptytrash="sudo rm -rfv \/Volumes\/*\/.Trashes; sudo rm -rfv ~\/.Trash; sudo rm -rfv \/pr/;"	a
+fg	dotfiles/.tmux.conf	/^set -g status-style "fg=#444444"$/;"	k
+fg	dotfiles/.tmux.conf	/^set-window-option -g pane-active-border-style "fg=blue"$/;"	k
+fg	dotfiles/.tmux.conf	/^set-window-option -g pane-border-style "fg=#444444"$/;"	k
+fgrep	zsh/aliases.zsh	/^alias fgrep='fgrep --color'$/;"	a
+g:EditorConfig_exclude_patterns	dotfiles/.vimrc	/^    let g:EditorConfig_exclude_patterns = ['fugitive:\/\/.*', 'scp:\/\/.*']$/;"	v
+g:ale_fix_on_save	dotfiles/.vimrc	/^    let g:ale_fix_on_save = 1$/;"	v
+g:ale_fixers	dotfiles/.vimrc	/^    let g:ale_fixers = {$/;"	v
+g:ale_lint_delay	dotfiles/.vimrc	/^    let g:ale_lint_delay = 1000$/;"	v
+g:ale_lint_on_text_changed	dotfiles/.vimrc	/^    let g:ale_lint_on_text_changed = 'normal'$/;"	v
+g:ale_linter_aliases	dotfiles/.vimrc	/^    let g:ale_linter_aliases = { 'svelte' : ['css', 'html', 'javascript'] }$/;"	v
+g:ale_linters	dotfiles/.vimrc	/^    let g:ale_linters = { 'svelte': ['stylelint', 'eslint'] }$/;"	v
+g:ale_sign_column_always	dotfiles/.vimrc	/^    let g:ale_sign_column_always = 1$/;"	v
+g:ale_sign_error	dotfiles/.vimrc	/^    let g:ale_sign_error = '✗ '$/;"	v
+g:ale_sign_warning	dotfiles/.vimrc	/^    let g:ale_sign_warning = '⚠ '$/;"	v
+g:fzf_buffers_jump	dotfiles/.vimrc	/^    let g:fzf_buffers_jump = 1$/;"	v
+g:fzf_tags_command	dotfiles/.vimrc	/^    let g:fzf_tags_command = '.git\/hooks\/ctags || ctags -R --tag-relative'$/;"	v
+g:gruvbox_italic	dotfiles/.vimrc	/^    let g:gruvbox_italic = 1$/;"	v
+g:html_indent_script1	dotfiles/.vimrc	/^  let g:html_indent_script1 = "inc"$/;"	v
+g:html_indent_style1	dotfiles/.vimrc	/^  let g:html_indent_style1 = "inc"$/;"	v
+g:javascript_plugin_jsdoc	dotfiles/.vimrc	/^    let g:javascript_plugin_jsdoc = 1$/;"	v
+g:lightline	dotfiles/.vimrc	/^    let g:lightline = {$/;"	v
+g:netrw_altv	dotfiles/.vimrc	/^    let g:netrw_altv = 1$/;"	v
+g:netrw_banner	dotfiles/.vimrc	/^    let g:netrw_banner = 0$/;"	v
+g:netrw_browse_split	dotfiles/.vimrc	/^    let g:netrw_browse_split = 4$/;"	v
+g:netrw_liststyle	dotfiles/.vimrc	/^    let g:netrw_liststyle = 3$/;"	v
+g:netrw_winsize	dotfiles/.vimrc	/^    let g:netrw_winsize =-22$/;"	v
+g:user_emmet_leader_key	dotfiles/.vimrc	/^    let g:user_emmet_leader_key='<Leader>'$/;"	v
+g:user_emmet_settings	dotfiles/.vimrc	/^    let g:user_emmet_settings = {$/;"	v
+grep	zsh/aliases.zsh	/^alias grep='grep --color'$/;"	a
+html_wrong_comments	dotfiles/.vimrc	/^  let html_wrong_comments=1$/;"	v
+is_vim	dotfiles/.tmux.conf	/^is_vim="ps -o state= -o comm= -t '#{pane_tty}' \\$/;"	k
+j	dotfiles/.vimrc	/^  noremap <silent> j gj$/;"	m
+k	dotfiles/.vimrc	/^  noremap <silent> k gk$/;"	m
+lc	zsh/aliases.zsh	/^alias lc="ls --format=single-column"$/;"	a
+ls	zsh/aliases.zsh	/^alias ls="gls --color=always --group-directories-first --indicator-style=slash"$/;"	a
+lscleanup	zsh/aliases.zsh	/^alias lscleanup="\/System\/Library\/Frameworks\/CoreServices.framework\/Frameworks\/LaunchServic/;"	a
+main	bootstrap.sh	/^function main() {$/;"	f
+manp	zsh/functions.zsh	/^function manp() {$/;"	f
+map	zsh/aliases.zsh	/^alias map="xargs -n1"$/;"	a
+n	dotfiles/.vimrc	/^  map n nzz$/;"	m
+sudo	zsh/aliases.zsh	/^alias sudo='sudo '$/;"	a
+svg-sprite	zsh/functions.zsh	/^function svg-sprite() {$/;"	f
+t	zsh/aliases.zsh	/^alias t='todo.sh'$/;"	a
+tree	zsh/aliases.zsh	/^alias tree='tree -I "node_modules"'$/;"	a
