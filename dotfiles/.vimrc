@@ -37,7 +37,7 @@
   set ignorecase
   set incsearch                     " search as characters are entered
   set smartcase
-  set tag+=.git/tags
+  set tag+=.git/tags                " DEPRECATED
 
   " Terminal behavior
   set lazyredraw
@@ -291,6 +291,9 @@
 
     " [Buffers] Jump to the existing window if possible
     let g:fzf_buffers_jump = 1
+
+    " Set default tags command
+    let g:fzf_tags_command = '.git/hooks/ctags || ctags -R --tag-relative'
 
     " Use preview with :Files
     command! -bang -nargs=? -complete=dir Files
