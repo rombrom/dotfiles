@@ -22,6 +22,24 @@ function datauri() {
 	echo "data:${mimeType};base64,$(openssl base64 -in "$1" | tr -d '\n')";
 }
 
+# Return some request time data from curl
+function ttfb() {
+  curl -o /dev/null -sL \
+    -w "$(cat << EOF
+HTTP/%{http_version} %{http_code} %{url_effective}
+Downloaded %{size_download}b
+DNS %{time_namelookup}s
+Connect %{time_connect}s
+Handshake %{time_pretransfer}s
+TTFB %{time_starttransfer}s
+Total %{time_total}s\n
+EOF
+    )" "$*" | awk '
+      NR==1 { print }
+      /b$/ { sub(/b$/, ""); printf "%-12s %8.3fKB\n", $1, $2 / 1000 }
+      /s$/ { sub(/s$/, ""); printf "%-12s %8.3fms\n", $1, $2 * 1000 }'
+}
+
 function svg-sprite() {
   if [[ -z "$@" ]]; then
     cat <<EOF
