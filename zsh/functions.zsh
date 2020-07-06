@@ -24,7 +24,13 @@ function datauri() {
 
 function svg-sprite() {
   if [[ -z "$@" ]]; then
-    echo "No arguments given." >&2;
+    cat <<EOF
+svg-sprite - convert svg's to a symbol sprite
+
+Usage:
+  svg-sprite <path|glob>
+EOF
+    echo "\nERR: no arguments given." >&2;
     return 1;
   fi;
 
