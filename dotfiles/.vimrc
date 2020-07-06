@@ -375,6 +375,8 @@ call plug#end()
     au FileType gitcommit setlocal spell
     " Improve working with node_modules projects
     au FileType javascript,json,jsx,typescript,tsx call ImproveNodeEditing()
+    " Make Makefiles use tabs instead of spaces
+    au FileType make setlocal noexpandtab
     " Improve markdown editing
     au FileType markdown setlocal spell | setlocal textwidth=80
   augroup END
