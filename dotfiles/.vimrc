@@ -343,6 +343,9 @@ call plug#end()
   " Diff changes before save
   command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
+  " Open scratch buffer
+  command Scratch split scratch | setlocal buftype=nofile bufhidden=hide noswapfile
+
 " }}}
 
 " Autocommands {{{
