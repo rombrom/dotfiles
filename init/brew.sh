@@ -31,9 +31,10 @@ brew install grep
 brew install openssh
 
 # Install other useful binaries.
-brew install bat
+brew install bats-core
 brew install composer
 brew install dnsmasq
+brew install entr
 brew install git
 brew install jq
 brew install node@12
