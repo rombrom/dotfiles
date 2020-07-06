@@ -30,4 +30,4 @@ export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 # The following line increases zsh startup with ~1s
 # export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
 # So instead we'll roll with the absolute option
-export PATH=$PATH:/usr/local/opt/coreutils/libexec/gnubin
+export PATH=/usr/local/sbin:$PATH:/usr/local/opt/coreutils/libexec/gnubin
