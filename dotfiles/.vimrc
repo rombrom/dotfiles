@@ -334,6 +334,9 @@ call plug#end()
   " CTRL-U in insert mode deletes a lot. Put an undo-point before it.
   inoremap <C-u> <C-g>u<C-u>
 
+  " Substitute in selection
+  vnoremap : :<C-u>%s/\%V
+
 " }}}
 
 " Commands {{{
