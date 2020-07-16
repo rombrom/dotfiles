@@ -40,6 +40,31 @@ EOF
       /s$/ { sub(/s$/, ""); printf "%-12s %8.3fms\n", $1, $2 * 1000 }'
 }
 
+# diff url responses
+function curldiff() {
+  local args=()
+  local curlopts=""
+
+  while [[ "$#" -ne 0 ]]; do
+    if [[ "$1" =~ "^-" ]]; then
+      curlopts+="$1"
+    else
+      args+=("$1")
+    fi
+    shift
+  done
+
+  if [[ "${#args}" -ne 2 ]]; then
+    printf "%s\n" "Invalid number of arguments." >&2
+    printf "%s\n" 'Usage: `curldiff [OPTIONS] urlA urlB`'
+    return 1
+  fi
+
+  diff --left-column --side-by-side \
+    <(curl -s -L $curlopts ${args[1]}) \
+    <(curl -s -L $curlopts ${args[2]})
+}
+
 function svg-sprite() {
   if [[ -z "$@" ]]; then
     cat <<EOF
