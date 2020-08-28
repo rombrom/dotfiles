@@ -10,6 +10,7 @@
   set backspace=indent,eol,start    " Allow backspace in insert mode
   set clipboard=unnamed             " Use the macOS clipboard
   set complete+=kspell              " Add dictionary to autocomplete options
+  set completeopt=menuone,noinsert,noselect,popup
   set dictionary+=/usr/share/dict/words " Use the linked dictionary of macOS
   set display+=lastline
   set encoding=utf-8 nobomb
@@ -191,8 +192,8 @@
     " fix files on save
     let g:ale_fix_on_save = 1
 
-    " :h ale-hover
-    " let g:ale_set_balloons = 1
+    " lsp related settings
+    let g:ale_set_balloons = 1
 
     " lint 1000ms after changes are made both on insert mode and normal mode
     let g:ale_lint_on_text_changed = 'normal'
@@ -221,6 +222,14 @@
     \  'php': ['php_cs_fixer'],
     \}
 
+  " }}}
+
+  " Plugin: autocompletion with ALE's LSP integration as source {{{
+    Plug 'prabirshrestha/asyncomplete.vim'
+
+    au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#ale#get_source_options({
+    \  'priority': 10
+    \}))
   " }}}
 
   " Plugins: syntax {{{
@@ -335,7 +344,21 @@ call plug#end()
   inoremap <C-u> <C-g>u<C-u>
 
   " Substitute in selection
-  vnoremap : :<C-u>%s/\%V
+  " vnoremap : :<C-u>%s/\%V
+
+  " primitive tab completion
+  inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+  inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
+
+  " Some LSP bindings
+  nnoremap <Leader>dd :ALEGoToDefinition<Cr>
+  nnoremap <Leader>ds :ALEGoToDefinition -split<Cr>
+  nnoremap <Leader>dt :ALEGoToDefinition -tab<Cr>
+  nnoremap <Leader>dv :ALEGoToDefinition -vsplit<Cr>
+
+  nnoremap <Leader>k :ALEHover<Cr>
+  nnoremap <Leader>K :ALEDocumentation<Cr>
 
 " }}}
 
