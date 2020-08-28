@@ -154,7 +154,7 @@
     Plug 'tpope/vim-surround'
 
     " Use double <Leader> for expansion
-    let g:user_emmet_leader_key='<Leader>'
+    let g:user_emmet_leader_key='<Leader><Leader>'
 
     " make emmet behave well with JSX in JS and TS files
     let g:user_emmet_settings = {
@@ -406,20 +406,22 @@ call plug#end()
     au FileType make setlocal noexpandtab
     " Improve markdown editing
     au FileType markdown setlocal spell | setlocal textwidth=80
+    " Improve PHP file lookups
+    " au FileType php,phtml call ImprovePHPEditing()
   augroup END
 
   function! ImproveCSSEditing()
-    setlocal iskeyword+=-
-    setlocal suffixesadd+=.css,.less,.sass,.scss,.styl
     setlocal include=^\s*@import
     setlocal includeexpr=expand('<cfile>:p:h').'/_'.expand('<cfile>:t')
+    setlocal iskeyword+=-
+    setlocal suffixesadd+=.css,.less,.sass,.scss,.styl
   endfunction
 
   function! ImproveNodeEditing()
-    setlocal isfname+=@-@ " some node_modules are namespaced with an @
-    setlocal suffixesadd+=.js,.json,.jsx,.ts,.tsx
     setlocal include=from
     setlocal includeexpr=LookupNodeModule(v:fname)
+    setlocal isfname+=@-@ " some node_modules are namespaced with an @
+    setlocal suffixesadd+=.js,.json,.jsx,.ts,.tsx
   endfunction
 
   function! ImprovePHPEditing()
