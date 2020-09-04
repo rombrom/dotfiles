@@ -405,7 +405,7 @@ call plug#end()
     " Make Makefiles use tabs instead of spaces
     au FileType make setlocal noexpandtab
     " Improve markdown editing
-    au FileType markdown setlocal spell | setlocal textwidth=80
+    au FileType markdown,text setlocal spell | setlocal textwidth=80
     " Improve PHP file lookups
     " au FileType php,phtml call ImprovePHPEditing()
   augroup END
