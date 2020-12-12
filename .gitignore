@@ -1,0 +1,9 @@
+/dotfiles/.terminfo/**
+!/dotfiles/.terminfo/.gitkeep
+
+/dotfiles/.vim/.netrwhist
+/dotfiles/.vim/autoload/plug.vim
+/dotfiles/.vim/backup
+/dotfiles/.vim/bundle
+/dotfiles/.vim/swap
+/dotfiles/.vim/undo
