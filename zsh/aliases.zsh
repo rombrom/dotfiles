@@ -4,6 +4,7 @@ alias ls="gls --color=always --group-directories-first --indicator-style=slash"
 alias lc="ls --format=single-column"
 
 # this always happens
+alias :q='exit'
 alias cp='cp -R'
 
 # alias to todo.txt cli
