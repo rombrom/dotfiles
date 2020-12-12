@@ -1,0 +1,544 @@
+" Rommert Zijlstra's .vimrc
+
+" {{{ General
+
+  set nohidden                      " When I close a tab, remove the buffer
+  set nomodeline                    " Prevent weird stuff with modelines
+
+  " Editing
+  set autoread                      " Re-read files when changed outside vim
+  set backspace=indent,eol,start    " Allow backspace in insert mode
+  set clipboard=unnamed             " Use the macOS clipboard
+  set complete+=kspell              " Add dictionary to autocomplete options
+  set completeopt=menuone,noinsert,noselect,popup
+  set dictionary+=/usr/share/dict/words " Use the linked dictionary of macOS
+  set display+=lastline
+  set encoding=utf-8 nobomb
+  set esckeys                       " Allow arrow keys in insert mode
+  set formatoptions+=j              " Delete comment character when joining lines
+  set history=200                   " never found use of setting this higher
+  set nostartofline
+  set spelllang=en,nl               " Use English and Dutch
+
+  " Indentation and wrapping
+  set autoindent                    " Automatic indentation in insert mode
+  set breakindent                   " Indent text wrapping
+  set cindent                       " Smart autmatic indentation
+  set expandtab                     " Use spaces for tabs
+  set linebreak                     " Break after words
+  set shiftround                    " Round < & > to nearest softtabstop
+  set shiftwidth=2                  " Use 2 spaces for indentation
+  set smarttab
+  set softtabstop=2
+  let &showbreak='› '               " Show a wrapping indicator
+  set smarttab                      " Delete shiftwidth amount of chars
+  set wrap                          " Wrap it up
+
+  " Search & tags
+  set gdefault                      " Use /g flag for RegExp by default
+  set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+  set hlsearch                      " highlight matches
+  set ignorecase
+  set incsearch                     " search as characters are entered
+  set smartcase
+
+  " Terminal behavior
+  set lazyredraw
+  set mouse=a                       " Enable mouse in all modes
+  set title                         " Show the filename in the window titlebar
+  set ttimeoutlen=50                " Return to NORMAL quickly after <ESC>
+  set ttyfast                       " Optimize for fast terminal connections
+  set ttymouse=sgr                  " Enable proper mouse support
+  set vb t_vb=                      " Remove 'bell' in vim
+
+  " UI
+  set ballooneval
+  set balloonevalterm
+  set foldcolumn=0
+  set foldenable                    " enable folding
+  set foldlevelstart=99             " open all folds by default
+  set foldmethod=indent
+  set foldnestmax=10                " 10 nested fold max; > 10 == absurd
+  set laststatus=2                  " Always show status line
+  set list
+  set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
+  " set noshowmode
+  set number
+  set numberwidth=5                 " make the current line stand out
+  set relativenumber
+  set scrolloff=3                   " Keep 5 lines above/below cursor visible
+  set shortmess=atI                 " Don’t show the intro message
+  set showcmd                       " Show command as it’s being typed
+  set showmatch                     " highlight matching [{()}]
+  set signcolumn=yes
+  set spelllang=en,nl               " Use English and Dutch
+  set synmaxcol=1000                " We don't need that much syntax per line
+  set wildmenu                      " visual autocomplete for command menu
+
+  " Windows
+  set splitbelow splitright         " The same behavior as tmux
+  set winheight=25
+  set winminheight=6
+  set winminwidth=20
+  set winwidth=87
+
+  " Experimental
+  set path=.,,**                    " Let :find work as a fuzzy-matcher
+  set wildignore=**/dist/**,**/node_modules/** " and ignore some folders
+
+" }}}
+
+" {{{ Backup & undo
+
+  set writebackup     " Protect files against crash-during-write
+  set nobackup        " but remove the backup after succesful write
+  set backupcopy=auto "  use rename-and-write-new method whenever safe
+  set backupdir=~/.vim/backup//
+
+  set swapfile        " write a swap every now and then
+  set directory=~/.vim/swap//
+
+  set undofile        " persistent undo is AWESOME
+  set undodir=~/.vim/undo//
+
+" }}}
+
+" {{{ Plugins
+
+  " {{{ Auto-install Plug
+
+    " https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
+    if empty(glob('~/.vim/autoload/plug.vim'))
+      silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+      autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    endif
+
+  " }}}
+
+  call plug#begin('~/.vim/bundle')
+
+  " Plugins: editing {{{
+
+    packadd! editexisting               " Open existing vim instance if open
+    packadd! matchit                    " Make % command work better
+
+    Plug 'editorconfig/editorconfig-vim'
+    let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+
+    Plug 'mattn/emmet-vim'
+    Plug 'tpope/vim-abolish'
+    Plug 'tpope/vim-commentary'
+    Plug 'tpope/vim-repeat'
+    Plug 'tpope/vim-surround'
+
+    " Use double <Leader> for expansion
+    let g:user_emmet_leader_key='<Leader><Leader>'
+
+    " make emmet behave well with JSX in JS and TS files
+    let g:user_emmet_settings = {
+    \  'javascript' : {
+    \      'extends' : 'jsx',
+    \  },
+    \  'typescript' : {
+    \      'extends' : 'tsx',
+    \  },
+    \}
+
+  " }}}
+
+  " Plugins: linting {{{
+
+    " ALE needs the following globally installed binaries. Some of these are
+    " preferences (configs, etc.), others are required to lint and fix things
+    " node_modules:
+    " - eslint
+    " - eslint-config-prettier
+    " - eslint-plugin-prettier
+    " - eslint-plugin-svelte
+    " - prettier
+    " - prettier-plugin-svelte
+    " - stylelint
+    " - stylelint-config-standard
+    " - stylelint-scss
+    " - svelte (because its a compiler, the fixer/linter needs it)
+    " - typescript
+    " other (brew):
+    " - php-cs-fixer
+
+    Plug 'dense-analysis/ale'
+
+    " fix files on save
+    let g:ale_fix_on_save = 1
+
+    " lsp related settings
+    let g:ale_set_balloons = 1
+
+    " enable autocompletion
+    " let g:ale_completion_enabled = 1
+    " let g:ale_completion_autoimport = 1
+
+    " lint 1000ms after changes are made both on insert mode and normal mode
+    let g:ale_lint_on_text_changed = 'normal'
+
+    " use nice symbols for errors and warnings
+    let g:ale_sign_error = '!!'
+    let g:ale_sign_warning = '! '
+    let g:ale_sign_column_always = 1
+
+    " make linting possible in strange files
+    let g:ale_linter_aliases = {
+          \'javascriptreact': ['css', 'javascript', 'jsx'],
+          \'typescriptreact': ['css', 'typescript', 'tsx'],
+          \'svelte' : ['css', 'html', 'javascript'],
+    \}
+
+    let g:ale_linters = {
+          \'svelte': ['stylelint', 'eslint'],
+    \}
+
+    let g:ale_linters_ignore = {
+          \'typescript': ['tslint'],
+          \'typescriptreact': ['tslint'],
+    \}
+
+    " fixer configurations
+    let g:ale_fixers = {
+          \'*': ['remove_trailing_lines', 'trim_whitespace'],
+          \'css': ['prettier'],
+          \'html': ['prettier'],
+          \'javascript': ['prettier', 'eslint'],
+          \'javascriptreact': ['prettier', 'eslint'],
+          \'typescript': ['prettier', 'eslint'],
+          \'typescriptreact': ['prettier', 'eslint'],
+          \'markdown': ['prettier'],
+          \'sass': ['prettier'],
+          \'scss': ['prettier'],
+          \'svelte': ['prettier'],
+          \'php': ['php_cs_fixer'],
+    \}
+
+  " }}}
+
+  " Plugin: language syntax, etc {{{
+    Plug 'sheerun/vim-polyglot'
+  " }}}
+
+  " Plugins: UI {{{
+
+    " netrw UI tweaks
+    let g:netrw_banner = 0
+    let g:netrw_liststyle = 3
+    let g:netrw_winsize =-22
+
+    Plug 'airblade/vim-gitgutter'
+
+    " Make vim + tmux awesome
+    Plug 'christoomey/vim-tmux-navigator'
+    Plug 'tmux-plugins/vim-tmux-focus-events'
+
+    Plug 'tpope/vim-fugitive'
+    Plug 'tpope/vim-unimpaired'
+
+    " Plugin: theme {{{
+      Plug 'gruvbox-community/gruvbox'
+      " Plug 'lifepillar/vim-gruvbox8'
+      " Plug 'arcticicestudio/nord-vim'
+      " Plug 'jeffkreeftmeijer/vim-dim'
+
+      Plug 'gerw/vim-HiLinkTrace'
+
+      " let g:nord_cursor_line_number_background = 1
+      " let g:nord_italic = 1
+      " let g:nord_underline = 1
+    " }}}
+
+    " Plugin: fzf fuzzyfinding {{{
+      Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+
+      " [Buffers] Jump to the existing window if possible
+      let g:fzf_buffers_jump = 1
+
+      " Set default tags command
+      let g:fzf_tags_command = '.git/hooks/ctags || ctags -R --tag-relative'
+
+      " Use preview with :Files
+      command! -bang -nargs=? -complete=dir Files
+        \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+      " Invoke :Files finder on ctrl-p
+      nnoremap <C-p> :Files<Cr>
+      nnoremap <C-g> :Rg<Cr>
+      nnoremap <C-o> :Tags<Cr>
+    " }}}
+
+  " }}}
+
+  call plug#end()
+" }}}
+
+" Key bindings {{{
+
+  " Move visually instead of by line
+  noremap <expr> k      v:count == 0 ? 'gk' : 'k'
+  noremap <expr> j      v:count == 0 ? 'gj' : 'j'
+  noremap <expr> <Up>   v:count == 0 ? "g\<Up>" : "\<Up>"
+  noremap <expr> <Down> v:count == 0 ? "g\<Down>" : "\<Down>"
+
+  " These things happen too often
+  command W w
+  command Q q
+
+  " Clear highlight with leader
+  nnoremap <silent> <Leader>c :noh<Cr>
+
+  " <Tab> advances through the jumplist, so <S-Tab> moves backwards
+  nnoremap <S-Tab> <C-o>
+
+  " use `u` to undo, use `U` to redo
+  nnoremap U <C-r>
+
+  " CTRL-U in insert mode deletes a lot. Put an undo-point before it.
+  inoremap <C-u> <C-g>u<C-u>
+
+  " primitive tab completion
+  inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+  inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
+
+  " easy tag jumps
+  nnoremap <Leader>tj :tjump /
+  nnoremap <Leader>tp :ptjump /
+
+  " Yank current filename + line number to clipboard
+  nnoremap <silent> <Leader>yp :let @*=join([expand('%'), line('.')], ':')<Cr>
+
+  " quickly edit vimrc and color theme
+  nnoremap <Leader>ev :tabe $MYVIMRC<Cr>
+  nnoremap <Leader>ec :tabe $HOME/.vim/colors/fansi.vim<Cr>
+
+" }}}
+
+" Commands {{{
+
+  " Diff changes before save
+  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
+
+  " Open scratch buffer
+  command Scratch split scratch | setlocal buftype=nofile bufhidden=hide noswapfile textwidth=80
+
+" }}}
+
+" Customizations {{{
+  function! Eatchar(pat)
+     let c = nr2char(getchar(0))
+     return (c =~ a:pat) ? '' : c
+  endfunc
+
+  " Settings: quickfix/location lists {{{
+    " close lists quickly
+    function! GetBufferList()
+      redir =>buflist
+      silent! ls!
+      redir END
+      return buflist
+    endfunction
+
+    " toggle quickfix/location lists easily
+    function! ToggleList(bufname, pfx)
+      let buflist = GetBufferList()
+      for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
+        if bufwinnr(bufnum) != -1
+          exec(a:pfx.'close')
+          return
+        endif
+      endfor
+      if a:pfx == 'c' && len(getqflist()) == 0
+          echohl ErrorMsg | echo a:bufname." is Empty." | echohl None
+          return
+      endif
+      if a:pfx == 'l' && len(getloclist(0)) == 0
+          echohl ErrorMsg | echo a:bufname." is Empty." | echohl None
+          return
+      endif
+      let winnr = winnr()
+      exec(a:pfx.'open')
+      if winnr() != winnr
+        wincmd p
+      endif
+    endfunction
+
+    nnoremap <silent> <Leader>q :call ToggleList("Quickfix List", 'c')<Cr>
+    nnoremap <silent> <Leader>l :call ToggleList("Location List", 'l')<Cr>
+  " }}}
+
+  function! MakeDirIfNotExists(file, buf)
+    if empty(getbufvar(a:buf, '&buftype')) && a:file !~# '\v^\w+\:\/'
+      call mkdir(fnamemodify(a:file, ':h'), 'p')
+    endif
+  endfunction
+
+  " Settings: grep {{{
+    " let :grep work without suspending vim, executing in the background
+    " and open the quickfix/location list automatically.
+    " See: https://gist.github.com/romainl/56f0c28ef953ffc157f36cc495947ab3
+    " Sorry for copying, romainl, your snippet is perfect.
+    function! Grep(...)
+      return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
+    endfunction
+
+    command! -nargs=+ -complete=file_in_path -bar Grep  cgetexpr Grep(<f-args>)
+    command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr Grep(<f-args>)
+
+    cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() ==# 'grep')  ? 'Grep'  : 'grep'
+    cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'LGrep' : 'lgrep'
+
+    nnoremap <Leader>g :Grep <cword><Cr>
+
+    augroup quickfix
+      autocmd!
+      autocmd QuickFixCmdPost cgetexpr cwindow
+      autocmd QuickFixCmdPost lgetexpr lwindow
+    augroup END
+  " }}}
+
+  " Settings: misc
+    augroup MyMisc
+      au!
+      " Return to last edit position when opening files
+      au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+      " Hack to make <C-x><C-f> work with files relative to current buffer
+      au InsertEnter * let cwd = getcwd() | lcd %:p:h
+      au InsertLeave * execute 'lcd' fnameescape(cwd)
+      " Create dir on save if it doesn't exist
+      " TODO: this trips up the lcd switching above.
+      au BufWritePre * call MakeDirIfNotExists(expand('<afile>'), +expand('<abuf>'))
+
+      " Use spell checking on commits
+      au FileType gitcommit setlocal spell
+      " Make Makefiles use tabs instead of spaces
+      au FileType make setlocal noexpandtab
+    augroup END
+  " }}}
+
+  " Auto-reload vim when ~/.vimrc is saved
+  augroup ReloadVimrc
+    au!
+    au BufRead .vimrc,fansi.vim setlocal foldmethod=marker
+    au BufWritePost .vimrc,fansi.vim source $MYVIMRC
+  augroup END
+
+" }}}
+
+" Theme {{{
+
+  set background=dark
+
+  " Enable file type detection
+  filetype plugin indent on
+
+  " Use <!-- --> comments in HTML
+  let html_wrong_comments = 1
+
+  " fix indenting of css/js syntax in script/style tags
+  let g:html_indent_script1 = "inc"
+  let g:html_indent_style1 = "inc"
+
+  " Enable italics support in Terminal.app
+  let &t_ZH="\e[3m"
+  let &t_ZR="\e[23m"
+
+  " Change cursor in insert mode
+  let &t_SI="\e[5 q"
+  let &t_EI="\e[2 q"
+
+  colorscheme fansi
+  syntax enable
+
+  " Set highlight options
+  hi! link Folded LineNr
+  hi! link SignColumn LineNr
+  hi! link EndOfBuffer NonText
+
+  " Status line
+  hi User1 ctermfg=1 ctermbg=0
+  hi User2 ctermfg=2 ctermbg=0
+  hi User3 ctermfg=3 ctermbg=0
+  hi User4 ctermfg=4 ctermbg=0
+  hi User7 ctermfg=7 ctermbg=0
+  hi User9 ctermfg=none ctermbg=0 cterm=italic
+
+  function! StatusLine()
+    " buffer number
+    " TODO: make this local to buffer
+    let bufnr_padding = &numberwidth  + (&signcolumn == 'yes' ? 1 : 0) + &foldcolumn
+    let statusline = '%' . bufnr_padding . 'n '
+
+    " help/read only
+    let statusline.= '%(%h%r %)'
+
+    " file modified
+    " Use two groups which won't render when they return an empty string.
+    " It's a bit awkward to apply a highlight group to a modified file this
+    " way.
+    " TODO: It's probably possible to do it in one function?
+    " TODO: Currently this won't do [Quickfix List], etc.
+    " function! IsModified()
+    "   return getbufvar(bufnr(), '&modified')
+    " endfunction
+
+    " let statusline.= '%(%4*»%* %9*%<%{IsModified() ? strlen(@%) ? @% : "[No Name]" : ""}%* + %)'
+    " let statusline.= '%(%4*»%* %<%{IsModified() ? "" : strlen(@%) ? @% : "[No Name]" } %)'
+    let statusline.= '%(%4*»%* %<%f %(%M %)%)'
+    let statusline.= '%(%{exists("w:quickfix_title") ? w:quickfix_title : ""} %)'
+
+    " line/column number
+    let statusline.= '%(%7*:%l,%c%V%* %)'
+
+    " split
+    let statusline.= '%='
+    " let statusline.= '%( %7*%P%* %)'        " percentage through file
+
+    " linter errors
+    function! ALEProblems(...)
+      let problems = ale#statusline#Count(bufnr())
+      let total = 0
+
+      if a:0 > 0
+        let total = reduce(a:000, {acc, value
+              \ -> acc + (has_key(problems, value) ? problems[value] : 0)
+              \ }, total)
+      else
+        let total = reduce(values(problems), {acc, value -> acc + value}, total)
+      endif
+
+      return total == 0 ? '' : total
+    endfunction
+
+    let statusline.= '%(%2*%{ALEProblems() == 0 ? "✓" : ""} %*%)'
+    let statusline.= '%(%3*%{ALEProblems("warning", "style_warning")}! %*%)'
+    let statusline.= '%(%1*%{ALEProblems("error", "style_error")}!! %*%)'
+
+    " branch name
+    let statusline .= '%(%4*«%* %<%{FugitiveHead()} %)'
+
+    " this makes sure the statusline is redrawn
+    " :h stl-%{
+    let &ro = &ro
+
+    return statusline
+  endfunction
+
+  set statusline=%!StatusLine()
+
+" }}}
+
+" Misc {{{
+
+  " Attempt to rename tmux pane title
+  if &term == "tmux-256color"
+    set t_ts=]2
+    set t_fs=\\
+  endif
+
+" }}}
