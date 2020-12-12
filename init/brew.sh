@@ -31,14 +31,15 @@ brew install grep
 brew install openssh
 
 # Install other useful binaries.
+brew install bat
 brew install bats-core
 brew install composer
 brew install dnsmasq
 brew install entr
 brew install git
 brew install jq
-brew install node@12
 brew install pandoc
+brew install stow
 brew install tmux
 brew install tree
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
@@ -47,6 +48,10 @@ brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 brew install fzf
 brew install ripgrep
 $(brew --prefix)/opt/fzf/install
+
+# Install Node v12
+brew install node@12
+brew link node@12 --force --overwrite
 
 # Rest; helpers for coding etc.
 brew install php-cs-fixer

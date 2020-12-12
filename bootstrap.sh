@@ -2,7 +2,7 @@
 
 cd "$(dirname "${BASH_SOURCE}")";
 
-git pull origin master;
+#git pull origin master;
 
 # Ask for the administrator password upfront
 sudo -v;
@@ -31,32 +31,16 @@ function main() {
   # Add zsh scripts to oh-my-zsh custom directory
   echo "Synchronizing Oh My ZSH Custom folder"
   echo ""
-  for f in ./zsh/*; do
-    local name="$(basename $f)";
-    local src="$(realpath $f)";
-    local dest="~/.oh-my-zsh/custom/$name";
-
-    ln -sFi "$src" "$dest";
-  done;
+  stow zsh --target="$HOME/.oh-my-zsh/custom"
 
   # Sync dotfiles
   echo "Synchronizing dotfiles...";
   echo "";
-  for f in ./dotfiles/.*; do
-    local name="$(basename $f)";
-    local src="$(realpath $f)";
-    local dest="$HOME/$name";
-
-    if [[ -d "$name" ]] && [[ "$name" = ".vim" ]]; then
-      cp -fir "$src" "$dest";
-    else
-      ln -sFi "$path" "$dest";
-    fi
-  done;
+  stow dotfiles --target="$HOME"
 
   # Sync settings
-  ln -sFi "$(realpath ./settings/dnsmasq.conf)" /usr/local/etc/dnsmasq.conf;
-  ln -sFi "$(realpath ./settings/resolver)" /etc/resolver;
+  sudo ln -sFi "$(realpath ./settings/dnsmasq.conf)" /usr/local/etc/dnsmasq.conf;
+  sudo ln -sFi "$(realpath ./settings/resolver)" /etc/resolver;
 
   # Kick off dnsmasq
   brew services start dnsmasq
