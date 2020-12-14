@@ -15,10 +15,11 @@
   set display+=lastline
   set encoding=utf-8 nobomb
   set esckeys                       " Allow arrow keys in insert mode
-  set formatoptions+=j              " Delete comment character when joining lines
+  set formatoptions+=j,n            " Delete comment character when joining lines
   set history=200                   " never found use of setting this higher
   set nostartofline
   set spelllang=en,nl               " Use English and Dutch
+  set omnifunc=syntaxcomplete#Complete " Default omnifunc
 
   " Indentation and wrapping
   set autoindent                    " Automatic indentation in insert mode
@@ -84,6 +85,7 @@
 
   " Experimental
   set path=.,,**                    " Let :find work as a fuzzy-matcher
+  set sessionoptions=buffers,folds,tabpages,winsize
   set wildignore=**/dist/**,**/node_modules/** " and ignore some folders
 
 " }}}
@@ -317,6 +319,9 @@
   nnoremap <Leader>ev :tabe $MYVIMRC<Cr>
   nnoremap <Leader>ec :tabe $HOME/.vim/colors/fansi.vim<Cr>
 
+  " toggle relativenumber
+  nnoremap <silent> <Leader>r :set relativenumber!<Cr>
+
 " }}}
 
 " Commands {{{
@@ -325,19 +330,19 @@
   command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
 
   " Open scratch buffer
-  command Scratch split scratch | setlocal buftype=nofile bufhidden=hide noswapfile textwidth=80
+  command Scratch split scratch | setlocal buftype=nofile bufhidden=hide noswapfile textwidth=79
 
 " }}}
 
 " Customizations {{{
-  function! Eatchar(pat)
+  function! Eatchar(pat) abort
      let c = nr2char(getchar(0))
      return (c =~ a:pat) ? '' : c
   endfunc
 
   " Settings: quickfix/location lists {{{
     " close lists quickly
-    function! GetBufferList()
+    function! GetBufferList() abort
       redir =>buflist
       silent! ls!
       redir END
@@ -345,7 +350,7 @@
     endfunction
 
     " toggle quickfix/location lists easily
-    function! ToggleList(bufname, pfx)
+    function! ToggleList(bufname, pfx) abort
       let buflist = GetBufferList()
       for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
         if bufwinnr(bufnum) != -1
@@ -372,7 +377,7 @@
     nnoremap <silent> <Leader>l :call ToggleList("Location List", 'l')<Cr>
   " }}}
 
-  function! MakeDirIfNotExists(file, buf)
+  function! MakeDirIfNotExists(file, buf) abort
     if empty(getbufvar(a:buf, '&buftype')) && a:file !~# '\v^\w+\:\/'
       call mkdir(fnamemodify(a:file, ':h'), 'p')
     endif
@@ -383,7 +388,7 @@
     " and open the quickfix/location list automatically.
     " See: https://gist.github.com/romainl/56f0c28ef953ffc157f36cc495947ab3
     " Sorry for copying, romainl, your snippet is perfect.
-    function! Grep(...)
+    function! Grep(...) abort
       return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
     endfunction
 
@@ -404,28 +409,36 @@
 
   " Settings: misc
     augroup MyMisc
-      au!
+      autocmd!
       " Return to last edit position when opening files
-      au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-      " Hack to make <C-x><C-f> work with files relative to current buffer
-      au InsertEnter * let cwd = getcwd() | lcd %:p:h
-      au InsertLeave * execute 'lcd' fnameescape(cwd)
+      autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
       " Create dir on save if it doesn't exist
-      " TODO: this trips up the lcd switching above.
-      au BufWritePre * call MakeDirIfNotExists(expand('<afile>'), +expand('<abuf>'))
+      " TODO: this trips up the lcd switching?
+      autocmd BufWritePre *
+            \ call MakeDirIfNotExists(expand('<afile>'), +expand('<abuf>'))
+            " format BEFORE save
+            " \ | if strlen(&formatexpr) || strlen(&formatprg) | exe 'normal! gqG' | endif
 
       " Use spell checking on commits
-      au FileType gitcommit setlocal spell
+      autocmd FileType gitcommit setlocal spell
       " Make Makefiles use tabs instead of spaces
-      au FileType make setlocal noexpandtab
+      autocmd FileType make setlocal noexpandtab
+
+      " Hack to make <C-x><C-f> work with files relative to current buffer
+      autocmd InsertEnter * let cwd = getcwd() | lcd %:p:h
+      autocmd InsertLeave * execute 'lcd' fnameescape(cwd)
+
+      " undo shell command errors
+      autocmd ShellFilterPost * if v:shell_error | undo | endif
     augroup END
   " }}}
 
   " Auto-reload vim when ~/.vimrc is saved
   augroup ReloadVimrc
-    au!
-    au BufRead .vimrc,fansi.vim setlocal foldmethod=marker
-    au BufWritePost .vimrc,fansi.vim source $MYVIMRC
+    autocmd!
+    autocmd BufRead vimrc,fansi.vim setlocal foldmethod=marker
+    autocmd BufWritePost vimrc,fansi.vim source $MYVIMRC
   augroup END
 
 " }}}
@@ -436,13 +449,6 @@
 
   " Enable file type detection
   filetype plugin indent on
-
-  " Use <!-- --> comments in HTML
-  let html_wrong_comments = 1
-
-  " fix indenting of css/js syntax in script/style tags
-  let g:html_indent_script1 = "inc"
-  let g:html_indent_style1 = "inc"
 
   " Enable italics support in Terminal.app
   let &t_ZH="\e[3m"
@@ -468,7 +474,7 @@
   hi User7 ctermfg=7 ctermbg=0
   hi User9 ctermfg=none ctermbg=0 cterm=italic
 
-  function! StatusLine()
+  function! StatusLine() abort
     " buffer number
     " TODO: make this local to buffer
     let bufnr_padding = &numberwidth  + (&signcolumn == 'yes' ? 1 : 0) + &foldcolumn
@@ -500,7 +506,7 @@
     " let statusline.= '%( %7*%P%* %)'        " percentage through file
 
     " linter errors
-    function! ALEProblems(...)
+    function! ALEProblems(...) abort
       let problems = ale#statusline#Count(bufnr())
       let total = 0
 
