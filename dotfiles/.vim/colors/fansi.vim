@@ -137,7 +137,7 @@ hi! link Question FANSIRedLightBold
   hi ColorColumn ctermbg=0
   hi CursorColumn ctermbg=0
   hi! link CursorLine CursorColumn
-  hi! link CursorLineNr FANSIGrey
+  hi! link CursorLineNr FANSILightGrey
   hi! link Folded FANSIBlackLight
   hi! link FoldColumn FANSIBlackLight
   hi! link LineNr FANSIBlackLight
