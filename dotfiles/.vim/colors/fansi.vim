@@ -108,7 +108,7 @@ hi Cursor ctermfg=none ctermbg=8 cterm=reverse
 hi! link iCursor Cursor
 hi! link lCursor Cursor
 hi! link vCursor Cursor
-hi MatchParen ctermfg=none ctermbg=none cterm=reverse
+hi MatchParen ctermfg=none ctermbg=8
 
 " selection
 hi Visual ctermfg=none ctermbg=0 cterm=none
@@ -243,12 +243,17 @@ hi! link SpellRare SpellCap
   hi! link gitcommitDiscardedFile FANSIRed
   hi! link gitcommitSelectedFile FANSIGreenLight
 
+  " json
+  hi! link jsonKeyword String
+
   " typescript
   hi! link typescriptAssign FANSIGrey
+  hi! link typescriptAsyncFuncKeyword FANSIRed
   hi! link typescriptBinaryOp Identifier
   hi! link typescriptBraces FANSIGrey
   hi! link typescriptFuncKeyword FANSIRed
   hi! link typescriptInterfaceName Identifier
+  hi! link typescriptObjectLabel FANSICyan
   hi! link typescriptParens FANSIGrey
   hi! link typescriptTypeBrackets FANSIGrey
 " }}}
