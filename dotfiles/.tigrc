@@ -1,0 +1,4 @@
+color cursor blue default reverse
+color status default default
+color title-blur color7 color0
+color title-focus default color8

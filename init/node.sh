@@ -6,6 +6,8 @@ npm install -g npm
 # Install useful binaries
 npm install -g \
   eslint \
+  eslint_d \
+  nx \
   prettier \
   stylelint \
   typescript

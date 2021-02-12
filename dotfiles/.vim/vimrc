@@ -2,7 +2,7 @@
 
 " {{{ General
 
-  set nohidden                      " When I close a tab, remove the buffer
+  set hidden                        " Allow unsaved buffers
   set nomodeline                    " Prevent weird stuff with modelines
 
   " Editing
@@ -15,7 +15,7 @@
   set display+=lastline
   set encoding=utf-8 nobomb
   set esckeys                       " Allow arrow keys in insert mode
-  set formatoptions+=j,n            " Delete comment character when joining lines
+  set formatoptions+=jn             " Delete comment character when joining lines
   set history=200                   " never found use of setting this higher
   set nostartofline
   set spelllang=en,nl               " Use English and Dutch
@@ -419,11 +419,6 @@
             \ call MakeDirIfNotExists(expand('<afile>'), +expand('<abuf>'))
             " format BEFORE save
             " \ | if strlen(&formatexpr) || strlen(&formatprg) | exe 'normal! gqG' | endif
-
-      " Use spell checking on commits
-      autocmd FileType gitcommit setlocal spell
-      " Make Makefiles use tabs instead of spaces
-      autocmd FileType make setlocal noexpandtab
 
       " Hack to make <C-x><C-f> work with files relative to current buffer
       autocmd InsertEnter * let cwd = getcwd() | lcd %:p:h
