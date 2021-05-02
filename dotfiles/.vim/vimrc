@@ -179,6 +179,7 @@
     " enable autocompletion
     " let g:ale_completion_enabled = 1
     " let g:ale_completion_autoimport = 1
+    let g:ale_completion_max_suggestions = 999
 
     " lint 1000ms after changes are made both on insert mode and normal mode
     let g:ale_lint_on_text_changed = 'normal'
@@ -211,7 +212,7 @@
     " fixer configurations
     let g:ale_fixers = {
           \'*': ['remove_trailing_lines', 'trim_whitespace'],
-          \'css': ['prettier'],
+          \'css': ['prettier', 'stylelint'],
           \'html': ['prettier'],
           \'javascript': ['prettier', 'eslint'],
           \'javascriptreact': ['prettier', 'eslint'],
