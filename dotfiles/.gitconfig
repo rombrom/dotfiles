@@ -1,29 +1,43 @@
 [user]
-  email = rommert.thomas@gmail.com
-  name = Rommert Zijlstra
+	email = rommert.thomas@gmail.com
+	name = Rommert Zijlstra
 
 [core]
-  # Use custom `.gitignore` and `.gitattributes`
-  attributesfile = ~/.gitattributes
-  excludesfile = ~/.gitignore
+	# Use custom `.gitignore` and `.gitattributes`
+	attributesfile = ~/.gitattributes
+	excludesfile = ~/.gitignore
 
-  # Make `git rebase` safer on macOS
-  # More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
-  trustctime = false
+	# Make `git rebase` safer on macOS
+	# More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
+	trustctime = false
 
-  # Treat spaces before tabs and all kinds of trailing whitespace as an error
+	# Treat spaces before tabs and all kinds of trailing whitespace as an error
 	# [default] trailing-space: looks for spaces at the end of a line
 	# [default] space-before-tab: looks for spaces before tabs at the beginning of a line
 	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
 
+[alias]
+	# Some of these are from/inspired by https://blog.jez.io/cli-code-review/
+	# list changed files
+	files = !git diff --name-only $(git merge-base HEAD \"${REVIEW_BASE:-master}\")
+
+	# start review
+	review = !vim -p $(git files) \
+		+\"tabdo Gdiff ${REVIEW_BASE:-master}\" \
+		+\"let g:gitgutter_diff_base = '${REVIEW_BASE:-master}'\"
+
+	# list changed files w/ change statistics
+	stat = !git diff --stat $(git merge-base HEAD \"${REVIEW_BASE:-master}\")
+
 [diff]
-  tool = vimdiff
+	tool = vimdiff
 
 [difftool]
-  prompt = false
+	prompt = false
 
 [init]
-  templatedir = ~/.git_template
+	templatedir = ~/.git_template
+	defaultBranch = master
 
 [color]
 	# Use colors in Git commands that are capable of colored output when
@@ -51,20 +65,20 @@
 	autocorrect = 1
 
 [apply]
-  # Detect whitespace errors when applying a patch
-  whitespace = fix
+	# Detect whitespace errors when applying a patch
+	whitespace = fix
 
 [merge]
 	# Include summaries of merged commits in newly created merge commit messages
 	log = true
-  tool = vimdiff
-  conflictStyle = diff3
+	tool = vimdiff
+	conflictStyle = diff3
 
 [push]
-  # Use the Git 1.x.x default to avoid errors on machines with old Git
-  # installations. To use `simple` instead, add this to your `~/.extra` file:
-  # `git config --global push.default simple`. See http://git.io/mMah-w.
-  default = matching
+	# Use the Git 1.x.x default to avoid errors on machines with old Git
+	# installations. To use `simple` instead, add this to your `~/.extra` file:
+	# `git config --global push.default simple`. See http://git.io/mMah-w.
+	default = matching
 
 [pull]
 	ff = only
