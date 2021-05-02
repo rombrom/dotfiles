@@ -4,8 +4,5 @@ setlocal includeexpr=expand('<cfile>:p:h').'/_'.expand('<cfile>:t')
 setlocal iskeyword+=-
 setlocal suffixesadd+=.css,.less,.sass,.scss,.styl
 
-" prettify stuff
-if executable('prettier')
-  setlocal formatexpr=
-  setlocal formatprg=prettier\ --stdin-filepath=%
-endif
+" init ale mappings, etc.
+call webdev#Init()
