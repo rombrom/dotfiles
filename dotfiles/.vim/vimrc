@@ -33,7 +33,7 @@
   set softtabstop=2
   let &showbreak='› '               " Show a wrapping indicator
   set smarttab                      " Delete shiftwidth amount of chars
-  set wrap                          " Wrap it up
+  set nowrap                        " Let lines overflow a window
 
   " Search & tags
   set gdefault                      " Use /g flag for RegExp by default
@@ -81,7 +81,7 @@
   set winheight=25
   set winminheight=6
   set winminwidth=20
-  set winwidth=87
+  set winwidth=88
 
   " Experimental
   set path=.,,**                    " Let :find work as a fuzzy-matcher
@@ -441,6 +441,11 @@
       autocmd!
       " Return to last edit position when opening files
       autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+      " Wrap lines in file currently being edited (the horizontal scrolling
+      " trips me up... And nowrap when we leave
+      autocmd BufEnter * setlocal wrap
+      autocmd BufLeave * setlocal nowrap
 
       " Create dir on save if it doesn't exist
       " TODO: this trips up the lcd switching?
