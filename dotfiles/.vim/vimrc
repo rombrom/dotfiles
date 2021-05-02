@@ -2,6 +2,7 @@
 
 " {{{ General
 
+  set exrc                          " Can haz $CWD/.vimrc
   set hidden                        " Allow unsaved buffers
   set nomodeline                    " Prevent weird stuff with modelines
 
@@ -406,7 +407,6 @@
 
     function! EscapeRegExp(str) abort
       " this sick boi escapes regexp special characters
-    " nnoremap <Leader>G :Grep <C-r>=substitute(escape(expand('<cWORD>'), '[]{}().+*?\\|^$'), '\\', '\\\\\\\\\', 'g')<Cr><Cr>
       return substitute(escape(trim(a:str), '[]{}().+*?\|^$'), '\\', '\\\\\\\\\', 'g')
     endfunction
 
