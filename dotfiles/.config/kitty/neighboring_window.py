@@ -1,0 +1,1 @@
+../../.vim/bundle/vim-kitty-navigator/neighboring_window.py

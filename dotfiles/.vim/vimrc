@@ -56,6 +56,8 @@
   " UI
   set ballooneval
   set balloonevalterm
+  set cursorline
+  set cursorlineopt=number
   set foldcolumn=0
   set foldenable                    " enable folding
   set foldlevelstart=99             " open all folds by default
@@ -64,7 +66,6 @@
   set laststatus=2                  " Always show status line
   set list
   set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
-  " set noshowmode
   set number
   set numberwidth=5                 " make the current line stand out
   set relativenumber
@@ -242,9 +243,9 @@
     Plug 'airblade/vim-gitgutter'
 
     " Make vim + tmux awesome
-    Plug 'christoomey/vim-tmux-navigator'
-    Plug 'tmux-plugins/vim-tmux-focus-events'
+    Plug 'knubie/vim-kitty-navigator'
 
+    " Pope
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-unimpaired'
 
@@ -537,6 +538,12 @@
 
     " linter errors
     function! ALEProblems(...) abort
+      " Earlier versions of vim do not have reduce() so we skip ALEProblems.
+      " This is because opening prefs in Kitty terminal uses /usr/bin/vim.
+      if !has("patch-8.2.0878")
+        return ''
+      endif
+
       let problems = ale#statusline#Count(bufnr())
       let total = 0
 
@@ -553,7 +560,7 @@
 
     let statusline.= '%(%2*%{ALEProblems() == 0 ? "✓" : ""} %*%)'
     let statusline.= '%(%3*%{ALEProblems("warning", "style_warning")}! %*%)'
-    let statusline.= '%(%1*%{ALEProblems("error", "style_error")}!! %*%)'
+    let statusline.= '%(%1*%{ALEProblems("error", "style_error")}‼ %*%)'
 
     " branch name
     let statusline .= '%(%4*«%* %<%{FugitiveHead()} %)'

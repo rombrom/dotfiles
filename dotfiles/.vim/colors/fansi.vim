@@ -137,7 +137,7 @@ hi! link Question FANSIRedLightBold
   hi ColorColumn ctermbg=0
   hi CursorColumn ctermbg=0
   hi! link CursorLine CursorColumn
-  hi! link CursorLineNr FANSILightGrey
+  hi! link CursorLineNr FANSIGreyLight
   hi! link Folded FANSIBlackLight
   hi! link FoldColumn FANSIBlackLight
   hi! link LineNr FANSIBlackLight
@@ -166,18 +166,17 @@ hi! link Question FANSIRedLightBold
   " tabline
   hi TabLine ctermfg=8 ctermbg=none cterm=none
   hi TabLineFill ctermfg=0 ctermbg=none cterm=underline
-  hi TabLineSel ctermfg=none ctermbg=none cterm=none
+  hi TabLineSel ctermfg=4 ctermbg=none cterm=reverse
 
   " misc
   hi QuickFixLine ctermfg=4 ctermbg=none cterm=reverse
 " }}}
 
-" In diffs, added lines are green, changed lines are yellow, deleted lines are
-" red, and changed text (within a changed line) is bright yellow and bold.
+" diffs
 hi DiffAdd ctermfg=2 ctermbg=none cterm=reverse
-hi DiffChange ctermfg=6 ctermbg=none cterm=reverse
+hi DiffChange ctermfg=4 ctermbg=none cterm=reverse
 hi DiffDelete ctermfg=1 ctermbg=none cterm=reverse
-hi DiffText ctermfg=0 ctermbg=3 cterm=bold
+hi DiffText ctermfg=0 ctermbg=12
 
 " spelling
 hi SpellBad ctermfg=1 ctermbg=none cterm=italic,underline
@@ -188,7 +187,7 @@ hi! link SpellRare SpellCap
 " Syntax: {{{
   hi! link Comment FANSIBlackLight
 
-  hi! link Directory FANSIBlueLightBold
+  hi! link Directory FANSIBlueBold
 
   hi! link Constant FANSIMagentaLight
   hi! link String FANSIGreen
@@ -197,14 +196,14 @@ hi! link SpellRare SpellCap
   hi! link Boolean FANSIMagentaLight
   hi! link Float FANSIMagentaLight
 
-  hi! link Identifier FANSIBlueLight
+  hi! link Identifier FANSIBlue
   hi! link Function FANSIGreenBold
 
   hi! link Statement FANSIRed
   hi! link Conditional FANSIRed
   hi! link Repeat FANSIRed
   hi! link Label FANSIRed
-  hi! link Operator FANSIBlue
+  hi! link Operator FANSIBlueLight
   hi! link Keyword FANSIRedLight
   hi! link Exception FANSIRedLight
 
@@ -214,10 +213,10 @@ hi! link SpellRare SpellCap
   hi! link Macro Define
   hi! link PreCondit FANSICyan
 
-  hi! link Type FANSIYellowLight
+  hi! link Type FANSIYellow
   hi! link StorageClass FANSIRedLight
   hi! link Structure FANSICyan
-  hi! link Typedef FANSIYellowLight
+  hi! link Typedef FANSIYellow
 
   hi! link Special FANSIRedLight
   hi! link SpecialChar FANSIRed
@@ -254,6 +253,9 @@ hi! link SpellRare SpellCap
   hi! link typescriptFuncKeyword FANSIRed
   hi! link typescriptInterfaceName Identifier
   hi! link typescriptObjectLabel FANSICyan
+  hi! link typescriptObjectType FANSICyan
+
+  hi! link typescriptBraces FANSIGrey
   hi! link typescriptParens FANSIGrey
   hi! link typescriptTypeBrackets FANSIGrey
 " }}}

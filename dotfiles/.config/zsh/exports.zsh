@@ -12,11 +12,8 @@ export KEYTIMEOUT=1
 # Make commands use colors if possible
 export CLICOLOR=yes
 
-#  Highlight section titles in manual pages.
-export LESS_TERMCAP_md="${yellow}";
-
-# Don’t clear the screen after quitting a manual page
-export MANPAGER="less -X"
+# VIM manpager \m/
+export MANPAGER='col -bx | vim -MR +MANPAGER -'
 
 # Avoid issues with `gpg` as installed via Homebrew.
 # https://stackoverflow.com/a/42265848/96656
@@ -24,11 +21,5 @@ export GPG_TTY=$(tty);
 
 # Make fzf use ripgrep by default
 export FZF_DEFAULT_COMMAND="rg --files --hidden --glob '!.git'"
-export FZF_DEFAULT_OPTS="--border --height 40% --layout=reverse --tiebreak=end \
+export FZF_DEFAULT_OPTS="--border --height 40% --layout=reverse --tiebreak=length,end \
   --color='16,bg+:-1,fg+:4,gutter:-1,hl:3,hl+:3,pointer:4,prompt:6'"
-
-# Update $PATH with homebrew coreutils
-# The following line increases zsh startup with ~1s
-# export PATH=$(brew --prefix coreutils)/libexec/gnubin:$PATH
-# So instead we'll roll with the absolute option
-export PATH=/usr/local/sbin:$PATH:/usr/local/opt/coreutils/libexec/gnubin

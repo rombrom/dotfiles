@@ -6,55 +6,51 @@ brew update
 # Upgrade any already-installed formulae.
 brew upgrade
 
-# Install GNU core utilities (those that come with macOS are outdated).
-# Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
-brew install coreutils
-# Install GNU `find`, `locate`, `updatedb`, and `xargs`, `g`-prefixed.
-brew install findutils
-# Install GNU `sed`, overwriting the built-in `sed`.
-brew install gnu-sed
-# Install zsh
-brew install zsh zsh-completions
+# prepare taps
+brew tap universal-ctags/universal-ctags
 
-# Switch to using brew-installed zsh as default shell
-chsh -s "$(which zsh)"
+# Install core utilities
+packages=(
+  bat
+  bats-core
+  coreutils
+  dnsmasq
+  entr
+  findutils
+  fzf
+  git
+  gnu-getopt
+  gnu-sed
+  gnu-tar
+  gnupg
+  grep
+  jq
+  openssh
+  pandoc
+  ripgrep
+  stow
+  tmux
+  tree
+  vim
+  wget
+  zsh
+  zsh-completions
+)
 
-# Install `wget` with IRI support.
-brew install wget
-
-# Install GnuPG to enable PGP-signing commits.
-brew install gnupg
-
-# Install more recent versions of some macOS tools.
-brew install vim
-brew install grep
-brew install openssh
-
-# Install other useful binaries.
-brew install bat
-brew install bats-core
-brew install composer
-brew install dnsmasq
-brew install entr
-brew install git
-brew install jq
-brew install pandoc
-brew install stow
-brew install tmux
-brew install tree
+# kick-off installation
+brew install $packages
+unset packages
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
-
-# Install fuzzyfinder and setup fuzzy completion
-brew install fzf
-brew install ripgrep
-$(brew --prefix)/opt/fzf/install
 
 # Install Node v12
 brew install node@12
 brew link node@12 --force --overwrite
 
-# Rest; helpers for coding etc.
-brew install php-cs-fixer
-
 # Remove outdated versions from the cellar.
 brew cleanup
+
+# TODO: move this?
+$(brew --prefix)/opt/fzf/install
+
+# TODO: move this?
+chsh -s "$(which zsh)"
