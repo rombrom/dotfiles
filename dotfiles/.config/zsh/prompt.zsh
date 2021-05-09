@@ -11,5 +11,5 @@ zstyle ':vcs_info:*' formats '%F{1}%b%f%F{3}%c%u%f '
 
 add-zsh-hook precmd vcs_info
 
-PS1='%B%F{4}%.%f ${vcs_info_msg_0_}%# %b'
-RPS1='%F{7}%T%f'
+PS1='%B%F{4}%.%f ${vcs_info_msg_0_}%F{8}%#%f%b '
+RPS1='%F{8}%T%f'
