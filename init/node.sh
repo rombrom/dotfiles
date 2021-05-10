@@ -1,25 +1,22 @@
 #!/usr/bin/env bash
 
 # Update NPM to the latest version
-npm install -g npm
-
-# Install useful binaries
-npm install -g \
-  eslint \
-  eslint_d \
-  nx \
-  prettier \
-  stylelint \
+packages=(
+  # base packages
+  eslint
+  eslint_d
+  nx
+  prettier
+  stylelint
   typescript
 
-# Install add-ons for eslint
-npm i -g \
-  eslint-config-prettier \
-  eslint-plugin-prettier \
-  eslint-plugin-svelte3 \
-  prettier-plugin-svelte \
-  stylelint-config-standard \
+  # linting add-ons
+  eslint-config-prettier
+  eslint-plugin-prettier
+  stylelint-config-standard
   stylelint-scss
+)
+npm install -g $packages
 
 # Clean cache
 npm cache clean -f

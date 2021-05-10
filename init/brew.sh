@@ -18,12 +18,14 @@ packages=(
   entr
   findutils
   fzf
+  ghostscript
   git
   gnu-getopt
   gnu-sed
   gnu-tar
   gnupg
   grep
+  imagemagick
   jq
   openssh
   pandoc
@@ -48,9 +50,3 @@ brew link node@12 --force --overwrite
 
 # Remove outdated versions from the cellar.
 brew cleanup
-
-# TODO: move this?
-$(brew --prefix)/opt/fzf/install
-
-# TODO: move this?
-chsh -s "$(which zsh)"

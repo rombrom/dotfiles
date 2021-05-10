@@ -2,8 +2,6 @@
 
 cd "$(dirname "${BASH_SOURCE}")";
 
-#git pull origin master;
-
 # Ask for the administrator password upfront
 sudo -v;
 
@@ -23,16 +21,6 @@ function main() {
   echo "";
   source ./init/node.sh;
 
-  # Install oh-my-zsh
-  echo "Installing Oh My ZSH!...";
-  echo "";
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)";
-
-  # Add zsh scripts to oh-my-zsh custom directory
-  echo "Synchronizing Oh My ZSH Custom folder"
-  echo ""
-  stow zsh --target="$HOME/.oh-my-zsh/custom"
-
   # Sync dotfiles
   echo "Synchronizing dotfiles...";
   echo "";
@@ -45,19 +33,12 @@ function main() {
   # Kick off dnsmasq
   brew services start dnsmasq
 
-  # Execute macos defaults
-  echo "Setting mac defaults";
-  echo "";
-  source ./init/macos.sh
+  # change shell to newly installed zsh
+  chsh -s "$(which zsh)"
 
   echo "Done.";
   echo "";
 }
-
-# Make italics work in macOS terminal
-tic -o "$HOME/.terminfo" ./terminfo/tmux.terminfo
-tic -o "$HOME/.terminfo" ./terminfo/tmux-256color.terminfo
-tic -o "$HOME/.terminfo" ./terminfo/xterm-256color.terminfo
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
 	main;
