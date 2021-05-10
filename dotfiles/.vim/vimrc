@@ -575,13 +575,3 @@
   set statusline=%!StatusLine()
 
 " }}}
-
-" Misc {{{
-
-  " Attempt to rename tmux pane title
-  if &term == "tmux-256color"
-    set t_ts=]2
-    set t_fs=\\
-  endif
-
-" }}}
