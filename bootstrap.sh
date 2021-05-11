@@ -7,24 +7,24 @@ sudo -v;
 
 function main() {
   # Install Homebrew first
-  echo "Installing Homebrew...";
-  echo "";
-  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
+  #echo "Installing Homebrew...";
+  #echo "";
+  #/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
 
   # Install utilities via Homebrew
-  echo "Installing Homebrew packages...";
-  echo "";
-  source ./init/brew.sh;
+  #echo "Installing Homebrew packages...";
+  #echo "";
+  #source ./init/brew.sh;
 
   # Install essential Node utils
-  echo "Installing Node packages...";
-  echo "";
-  source ./init/node.sh;
+  #echo "Installing Node packages...";
+  #echo "";
+  #source ./init/node.sh;
 
   # Sync dotfiles
   echo "Synchronizing dotfiles...";
   echo "";
-  stow dotfiles --target="$HOME"
+  stow dotfiles --dotfiles --target="$HOME"
 
   # Sync settings
   sudo ln -sFi "$(realpath ./settings/dnsmasq.conf)" /usr/local/etc/dnsmasq.conf;
