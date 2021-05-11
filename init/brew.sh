@@ -10,38 +10,34 @@ brew upgrade
 brew tap universal-ctags/universal-ctags
 
 # Install core utilities
-packages=(
-  bat
-  bats-core
-  coreutils
-  dnsmasq
-  entr
-  findutils
-  fzf
-  ghostscript
-  git
-  gnu-getopt
-  gnu-sed
-  gnu-tar
-  gnupg
-  grep
-  imagemagick
-  jq
-  openssh
-  pandoc
-  ripgrep
-  stow
-  tmux
-  tree
-  vim
-  wget
-  zsh
+brew install \
+  bat \
+  bats-core \
+  coreutils \
+  dnsmasq \
+  entr \
+  findutils \
+  fzf \
+  gawk \
+  ghostscript \
+  git \
+  gnu-getopt \
+  gnu-sed \
+  gnu-tar \
+  gnupg \
+  grep \
+  imagemagick \
+  jq \
+  pandoc \
+  ripgrep \
+  stow \
+  tree \
+  vim \
+  wget \
+  zsh \
   zsh-completions
-)
 
 # kick-off installation
-brew install $packages
-unset packages
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
 # Install Node v12
