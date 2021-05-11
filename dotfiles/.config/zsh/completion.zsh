@@ -13,4 +13,5 @@ zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-dir
 zstyle ':completion:*:*:*:*:*' menu select=1 _complete _ignored _approximate
 
 # kitty completion
-kitty +complete setup zsh | source /dev/stdin
+[[ "$TERM" = "xterm-kitty" ]] && \
+  kitty +complete setup zsh | source /dev/stdin

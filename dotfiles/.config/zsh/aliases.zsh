@@ -53,5 +53,8 @@ alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo 
 # find . -name .gitattributes | map dirname
 alias map="xargs -n1"
 
+# icat: cat images w/ kitty
+[[ "$TERM" = "xterm-kitty" ]] && alias icat='kitty +kitten icat'
+
 # Reload zshrc
 alias reload='exec zsh'
