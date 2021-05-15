@@ -164,9 +164,9 @@ hi! link Question FANSIRedLightBold
   hi! link WildMenu PmenuSel
 
   " tabline
-  hi TabLine ctermfg=8 ctermbg=none cterm=none
+  hi TabLine ctermfg=12 ctermbg=none cterm=none
   hi TabLineFill ctermfg=0 ctermbg=none cterm=underline
-  hi TabLineSel ctermfg=4 ctermbg=none cterm=reverse
+  hi TabLineSel ctermfg=12 ctermbg=none cterm=bold,reverse
 
   " misc
   hi QuickFixLine ctermfg=4 ctermbg=none cterm=reverse

@@ -17,7 +17,7 @@ function webdev#Init() abort
   " add -relative option to find
   nnoremap <buffer> <silent> <Plug>(ale_find_references) :ALEFindReferences -relative<Cr>
 
-  nmap <buffer> K <Plug>(ale_documentation)
+  nmap <buffer> K <Plug>(ale_hover)
   nmap <buffer> <Leader>af <Plug>(ale_lint)
   nmap <buffer> <Leader>aF <Plug>(ale_fix)
   nmap <buffer> <Leader>ai <Plug>(ale_import)

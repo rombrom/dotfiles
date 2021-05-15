@@ -4,7 +4,6 @@
 
   set exrc                          " Can haz $CWD/.vimrc
   set hidden                        " Allow unsaved buffers
-  set nomodeline                    " Prevent weird stuff with modelines
 
   " Editing
   set autoread                      " Re-read files when changed outside vim
@@ -195,17 +194,19 @@
     let g:ale_javascript_eslint_executable = 'eslint_d'
     let g:ale_javascript_eslint_use_global = 1
 
+    " python-specific
+    let g:ale_python_auto_pipenv = 1
+    let g:ale_linters = {
+          \'python': ['black', 'mypy', 'pyls']
+    \}
+
     " make linting possible in strange files
     let g:ale_linter_aliases = {
           \'javascriptreact': ['css', 'javascript', 'jsx'],
           \'typescriptreact': ['css', 'typescript', 'tsx'],
-          \'svelte' : ['css', 'html', 'javascript'],
     \}
 
-    let g:ale_linters = {
-          \'svelte': ['stylelint', 'eslint'],
-    \}
-
+    " tslint is deprecated. we don't want it
     let g:ale_linters_ignore = {
           \'typescript': ['tslint'],
           \'typescriptreact': ['tslint'],
@@ -221,9 +222,10 @@
           \'typescript': ['prettier', 'eslint'],
           \'typescriptreact': ['prettier', 'eslint'],
           \'markdown': ['prettier'],
+          \'python': ['autoimport', 'black', 'isort'],
           \'sass': ['prettier'],
           \'scss': ['prettier'],
-          \'svelte': ['prettier'],
+          \'svelte': ['prettier', 'eslint'],
           \'php': ['php_cs_fixer'],
     \}
 
@@ -231,6 +233,8 @@
 
   " Plugin: language syntax, etc {{{
     Plug 'sheerun/vim-polyglot'
+
+    let g:vim_svelte_plugin_use_typescript = 1
   " }}}
 
   " Plugins: UI {{{
@@ -249,18 +253,8 @@
     Plug 'tpope/vim-fugitive'
     Plug 'tpope/vim-unimpaired'
 
-    " Plugin: theme {{{
-      Plug 'gruvbox-community/gruvbox'
-      " Plug 'lifepillar/vim-gruvbox8'
-      " Plug 'arcticicestudio/nord-vim'
-      " Plug 'jeffkreeftmeijer/vim-dim'
-
-      Plug 'gerw/vim-HiLinkTrace'
-
-      " let g:nord_cursor_line_number_background = 1
-      " let g:nord_italic = 1
-      " let g:nord_underline = 1
-    " }}}
+    " Trace Hilight groups
+    Plug 'gerw/vim-HiLinkTrace'
 
     " Plugin: fzf fuzzyfinding {{{
       Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
@@ -321,6 +315,9 @@
 
   " Yank current filename + line number to clipboard
   nnoremap <silent> <Leader>yp :let @*=join([expand('%'), line('.')], ':')<Cr>
+
+  " Quickly create a new file in the current folder
+  nnoremap <Leader>s :saveas <C-r>=expand('%:h')<Cr>/
 
   " quickly edit vimrc and color theme
   nnoremap <Leader>ev :tabe $MYVIMRC<Cr>

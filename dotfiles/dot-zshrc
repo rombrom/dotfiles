@@ -1,33 +1,6 @@
-# # Disable completion permission check (when current user has not installed zsh)
-# ZSH_DISABLE_COMPFIX=true
+# /* vim: set filetype=zsh : */
 
-# # Path to your oh-my-zsh installation.
-# export ZSH=$HOME/.oh-my-zsh
-
-# # Set name of the theme to load. Optionally, if you set this to "random"
-# # it'll load a random theme each time that oh-my-zsh is loaded.
-# # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-# ZSH_THEME="robbyrussell"
-
-# # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# # Example format: plugins=(rails git textmate ruby lighthouse)
-# # Add wisely, as too many plugins slow down shell startup.
-# plugins=(
-#   colored-man-pages
-#   docker
-#   docker-compose
-#   git
-#   git-extras
-#   urltools
-#   z
-# )
-
-# source "$ZSH/oh-my-zsh.sh"
-
-# # # # # # # # # # # #
-# Removal in progress #
-# # # # # # # # # # # #
+[[ -n "$ENABLE_ZPROF" ]] && zmodload zsh/zprof
 
 path=(
   /usr/local/opt/coreutils/libexec/gnubin
@@ -36,6 +9,8 @@ path=(
   /usr/local/opt/gnu-sed/libexec/gnubin
   /usr/local/opt/gnu-getopt/bin
   /usr/local/opt/grep/libexec/gnubin
+  /usr/local/opt/node@12/bin
+  /usr/local/opt/python@3.9/libexec/bin
   $path[@]
 )
 
@@ -48,17 +23,32 @@ manpath=(
   "$manpath[@]"
 )
 
-setopt EXTENDED_GLOB
-setopt INTERACTIVE_COMMENTS
-setopt LONG_LIST_JOBS
+cdpath=(
+  "$HOME/Code"
+)
 
+source "$HOME/.config/zsh/options.zsh"
 source "$HOME/.config/zsh/exports.zsh"
-
-source "$HOME/.config/zsh/prompt.zsh"
-source "$HOME/.config/zsh/completion.zsh"
-source "$HOME/.config/zsh/history.zsh"
-source "$HOME/.config/zsh/zle.zsh"
-
 source "$HOME/.config/zsh/functions.zsh"
 source "$HOME/.config/zsh/aliases.zsh"
+
+# plugins {{{
+  # ideally loaded before ccmpinit
+  [[ ! -d "$HOME/.zinit" ]] && \
+    git clone --depth=1 https://github.com/zdharma/zinit.git ~/.zinit/bin
+
+  source "$HOME/.zinit/bin/zinit.zsh"
+
+  zinit wait lucid for \
+    depth'1' pick"contrib/completion/zsh" docker/cli \
+    depth'1' pick"contrib/completion/zsh" docker/compose
+# }}}
+
+source "$HOME/.config/zsh/completion.zsh"
+source "$HOME/.config/zsh/prompt.zsh"
+source "$HOME/.config/zsh/zle.zsh"
+
+# vendor
 source "$HOME/.config/zsh/fzf.zsh"
+
+[[ -n "$ENABLE_ZPROF" ]] && zprof

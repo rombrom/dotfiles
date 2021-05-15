@@ -11,6 +11,7 @@ brew tap universal-ctags/universal-ctags
 
 # Install core utilities
 brew install \
+  bash-completion \
   bat \
   bats-core \
   coreutils \
@@ -43,6 +44,12 @@ brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 # Install Node v12
 brew install node@12
 brew link node@12 --force --overwrite
+
+# Install Recent Python
+brew install python
+
+# fix zsh-completion directory permissions
+chmod -R go-w '/usr/local/share/zsh'
 
 # Remove outdated versions from the cellar.
 brew cleanup

@@ -7,19 +7,19 @@ sudo -v;
 
 function main() {
   # Install Homebrew first
-  #echo "Installing Homebrew...";
-  #echo "";
-  #/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
+  echo "Installing Homebrew...";
+  echo "";
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
   # Install utilities via Homebrew
-  #echo "Installing Homebrew packages...";
-  #echo "";
-  #source ./init/brew.sh;
+  echo "Installing Homebrew packages...";
+  echo "";
+  source ./init/brew.sh;
 
   # Install essential Node utils
-  #echo "Installing Node packages...";
-  #echo "";
-  #source ./init/node.sh;
+  echo "Installing Node packages...";
+  echo "";
+  source ./init/node.sh;
 
   # Sync dotfiles
   echo "Synchronizing dotfiles...";
@@ -34,10 +34,10 @@ function main() {
   brew services start dnsmasq
 
   # change shell to newly installed zsh
-  chsh -s "$(which zsh)"
-
-  echo "Done.";
+  echo "Done after changing shell";
   echo "";
+  chsh -s "/usr/local/bin/zsh"
+
 }
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then

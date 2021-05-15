@@ -35,7 +35,7 @@ alias fgrep='fgrep --color'
 alias egrep='egrep --color'
 
 # Ignore common "junk" folders
-alias tree='tree -I "node_modules"'
+alias tree='tree --dirsfirst -I "node_modules"'
 
 # Enable aliases to be sudo’ed
 alias sudo='sudo '
@@ -57,4 +57,4 @@ alias map="xargs -n1"
 [[ "$TERM" = "xterm-kitty" ]] && alias icat='kitty +kitten icat'
 
 # Reload zshrc
-alias reload='exec zsh'
+alias reload='clear && exec zsh'
