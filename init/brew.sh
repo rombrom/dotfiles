@@ -48,5 +48,15 @@ brew install python
 # fix zsh-completion directory permissions
 chmod -R go-w '/usr/local/share/zsh'
 
+# install casks
+brew install --casks \
+  1password \
+  docker \
+  firefox-developer-edition \
+  google-chrome \
+  kitty \
+  microsoft-teams \
+  spotify
+
 # Remove outdated versions from the cellar.
 brew cleanup
