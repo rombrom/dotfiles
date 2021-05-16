@@ -3,6 +3,7 @@
 [[ -n "$ENABLE_ZPROF" ]] && zmodload zsh/zprof
 
 path=(
+  "$HOME/.local/bin"
   /usr/local/opt/coreutils/libexec/gnubin
   /usr/local/opt/findutils/libexec/gnubin
   /usr/local/opt/gnu-tar/libexec/gnubin
@@ -11,7 +12,7 @@ path=(
   /usr/local/opt/grep/libexec/gnubin
   /usr/local/opt/node@12/bin
   /usr/local/opt/python@3.9/libexec/bin
-  $path[@]
+  $path
 )
 
 manpath=(
@@ -20,7 +21,7 @@ manpath=(
   /usr/local/opt/gnu-tar/libexec/gnuman
   /usr/local/opt/gnu-sed/libexec/gnuman
   /usr/local/opt/grep/libexec/gnuman
-  "$manpath[@]"
+  $manpath
 )
 
 cdpath=(

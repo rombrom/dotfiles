@@ -43,7 +43,6 @@ brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
 # Install Node v12
 brew install node@12
-brew link node@12 --force --overwrite
 
 # Install Recent Python
 brew install python

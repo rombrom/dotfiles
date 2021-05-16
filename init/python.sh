@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 
 # update path for this session
-export PATH="/usr/local/opt/python@3.9/libexec/bin:$PATH"
+export PATH="$HOME/.local/bin:/usr/local/opt/python@3.9/libexec/bin:$PATH"
 
-pip install 'python-language-server[all]'
-pip install autoimport
-pip install black
-pip install isort
-pip install mypy
-pip install pipenv
+# install pipx first...
+pip install pipx
+
+# ...and then the rest
+pipx install autoimport
+pipx install black
+pipx install flake8
+pipx install isort
+pipx install mccabe
+pipx install mypy
+pipx install pipenv
+pipx install pyflakes
+pipx install rope
