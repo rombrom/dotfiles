@@ -247,7 +247,9 @@
     Plug 'airblade/vim-gitgutter'
 
     " Make vim + tmux awesome
-    Plug 'knubie/vim-kitty-navigator'
+    Plug 'knubie/vim-kitty-navigator', {
+      \'do': 'cp ./*.py \"$HOME/.config/kitty/\"'
+    \}
 
     " Pope
     Plug 'tpope/vim-fugitive'

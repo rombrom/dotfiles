@@ -26,29 +26,45 @@ function main() {
   # Sync dotfiles
   echo "Synchronizing dotfiles..."
   echo ""
-  stow dotfiles --dotfiles --target="$HOME"
+  stow --dir=dotfiles --target="$HOME" \
+    --stow ctags \
+    --stow git \
+    --stow kitty \
+    --stow misc \
+    --stow tig \
+    --stow vim \
+    --stow zsh \
+    --verbose
+
+  echo "Installing vim plugins"
+  echo ""
+  vim +PlugInstall +qa
 
   # Sync settings
-  sudo ln -sFi "$(realpath ./settings/dnsmasq.conf)" /usr/local/etc/dnsmasq.conf
-  sudo ln -sFi "$(realpath ./settings/resolver)" /etc/resolver
+  echo "Copying settings..."
+  echo ""
+  cp -v ./settings/dnsmasq.conf /usr/local/etc/dnsmasq.conf
+
+  sudo mkdir -p /etc/resolver
+  sudo cp -v ./settings/localhost.resolver /etc/resolver/localhost
 
   # Kick off dnsmasq
   brew services start dnsmasq
 
   # change shell to newly installed zsh
-  echo "Done after changing shell"
+  echo "Changing shell to /usr/local/bin/zsh"
   echo ""
   chsh -s "/usr/local/bin/zsh"
 }
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
-	main
+  main
 else
-	read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1
-	echo ""
-	if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-		main
-	fi
+  read -p "This may overwrite existing files in your home directory. Are you sure? (y/n) " -n 1
+  echo ""
+  if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    main
+  fi
 fi
 
 unset main
