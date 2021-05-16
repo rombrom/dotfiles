@@ -1,16 +1,10 @@
-# Open man page in Preview.app
-function manp() {
-  if [[ -z "$@" ]]; then
-    man -t "$@";
-    return;
-  fi
-
-  man -w "$@" | xargs groff -Tps -mandoc -c -f C | open -f -a Preview;
-}
-
 # cd to dir and ls afterwards
 function cl() {
   cd "$1" && ls -AGghp;
+}
+
+function mcd() {
+  mkdir -p "$1" && cd "$1"
 }
 
 # Create a data URL from a file
@@ -86,12 +80,12 @@ EOF
     local mimeType=$(file -b --mime-type "$file");
     if [[ "$mimeType" =~ "^image/svg(\+xml)?$" ]]; then
       local base="${file##*/}";
-      local name="${base%.*}";
+      local id="${base%.*}";
       local viewBox=$(grep -oE 'viewBox="[^"]+"' < "$file");
       local symbol=$(cat "$file" \
         | tr '\n' ' ' \
         | sed -E 's#<(\?xml|!)[^>]+>##g' \
-        | sed -E "s#<svg[^>]+>#<symbol id=\"$name\" $viewBox>#g" \
+        | sed -E "s#<svg[^>]+>#<symbol id=\"$id\" $viewBox>#g" \
         | sed -E 's#</svg>#</symbol>#g'
       );
 

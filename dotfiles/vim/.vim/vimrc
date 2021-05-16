@@ -197,7 +197,7 @@
     " python-specific
     let g:ale_python_auto_pipenv = 1
     let g:ale_linters = {
-          \'python': ['black', 'mypy', 'pyls']
+          \'python': ['black', 'flake8', 'mypy', 'pyflakes', 'pyls']
     \}
 
     " make linting possible in strange files
@@ -248,7 +248,7 @@
 
     " Make vim + tmux awesome
     Plug 'knubie/vim-kitty-navigator', {
-      \'do': 'cp ./*.py \"$HOME/.config/kitty/\"'
+      \'do': 'cp *.py $HOME/.config/kitty'
     \}
 
     " Pope

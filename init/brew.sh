@@ -25,10 +25,8 @@ brew install \
   gnu-getopt \
   gnu-sed \
   gnu-tar \
-  gnupg \
   grep \
   imagemagick \
-  jq \
   pandoc \
   ripgrep \
   stow \
