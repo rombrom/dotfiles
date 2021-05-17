@@ -502,7 +502,8 @@
   hi User3 ctermfg=3 ctermbg=0
   hi User4 ctermfg=4 ctermbg=0
   hi User7 ctermfg=7 ctermbg=0
-  hi User9 ctermfg=none ctermbg=0 cterm=italic
+
+  hi User9 ctermfg=12 ctermbg=0
 
   function! StatusLine() abort
     " buffer number
@@ -513,19 +514,8 @@
     " help/read only
     let statusline.= '%(%h%r %)'
 
-    " file modified
-    " Use two groups which won't render when they return an empty string.
-    " It's a bit awkward to apply a highlight group to a modified file this
-    " way.
-    " TODO: It's probably possible to do it in one function?
-    " TODO: Currently this won't do [Quickfix List], etc.
-    " function! IsModified()
-    "   return getbufvar(bufnr(), '&modified')
-    " endfunction
-
-    " let statusline.= '%(%4*»%* %9*%<%{IsModified() ? strlen(@%) ? @% : "[No Name]" : ""}%* + %)'
-    " let statusline.= '%(%4*»%* %<%{IsModified() ? "" : strlen(@%) ? @% : "[No Name]" } %)'
-    let statusline.= '%(%4*»%* %<%f %(%M %)%)'
+    " filename
+    let statusline.= '%(%4*»%* %<%f %(%3*%M%* %)%)'
     let statusline.= '%(%{exists("w:quickfix_title") ? w:quickfix_title : ""} %)'
 
     " line/column number
@@ -562,7 +552,7 @@
     let statusline.= '%(%1*%{ALEProblems("error", "style_error")}‼ %*%)'
 
     " branch name
-    let statusline .= '%(%4*«%* %<%{FugitiveHead()} %)'
+    let statusline .= '%(%4*«%* %9*%<%{FugitiveHead()}%* %)'
 
     " this makes sure the statusline is redrawn
     " :h stl-%{
