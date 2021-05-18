@@ -2,10 +2,6 @@ autoload -U edit-command-line
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 
-# NOTE: somehow I need to set vi-mode explicitly?  zsh doesnt seem to pick up
-# EDITOR (maybe it's an os-level thing?)
-bindkey -v
-
 bindkey -M menuselect "${terminfo[kcbt]}" reverse-menu-complete
 bindkey -M menuselect "^P" reverse-menu-complete
 bindkey -M menuselect "^N" menu-complete

@@ -2,6 +2,7 @@
 
 [[ -n "$ENABLE_ZPROF" ]] && zmodload zsh/zprof
 
+# path settings
 path=(
   "$HOME/.local/bin"
   /usr/local/opt/coreutils/libexec/gnubin
@@ -28,28 +29,24 @@ cdpath=(
   "$HOME/Code"
 )
 
-source "$HOME/.config/zsh/options.zsh"
-source "$HOME/.config/zsh/exports.zsh"
-source "$HOME/.config/zsh/functions.zsh"
-source "$HOME/.config/zsh/aliases.zsh"
+# plugins (loaded before compinit)
+[[ ! -d "$HOME/.zinit" ]] && \
+  git clone --depth=1 https://github.com/zdharma/zinit.git ~/.zinit/bin
 
-# plugins {{{
-  # ideally loaded before ccmpinit
-  [[ ! -d "$HOME/.zinit" ]] && \
-    git clone --depth=1 https://github.com/zdharma/zinit.git ~/.zinit/bin
+source "$HOME/.zinit/bin/zinit.zsh"
 
-  source "$HOME/.zinit/bin/zinit.zsh"
+zinit wait lucid for \
+  depth'1' pick"contrib/completion/zsh" docker/cli \
+  depth'1' pick"contrib/completion/zsh" docker/compose
 
-  zinit wait lucid for \
-    depth'1' pick"contrib/completion/zsh" docker/cli \
-    depth'1' pick"contrib/completion/zsh" docker/compose
-# }}}
+# NOTE: VIM mode needs to be set explicitly, I think, because EDITOR is is
+# probably unset in macOS global env. Also, we want to set it here before
+# zle.zsh (or other bindings) are loaded.
+bindkey -v
 
-source "$HOME/.config/zsh/completion.zsh"
-source "$HOME/.config/zsh/prompt.zsh"
-source "$HOME/.config/zsh/zle.zsh"
-
-# vendor
-source "$HOME/.config/zsh/fzf.zsh"
+# load config files
+for file ($HOME/.config/zsh/**/*); do
+  [[ -f "$file" ]] && source "$file"
+done;
 
 [[ -n "$ENABLE_ZPROF" ]] && zprof

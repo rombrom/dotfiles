@@ -6,25 +6,8 @@ alias lc="ls --format=single-column"
 
 alias ..='cd ..'
 
-# git stuff
-alias ga='git add'
-alias gb='git branch'
-alias gc='git commit -v'
-alias gcb='git checkout -b'
-alias gcl='git clone'
-alias gcm='git checkout master'
-alias gcn='git commit -v --no-verify'
-alias gco='git checkout'
-alias gd='git diff'
-alias gf='git fetch --prune'
-alias gl='git pull origin HEAD'
-alias glg='git log --abbrev-commit --date=relative --stat'
-alias glo='git log --oneline'
-alias gm='git merge'
-alias gp='git push origin HEAD'
-alias gpn='git push origin HEAD --no-verify'
-alias gr='git rebase'
-alias gss='git status --short'
+# kitty stuff
+alias title='kitty @set-tab-title'
 
 # this always happens
 alias :q='exit'
