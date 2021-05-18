@@ -30,9 +30,5 @@ zstyle ':completion:*:(cd|pushd):*' tag-order \
 # ignore zsh completion functions
 zstyle ':completion:*:functions' ignored-patterns '_*'
 
-# kitty completion
-[[ "$TERM" = "xterm-kitty" ]] && \
-  kitty +complete setup zsh | source /dev/stdin
-
 # use caching
 zstyle ':completion::complete:*' use-cache true

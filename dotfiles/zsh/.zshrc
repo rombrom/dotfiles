@@ -3,6 +3,11 @@
 [[ -n "$ENABLE_ZPROF" ]] && zmodload zsh/zprof
 
 # path settings
+fpath=(
+  "$HOME/.config/zsh/completions"
+  $fpath
+)
+
 path=(
   "$HOME/.local/bin"
   /usr/local/opt/coreutils/libexec/gnubin
@@ -45,7 +50,7 @@ zinit wait lucid for \
 bindkey -v
 
 # load config files
-for file ($HOME/.config/zsh/**/*); do
+for file ($HOME/.config/zsh/*); do
   [[ -f "$file" ]] && source "$file"
 done;
 
