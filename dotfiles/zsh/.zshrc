@@ -34,6 +34,11 @@ cdpath=(
   "$HOME/Code"
 )
 
+# NOTE: VIM mode needs to be set explicitly, I think, because EDITOR is is
+# probably unset in macOS global env. Also, we want to set it here before
+# zle.zsh (or other bindings) are loaded.
+bindkey -v
+
 # plugins (loaded before compinit)
 [[ ! -d "$HOME/.zinit" ]] && \
   git clone --depth=1 https://github.com/zdharma/zinit.git ~/.zinit/bin
@@ -43,11 +48,6 @@ source "$HOME/.zinit/bin/zinit.zsh"
 zinit wait lucid for \
   depth'1' pick"contrib/completion/zsh" docker/cli \
   depth'1' pick"contrib/completion/zsh" docker/compose
-
-# NOTE: VIM mode needs to be set explicitly, I think, because EDITOR is is
-# probably unset in macOS global env. Also, we want to set it here before
-# zle.zsh (or other bindings) are loaded.
-bindkey -v
 
 # load config files
 for file ($HOME/.config/zsh/*); do
