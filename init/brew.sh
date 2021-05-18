@@ -51,6 +51,7 @@ chmod -R go-w '/usr/local/share/zsh'
 # install casks
 brew install --casks \
   1password \
+  appcleaner \
   docker \
   firefox-developer-edition \
   google-chrome \
