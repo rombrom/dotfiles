@@ -12,7 +12,7 @@ zstyle ':completion:*' list-colors ${(s.:.)"$(dircolors)"}
 zstyle ':completion:*' list-dirs-first true
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' rehash true
-#
+
 # case-insensitive matching
 zstyle ':completion:*' matcher-list \
   'm:{[:lower:]}={[:upper:]}' 'r:|[._-]=** r:|=**' 'l:|=* r:|=*'
