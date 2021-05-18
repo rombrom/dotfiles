@@ -31,4 +31,4 @@ zstyle ':completion:*:(cd|pushd):*' tag-order \
 zstyle ':completion:*:functions' ignored-patterns '_*'
 
 # use caching
-zstyle ':completion::complete:*' use-cache true
+zstyle ':completion:*' use-cache true
