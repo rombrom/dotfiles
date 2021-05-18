@@ -185,7 +185,7 @@ hi! link SpellLocal SpellCap
 hi! link SpellRare SpellCap
 
 " Syntax: {{{
-  hi! link Comment FANSIBlackLight
+  hi Comment ctermfg=8 ctermbg=none cterm=italic
 
   hi! link Directory FANSIBlueBold
 
