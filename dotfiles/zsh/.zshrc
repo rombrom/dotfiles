@@ -1,4 +1,4 @@
-# /* vim: set filetype=zsh : */
+# Rommert Zijlstra's .zshrc
 
 [[ -n "$ENABLE_ZPROF" ]] && zmodload zsh/zprof
 
