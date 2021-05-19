@@ -493,13 +493,14 @@
   hi! link EndOfBuffer NonText
 
   " Status line
-  hi User1 ctermfg=1 ctermbg=0
+  hi User1 ctermfg=1 ctermbg=0 cterm=bold
   hi User2 ctermfg=2 ctermbg=0
-  hi User3 ctermfg=3 ctermbg=0
+  hi User3 ctermfg=3 ctermbg=0 cterm=bold
   hi User4 ctermfg=4 ctermbg=0
   hi User7 ctermfg=7 ctermbg=0
 
-  hi User9 ctermfg=12 ctermbg=0
+  hi User8 ctermfg=none ctermbg=0
+  hi User9 ctermfg=12 ctermbg=0 cterm=bold
 
   function! StatusLine() abort
     " buffer number
@@ -511,7 +512,7 @@
     let statusline.= '%(%h%r %)'
 
     " filename
-    let statusline.= '%(%4*»%* %<%f %(%3*%M%* %)%)'
+    let statusline.= '%(%4*»%* %8*%<%f%* %(%3*%M%* %)%)'
     let statusline.= '%(%{exists("w:quickfix_title") ? w:quickfix_title : ""} %)'
 
     " line/column number
