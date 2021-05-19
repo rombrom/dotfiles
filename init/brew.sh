@@ -11,7 +11,6 @@ brew tap universal-ctags/universal-ctags
 
 # Install core utilities
 brew install \
-  bash-completion \
   bat \
   bats-core \
   coreutils \
@@ -36,7 +35,6 @@ brew install \
   zsh \
   zsh-completions
 
-# kick-off installation
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
 # Install Node v12

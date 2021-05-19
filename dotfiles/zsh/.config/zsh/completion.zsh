@@ -32,3 +32,7 @@ zstyle ':completion:*:functions' ignored-patterns '_*'
 
 # use caching
 zstyle ':completion:*' use-cache true
+
+# misc completions
+source /usr/local/etc/bash_completion.d/npm
+source /usr/local/etc/bash_completion.d/pipx
