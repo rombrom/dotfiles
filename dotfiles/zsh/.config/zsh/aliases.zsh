@@ -12,6 +12,7 @@ alias title='kitty @set-tab-title'
 # this always happens
 alias :q='exit'
 alias cp='cp -R'
+alias mkdir='mkdir -p'
 
 # Always enable colored `grep` output
 alias grep='grep --color'
