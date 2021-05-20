@@ -189,11 +189,11 @@ hi! link SpellRare SpellCap
 
   hi! link Directory FANSIBlueBold
 
-  hi! link Constant FANSIMagentaLight
+  hi! link Constant FANSIMagenta
   hi! link String FANSIGreen
   hi! link Character FANSIRedLight
   hi! link Number FANSIMagentaLight
-  hi! link Boolean FANSIMagentaLight
+  hi! link Boolean FANSIMagenta
   hi! link Float FANSIMagentaLight
 
   hi! link Identifier FANSIBlue
