@@ -7,7 +7,8 @@ zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' stagedstr ' ⌥'
 zstyle ':vcs_info:*' unstagedstr ' +'
-zstyle ':vcs_info:*' formats '%F{12}%b%f%F{3}%c%u%f '
+zstyle ':vcs_info:*' formats '%F{12}%b%F{3}%c%u%f '
+zstyle ':vcs_info:*' actionformats '%F{12}%b %F{11}%a%F{3}%c%u%f '
 
 add-zsh-hook precmd vcs_info
 
