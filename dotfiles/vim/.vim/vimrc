@@ -131,6 +131,7 @@
 
     Plug 'mattn/emmet-vim'
     Plug 'wellle/targets.vim'
+    let g:targets_nl = 'nN'
 
     " Popie jopie
     Plug 'tpope/vim-fugitive'
