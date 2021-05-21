@@ -2,6 +2,7 @@
 alias ga='git add'
 alias gb='git branch'
 alias gc='git commit -v'
+alias gca='git commit -av'
 alias gcb='git checkout -b'
 alias gcl='git clone'
 alias gcm='git checkout master'
