@@ -8,7 +8,7 @@ setopt ALWAYS_TO_END
 setopt AUTO_MENU
 setopt COMPLETE_IN_WORD
 
-zstyle ':completion:*' list-colors ${(s.:.)"$(dircolors)"}
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-dirs-first true
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' rehash true

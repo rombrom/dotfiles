@@ -4,10 +4,8 @@ alias ls="gls --color=always --group-directories-first --indicator-style=slash"
 alias l="ls -Ahl"
 alias lc="ls --format=single-column"
 
+# navigation
 alias ..='cd ..'
-
-# kitty stuff
-alias title='kitty @set-tab-title'
 
 # this always happens
 alias :q='exit'
@@ -38,8 +36,14 @@ alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo 
 # find . -name .gitattributes | map dirname
 alias map="xargs -n1"
 
-# icat: cat images w/ kitty
-[[ "$TERM" = "xterm-kitty" ]] && alias icat='kitty +kitten icat'
+# Suffix aliases
+alias -g Y='| pbcopy'
+
+# kitty stuff
+if [[ "$TERM" = "xterm-kitty" ]]; then
+  alias title='kitty @set-tab-title'
+  alias icat='kitty +kitten icat'
+fi
 
 # Reload zshrc
 alias reload='clear && exec zsh'
