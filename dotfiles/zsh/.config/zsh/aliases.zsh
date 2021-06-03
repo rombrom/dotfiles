@@ -11,6 +11,7 @@ alias ..='cd ..'
 alias :q='exit'
 alias cp='cp -R'
 alias mkdir='mkdir -p'
+alias rg="rg --hidden --glob '!.git' --ignore"
 
 # Always enable colored `grep` output
 alias grep='grep --color'
