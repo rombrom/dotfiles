@@ -130,8 +130,6 @@
     let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
 
     Plug 'mattn/emmet-vim'
-    Plug 'wellle/targets.vim'
-    let g:targets_nl = 'nN'
 
     " Popie jopie
     Plug 'tpope/vim-fugitive'
@@ -304,6 +302,10 @@
 
   " use `u` to undo, use `U` to redo
   nnoremap U <C-r>
+
+  " make single quote work like backtick (e.g. go to column of mark, not
+  " beginning of line)
+  map ' `
 
   " CTRL-U in insert mode deletes a lot. Put an undo-point before it.
   inoremap <C-u> <C-g>u<C-u>
