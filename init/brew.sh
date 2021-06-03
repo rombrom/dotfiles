@@ -11,6 +11,7 @@ brew tap universal-ctags/universal-ctags
 
 # Install core utilities
 brew install \
+  azure-cli \
   bat \
   bats-core \
   coreutils \
@@ -26,6 +27,7 @@ brew install \
   gnu-tar \
   grep \
   imagemagick \
+  jq \
   pandoc \
   ripgrep \
   stow \
@@ -55,7 +57,11 @@ brew install --casks \
   google-chrome \
   kitty \
   microsoft-teams \
-  spotify
+  spotify \
+  steam # daddy needs his Factorio
+
+# install azure dependencies
+az extension add --name azure-devops
 
 # Remove outdated versions from the cellar.
 brew cleanup

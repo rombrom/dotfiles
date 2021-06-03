@@ -34,5 +34,6 @@ zstyle ':completion:*:functions' ignored-patterns '_*'
 zstyle ':completion:*' use-cache true
 
 # misc completions
+source /usr/local/etc/bash_completion.d/az
 source /usr/local/etc/bash_completion.d/npm
 source /usr/local/etc/bash_completion.d/pipx
