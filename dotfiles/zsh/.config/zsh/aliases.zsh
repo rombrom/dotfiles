@@ -1,6 +1,6 @@
 # Use ls colors by default
 # Need to use gls due to coreutils install from brew
-alias ls="gls --color=always --group-directories-first --indicator-style=slash"
+alias ls="gls -v --color=always --group-directories-first --indicator-style=slash"
 alias l="ls -Ahl"
 alias lc="ls --format=single-column"
 
