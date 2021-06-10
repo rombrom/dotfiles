@@ -508,10 +508,11 @@
   hi User9 ctermfg=12 ctermbg=0 cterm=bold
 
   function! StatusLine() abort
+    let statusline = ''
     " buffer number
     " TODO: make this local to buffer
     let bufnr_padding = &numberwidth  + (&signcolumn == 'yes' ? 1 : 0) + &foldcolumn
-    let statusline = '%' . bufnr_padding . 'n '
+    let statusline.= '%' . bufnr_padding . 'n '
 
     " help/read only
     let statusline.= '%(%h%r %)'
