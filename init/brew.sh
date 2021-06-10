@@ -29,6 +29,7 @@ brew install \
   imagemagick \
   jq \
   pandoc \
+  postman \
   ripgrep \
   stow \
   tree \
