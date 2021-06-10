@@ -37,7 +37,7 @@
 
   " Search & tags
   set gdefault                      " Use /g flag for RegExp by default
-  set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
+  set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --hidden\ --glob\ '!.git'\ --ignore
   set hlsearch                      " highlight matches
   set ignorecase
   set incsearch                     " search as characters are entered
