@@ -460,7 +460,8 @@
             " \ | if strlen(&formatexpr) || strlen(&formatprg) | exe 'normal! gqG' | endif
 
       " Hack to make <C-x><C-f> work with files relative to current buffer
-      autocmd InsertEnter * let cwd = getcwd() | lcd %:p:h
+      autocmd InsertEnter * let cwd = getcwd() |
+            \ if isdirectory(expand('%:p:h')) | lcd %:p:h | endif
       autocmd InsertLeave * execute 'lcd' fnameescape(cwd)
 
       " undo shell command errors
