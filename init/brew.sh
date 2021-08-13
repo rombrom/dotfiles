@@ -16,7 +16,7 @@ brew install \
   bats-core \
   coreutils \
   dnsmasq \
-  entr \
+  fd \
   findutils \
   fzf \
   gawk \
@@ -31,9 +31,12 @@ brew install \
   pandoc \
   postman \
   ripgrep \
+  shellcheck \
   stow \
   tree \
   vim \
+  watchexec \
+  watchman \
   wget \
   zsh \
   zsh-completions
