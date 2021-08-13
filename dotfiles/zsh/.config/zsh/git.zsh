@@ -11,7 +11,7 @@ alias gcn='git commit -v --no-verify'
 alias gco='git checkout'
 alias gd='git diff'
 alias gf='git fetch --prune'
-alias gl='git pull origin HEAD'
+alias gl='git pull'
 alias glg='git log --abbrev-commit --date=relative --stat'
 alias glo='git log --oneline'
 alias gm='git merge'
@@ -25,4 +25,9 @@ alias gss='git status --short'
 alias gcof="git checkout \$( \
   git branch --all --sort -committerdate | grep -v '^*' | \
   fzf --preview 'git log --color --oneline {1}' \
+  )"
+
+alias gbfd="git branch -D \$( \
+  git branch --sort -committerdate | grep -v '^*' | \
+  fzf --multi --preview 'git log --color --oneline {1}' \
   )"
