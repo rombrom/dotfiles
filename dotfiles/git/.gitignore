@@ -1,6 +1,3 @@
-# Compiled Python files
-*.pyc
-
 # Folder view configuration files
 .DS_Store
 Desktop.ini
@@ -9,15 +6,17 @@ Desktop.ini
 ._*
 Thumbs.db
 
-# Linter caches
-.php_cs.cache
+# Ctags stuff
+tags
+!tags/
+ctags
+!ctags/
+.ctags.d
 
 # Editor config files
 .vscode
+Session.vim
 
 # Files that might appear on external disks
 .Spotlight-V100
 .Trashes
-
-# Universal ctags files
-tags

@@ -2,14 +2,18 @@
 --map-GraphQL=+.graphql
 
 --kinddef-GraphQL=e,enum,enums
+--kinddef-GraphQL=f,fragment,fragments
 --kinddef-GraphQL=n,interface,interfaces
 --kinddef-GraphQL=i,input,inputs
 --kinddef-GraphQL=m,mutation,mutations
 --kinddef-GraphQL=q,query,queries
 --kinddef-GraphQL=t,type,types
 --kinddef-GraphQL=u,union,unions
+--kinddef-GraphQL=x,extend,extends
 
 --regex-GraphQL=/^enum[[:blank:]]+([A-Za-z0-9_]+)/\1/e/
+--regex-GraphQL=/^extend[[:blank:]]+([A-Za-z0-9_]+)/\1/u/
+--regex-GraphQL=/^fragment[[:blank:]]+([A-Za-z0-9_]+)/\1/f/
 --regex-GraphQL=/^interface[[:blank:]]+([A-Za-z0-9_]+)/\1/n/
 --regex-GraphQL=/^input[[:blank:]]+([A-Za-z0-9_]+)/\1/i/
 --regex-GraphQL=/^mutation[[:blank:]]+([A-Za-z0-9_]+)/\1/m/
