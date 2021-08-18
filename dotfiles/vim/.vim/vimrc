@@ -256,11 +256,8 @@
 
     " Make vim + kitty awesome
     Plug 'knubie/vim-kitty-navigator', {
-      \'do': 'cp *.py $HOME/.config/kitty'
+      \'do': 'cp -f *.py $HOME/.config/kitty'
     \}
-
-    " Automagic disabling of search highlighting
-    Plug 'romainl/vim-cool'
 
     " Trace Hilight groups
     Plug 'gerw/vim-HiLinkTrace'
@@ -452,7 +449,7 @@
   " }}}
 
   " Settings: misc
-    augroup MyMisc
+    augroup Misc
       autocmd!
       " Return to last edit position when opening files
       autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
