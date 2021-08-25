@@ -29,6 +29,9 @@
 	# list changed files w/ change statistics
 	stat = !git diff --stat $(git merge-base HEAD \"${REVIEW_BASE:-master}\")
 
+	# list TODO's in current HEAD vs default branch
+	todo = !vim +'Grep TODO $(git diff --name-only $(git merge-base HEAD ${REVIEW_BASE:-master}))' +'cfirst'
+
 [init]
 	templatedir = ~/.git_template
 	defaultBranch = master
