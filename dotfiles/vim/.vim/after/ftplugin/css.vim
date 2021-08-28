@@ -5,4 +5,4 @@ setlocal iskeyword+=-
 setlocal suffixesadd+=.css,.less,.sass,.scss,.styl
 
 " init ale mappings, etc.
-call webdev#Init()
+call init#webdev()

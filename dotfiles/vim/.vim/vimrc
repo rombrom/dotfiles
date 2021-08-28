@@ -1,578 +1,151 @@
 " Rommert Zijlstra's .vimrc
 
-" {{{ General
+" Auto-install Plug
+" https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-  set exrc                          " Can haz $CWD/.vimrc
-  set hidden                        " Allow unsaved buffers
-
-  " Editing
-  set autoread                      " Re-read files when changed outside vim
-  set backspace=indent,eol,start    " Allow backspace in insert mode
-  set clipboard=unnamed             " Use the macOS clipboard
-  set complete+=kspell              " Add dictionary to autocomplete options
-  set completeopt=menuone,noinsert,noselect,popup
-  set dictionary+=/usr/share/dict/words " Use the linked dictionary of macOS
-  set display+=lastline
-  set encoding=utf-8 nobomb
-  set esckeys                       " Allow arrow keys in insert mode
-  set formatoptions+=jn             " Delete comment character when joining lines
-  set history=200                   " never found use of setting this higher
-  set nostartofline
-  set spelllang=en,nl               " Use English and Dutch
-  set omnifunc=syntaxcomplete#Complete " Default omnifunc
-
-  " Indentation and wrapping
-  set autoindent                    " Automatic indentation in insert mode
-  set breakindent                   " Indent text wrapping
-  set cindent                       " Smart autmatic indentation
-  set expandtab                     " Use spaces for tabs
-  set linebreak                     " Break after words
-  set shiftround                    " Round < & > to nearest softtabstop
-  set shiftwidth=2                  " Use 2 spaces for indentation
-  set smarttab
-  set softtabstop=2
-  let &showbreak='› '               " Show a wrapping indicator
-  set smarttab                      " Delete shiftwidth amount of chars
-  set nowrap                        " Let lines overflow a window
-
-  " Search & tags
-  set gdefault                      " Use /g flag for RegExp by default
-  set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --hidden\ --glob\ '!.git'\ --ignore
-  set hlsearch                      " highlight matches
-  set ignorecase
-  set incsearch                     " search as characters are entered
-  set smartcase
-
-  " Terminal behavior
-  set lazyredraw
-  set mouse=a                       " Enable mouse in all modes
-  set title                         " Show the filename in the window titlebar
-  set ttimeoutlen=50                " Return to NORMAL quickly after <ESC>
-  set ttyfast                       " Optimize for fast terminal connections
-  set ttymouse=sgr                  " Enable proper mouse support
-  set vb t_vb=                      " Remove 'bell' in vim
-
-  " UI
-  set ballooneval
-  set balloonevalterm
-  " set cursorline
-  set cursorlineopt=screenline,number
-  set diffopt+=algorithm:histogram,indent-heuristic,vertical
-  set foldcolumn=0
-  set foldenable                    " enable folding
-  set foldlevelstart=99             " open all folds by default
-  set foldmethod=indent
-  set foldnestmax=10                " 10 nested fold max; > 10 == absurd
-  set laststatus=2                  " Always show status line
-  set list
-  set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
-  " set number
-  " set numberwidth=5                 " make the current line stand out
-  " set relativenumber
-  set scrolloff=3                   " Keep 5 lines above/below cursor visible
-  set shortmess=atI                 " Don’t show the intro message
-  set showcmd                       " Show command as it’s being typed
-  set showmatch                     " highlight matching [{()}]
-  set signcolumn=yes
-  set spelllang=en,nl               " Use English and Dutch
-  set synmaxcol=1000                " We don't need that much syntax per line
-  set wildmenu                      " visual autocomplete for command menu
-
-  " Windows
-  set splitbelow splitright         " The same behavior as tmux
-  set winheight=25
-  set winminheight=6
-  set winminwidth=20
-  set winwidth=88
-
-  " Experimental
-  set path=.,,**                    " Let :find work as a fuzzy-matcher
-  set sessionoptions=buffers,folds,tabpages,winsize
-  set wildignore=**/dist/**,**/node_modules/** " and ignore some folders
-
-" }}}
-
-" {{{ Backup & undo
-
-  set writebackup     " Protect files against crash-during-write
-  set nobackup        " but remove the backup after succesful write
-  set backupcopy=auto "  use rename-and-write-new method whenever safe
-  set backupdir=~/.vim/backup//
-
-  set swapfile        " write a swap every now and then
-  set directory=~/.vim/swap//
-
-  set undofile        " persistent undo is AWESOME
-  set undodir=~/.vim/undo//
-
-" }}}
+call plug#begin('~/.vim/bundle')
 
 " {{{ Plugins
+packadd! cfilter       " Add Cfilter Lfitler commands
+packadd! editexisting  " Open existing vim instance if open
+packadd! matchit       " Make % command work better
 
-  " {{{ Auto-install Plug
+Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+Plug 'airblade/vim-gitgutter'
+Plug 'dense-analysis/ale'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'gerw/vim-HiLinkTrace'
+Plug 'knubie/vim-kitty-navigator', { 'do': 'cp -f *.py $HOME/.config/kitty' }
+Plug 'mattn/emmet-vim'
+Plug 'sheerun/vim-polyglot'
 
-    " https://github.com/junegunn/vim-plug/wiki/tips#automatic-installation
-    if empty(glob('~/.vim/autoload/plug.vim'))
-      silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-      autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-    endif
+" Popie jopie
+Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
 
-  " }}}
-
-  call plug#begin('~/.vim/bundle')
-
-  " Plugins: editing {{{
-
-    packadd! cfilter                    " Add Cfilter Lfitler commands
-    packadd! editexisting               " Open existing vim instance if open
-    packadd! matchit                    " Make % command work better
-
-    Plug 'editorconfig/editorconfig-vim'
-    let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
-
-    Plug 'mattn/emmet-vim'
-
-    " Popie jopie
-    Plug 'tpope/vim-abolish'
-    Plug 'tpope/vim-commentary'
-    Plug 'tpope/vim-fugitive'
-    Plug 'tpope/vim-obsession'
-    Plug 'tpope/vim-repeat'
-    Plug 'tpope/vim-surround'
-    Plug 'tpope/vim-unimpaired'
-
-    " Use double <Leader> for expansion
-    let g:user_emmet_leader_key='<Leader><Leader>'
-
-    " make emmet behave well with JSX in JS and TS files
-    let g:user_emmet_settings = {
-    \  'javascript' : {
-    \      'extends' : 'jsx',
-    \  },
-    \  'typescript' : {
-    \      'extends' : 'tsx',
-    \  },
-    \}
-
-  " }}}
-
-  " Plugins: linting {{{
-
-    " ALE needs the following globally installed binaries. Some of these are
-    " preferences (configs, etc.), others are required to lint and fix things
-    " node_modules:
-    " - eslint
-    " - eslint-config-prettier
-    " - eslint-plugin-prettier
-    " - eslint-plugin-svelte
-    " - prettier
-    " - prettier-plugin-svelte
-    " - stylelint
-    " - stylelint-config-standard
-    " - stylelint-scss
-    " - svelte (because its a compiler, the fixer/linter needs it)
-    " - typescript
-    " other (brew):
-    " - php-cs-fixer
-
-    Plug 'dense-analysis/ale'
-
-    " fix files on save
-    let g:ale_fix_on_save = 1
-
-    " lsp related settings
-    let g:ale_set_balloons = 1
-
-    " enable autocompletion
-    " let g:ale_completion_enabled = 1
-    " let g:ale_completion_autoimport = 1
-    let g:ale_completion_max_suggestions = 999
-
-    " lint 1000ms after changes are made both on insert mode and normal mode
-    let g:ale_lint_on_text_changed = 'normal'
-
-    " use nice symbols for errors and warnings
-    let g:ale_sign_error = '‼'
-    let g:ale_sign_warning = '! '
-    let g:ale_sign_column_always = 1
-
-    " use eslint_d to spead up eslint fixing
-    let g:ale_javascript_eslint_executable = 'eslint_d'
-    let g:ale_javascript_eslint_use_global = 1
-
-    " python-specific
-    " let g:ale_python_auto_pipenv = 1
-    let g:ale_linters = {
-          \'python': ['black', 'flake8', 'mypy', 'pyflakes', 'pyls']
-    \}
-
-    " make linting possible in strange files
-    let g:ale_linter_aliases = {
-          \'javascriptreact': ['css', 'javascript', 'jsx'],
-          \'typescriptreact': ['css', 'typescript', 'tsx'],
-    \}
-
-    " tslint is deprecated. we don't want it
-    let g:ale_linters_ignore = {
-          \'graphql': ['eslint', 'gqlint'],
-          \'typescript': ['tslint'],
-          \'typescriptreact': ['tslint'],
-    \}
-
-    " fixer configurations
-    let g:ale_fixers = {
-          \'*': ['remove_trailing_lines', 'trim_whitespace'],
-          \'css': ['prettier', 'stylelint'],
-          \'html': ['prettier'],
-          \'javascript': ['prettier', 'eslint'],
-          \'javascriptreact': ['prettier', 'eslint'],
-          \'typescript': ['prettier', 'eslint'],
-          \'typescriptreact': ['prettier', 'eslint'],
-          \'markdown': ['prettier'],
-          \'python': ['autoimport', 'black', 'isort'],
-          \'sass': ['prettier'],
-          \'scss': ['prettier'],
-          \'svelte': ['prettier', 'eslint'],
-          \'php': ['php_cs_fixer'],
-    \}
-
-  " }}}
-
-  " Plugin: language syntax, etc {{{
-    Plug 'sheerun/vim-polyglot'
-
-    let g:vim_svelte_plugin_use_typescript = 1
-  " }}}
-
-  " Plugins: UI {{{
-
-    " netrw UI tweaks
-    let g:netrw_banner = 0
-    let g:netrw_liststyle = 3
-    let g:netrw_winsize =-22
-
-    Plug 'airblade/vim-gitgutter'
-
-    " Make vim + kitty awesome
-    Plug 'knubie/vim-kitty-navigator', {
-      \'do': 'cp -f *.py $HOME/.config/kitty'
-    \}
-
-    " Trace Hilight groups
-    Plug 'gerw/vim-HiLinkTrace'
-
-    " Plugin: fzf fuzzyfinding {{{
-      Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
-
-      " [Buffers] Jump to the existing window if possible
-      let g:fzf_buffers_jump = 1
-
-      " Set default tags command
-      let g:fzf_tags_command = '.git/hooks/ctags || ctags -R --tag-relative'
-
-      " Use preview with :Files
-      command! -bang -nargs=? -complete=dir Files
-        \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-      " Invoke :Files finder on ctrl-p
-      nnoremap <C-p> :Files<Cr>
-      nnoremap <C-g> :Rg<Cr>
-      nnoremap <C-o> :Tags<Cr>
-    " }}}
-
-  " }}}
-
-  call plug#end()
+call plug#end()
 " }}}
 
-" Key bindings {{{
+" {{{ Options
+"
+set exrc                          " Can haz $CWD/.vimrc
+set hidden                        " Allow unsaved buffers
 
-  " Move visually instead of by line
-  noremap <expr> k      v:count == 0 ? 'gk' : 'k'
-  noremap <expr> j      v:count == 0 ? 'gj' : 'j'
-  noremap <expr> <Up>   v:count == 0 ? "g\<Up>" : "\<Up>"
-  noremap <expr> <Down> v:count == 0 ? "g\<Down>" : "\<Down>"
+" Editing
+set autoread                      " Re-read files when changed outside vim
+set backspace=indent,eol,start    " Allow backspace in insert mode
+set clipboard=unnamed             " Use the macOS clipboard
+set complete+=kspell              " Add dictionary to autocomplete options
+set completeopt=menuone,noinsert,noselect,popup
+set dictionary+=/usr/share/dict/words " Use the linked dictionary of macOS
+set display+=lastline
+set encoding=utf-8 nobomb
+set esckeys                       " Allow arrow keys in insert mode
+set formatoptions+=jn             " Delete comment character when joining lines
+set history=200                   " never found use of setting this higher
+set nostartofline
+set spelllang=en,nl               " Use English and Dutch
+set omnifunc=syntaxcomplete#Complete " Default omnifunc
 
-  " These things happen too often
-  command W w
-  command Q q
+" Indentation and wrapping
+set autoindent                    " Automatic indentation in insert mode
+set breakindent                   " Indent text wrapping
+set cindent                       " Smart autmatic indentation
+set expandtab                     " Use spaces for tabs
+set linebreak                     " Break after words
+set shiftround                    " Round < & > to nearest softtabstop
+set shiftwidth=2                  " Use 2 spaces for indentation
+set smarttab
+set softtabstop=2
+let &showbreak='› '               " Show a wrapping indicator
+set smarttab                      " Delete shiftwidth amount of chars
+set nowrap                        " Let lines overflow a window
 
-  " Clear highlight with leader
-  nnoremap <silent> <Leader>c :noh<Cr>
+" Search & tags
+set gdefault                      " Use /g flag for RegExp by default
+set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --hidden\ --glob\ '!.git'\ --ignore
+set hlsearch                      " highlight matches
+set ignorecase
+set incsearch                     " search as characters are entered
+set smartcase
 
-  " <Tab> advances through the jumplist, so <S-Tab> moves backwards
-  nnoremap <S-Tab> <C-o>
+" Terminal behavior
+set lazyredraw
+set mouse=a                       " Enable mouse in all modes
+set title                         " Show the filename in the window titlebar
+set ttimeoutlen=50                " Return to NORMAL quickly after <ESC>
+set ttyfast                       " Optimize for fast terminal connections
+set ttymouse=sgr                  " Enable proper mouse support
+set vb t_vb=                      " Remove 'bell' in vim
 
-  " use `u` to undo, use `U` to redo
-  nnoremap U <C-r>
+" UI
+if has("8.0.1037")
+  set diffopt+=algorithm:histogram,indent-heuristic,vertical
+endif
 
-  " make single quote work like backtick (e.g. go to column of mark, not
-  " beginning of line)
-  map ' `
+set ballooneval
+set balloonevalterm
+set background=dark
+set cursorlineopt=screenline,number
+set statusline=%!init#statusline()
+set foldcolumn=0
+set foldenable                    " enable folding
+set foldlevelstart=99             " open all folds by default
+set foldmethod=indent
+set foldnestmax=10                " 10 nested fold max; > 10 == absurd
+set laststatus=2                  " Always show status line
+set list
+set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
+set scrolloff=3                   " Keep 5 lines above/below cursor visible
+set shortmess=atI                 " Don’t show the intro message
+set showcmd                       " Show command as it’s being typed
+set showmatch                     " highlight matching [{()}]
+set signcolumn=yes
+set spelllang=en,nl               " Use English and Dutch
+set synmaxcol=1000                " We don't need that much syntax per line
+set wildmenu                      " visual autocomplete for command menu
 
-  " CTRL-U in insert mode deletes a lot. Put an undo-point before it.
-  inoremap <C-u> <C-g>u<C-u>
+" Windows
+set splitbelow splitright         " The same behavior as tmux
+set winheight=25
+set winminheight=6
+set winminwidth=20
+set winwidth=88
 
-  " primitive tab completion
-  inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-  inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
+" Experimental
+set path=.,,**                    " Let :find work as a fuzzy-matcher
+set sessionoptions=buffers,folds,tabpages,winsize
+set wildignore=**/dist/**,**/node_modules/** " and ignore some folders
 
-  " easy tag jumps
-  nnoremap <Leader>tj :tjump /
-  nnoremap <Leader>tp :ptjump /
+" Backup & undo
+set writebackup     " Protect files against crash-during-write
+set nobackup        " but remove the backup after succesful write
+set backupcopy=auto "  use rename-and-write-new method whenever safe
+set backupdir=~/.vim/backup//
 
-  " Yank current filename + line number to clipboard
-  nnoremap <silent> <Leader>fy :let @*=join([expand('%'), line('.')], ':')<Cr>
-  nnoremap <Leader>fn :sp <C-r>=expand('%:h')<Cr>
+set swapfile        " write a swap every now and then
+set directory=~/.vim/swap//
 
-  " nnoremap <silent> <Leader>r normal :%s/<C-r>=expand('%:h')<Cr>
-
-  " Quickly create a new file in the current folder
-  nnoremap <Leader>s :saveas <C-r>=expand('%:h')<Cr>/
-
-  " quickly edit vimrc and color theme
-  nnoremap <Leader>ev :tabe $MYVIMRC<Cr>
-  nnoremap <Leader>ec :tabe $HOME/.vim/colors/fansi.vim<Cr>
-
-  " git hooks
-  nnoremap <Leader>ga :G add %<Cr>
-
+set undofile        " persistent undo is AWESOME
+set undodir=~/.vim/undo//
 " }}}
 
-" Commands {{{
+" {{{ Theme & UI
+colorscheme fansi
+filetype plugin indent on
+syntax enable
 
-  " Diff changes before save
-  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis | wincmd p | diffthis
-
-  " Open scratch buffer
-  command Scratch split scratch | setlocal buftype=nofile bufhidden=hide noswapfile textwidth=79
-
-" }}}
-
-" Customizations {{{
-  function! Eatchar(pat) abort
-     let c = nr2char(getchar(0))
-     return (c =~ a:pat) ? '' : c
-  endfunc
-
-  " Settings: quickfix/location lists {{{
-    " close lists quickly
-    function! GetBufferList() abort
-      redir =>buflist
-      silent! ls!
-      redir END
-      return buflist
-    endfunction
-
-    " toggle quickfix/location lists easily
-    function! ToggleList(bufname, pfx) abort
-      let buflist = GetBufferList()
-      for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
-        if bufwinnr(bufnum) != -1
-          exec(a:pfx.'close')
-          return
-        endif
-      endfor
-      if a:pfx == 'c' && len(getqflist()) == 0
-          echohl ErrorMsg | echo a:bufname." is Empty." | echohl None
-          return
-      endif
-      if a:pfx == 'l' && len(getloclist(0)) == 0
-          echohl ErrorMsg | echo a:bufname." is Empty." | echohl None
-          return
-      endif
-      let winnr = winnr()
-      exec(a:pfx.'open')
-      if winnr() != winnr
-        wincmd p
-      endif
-    endfunction
-
-    nnoremap <silent> <Leader>q :call ToggleList("Quickfix List", 'c')<Cr>
-    nnoremap <silent> <Leader>l :call ToggleList("Location List", 'l')<Cr>
-  " }}}
-
-  function! MakeDirIfNotExists(file, buf) abort
-    if empty(getbufvar(a:buf, '&buftype')) && a:file !~# '\v^\w+\:\/'
-      call mkdir(fnamemodify(a:file, ':h'), 'p')
-    endif
-  endfunction
-
-  " Settings: grep {{{
-    " let :grep work without suspending vim, executing in the background
-    " and open the quickfix/location list automatically.
-    " See: https://gist.github.com/romainl/56f0c28ef953ffc157f36cc495947ab3
-    " Sorry for copying, romainl, your snippet is almost perfect.
-    function! Grep(...) abort
-      " expandcmd removes backslashes somehow... we could:
-      return system(join([&grepprg] + [a:1] + [expandcmd(join(a:000[1:-1], ' '))], ' '))
-    endfunction
-
-    command! -nargs=+ -complete=file_in_path -bar Grep  cgetexpr Grep(<f-args>)
-    command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr Grep(<f-args>)
-
-    cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() ==# 'grep')  ? 'Grep'  : 'grep'
-    cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'LGrep' : 'lgrep'
-
-    function! EscapeRegExp(str) abort
-      " this sick boi escapes regexp special characters
-      return substitute(escape(trim(a:str), '[]{}().+*?\|^$'), '\\', '\\\\\\\\\', 'g')
-    endfunction
-
-    function! GrepOperator(type) abort
-      if a:type ==# 'v'
-          normal! `<v`>y
-      elseif a:type ==# 'char'
-          normal! `[v`]y
-      else
-          return
-      endif
-
-      let pattern = EscapeRegExp(@@)
-
-      " TODO: figure this out; why does checking for space work?
-      silent execute 'Grep ' . (stridx(pattern, ' ') > 0 ? shellescape(pattern) : pattern)
-    endfunction
-
-    nnoremap <silent> <Leader>g :set operatorfunc=GrepOperator<Cr>g@
-    vnoremap <silent> <Leader>g :<C-u>call GrepOperator(visualmode())<Cr>
-    nnoremap <silent> <Leader>gg :Grep <C-r>=EscapeRegExp(expand('<cword>'))<Cr><Cr>
-    nnoremap <silent> <Leader>gG :Grep <C-r>=EscapeRegExp(expand('<cWORD>'))<Cr><Cr>
-
-    augroup quickfix
-      autocmd!
-      autocmd QuickFixCmdPost cgetexpr cwindow
-      autocmd QuickFixCmdPost lgetexpr lwindow
-    augroup END
-  " }}}
-
-  " Settings: misc
-    augroup Misc
-      autocmd!
-      " Return to last edit position when opening files
-      autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-      " Wrap lines in file currently being edited (the horizontal scrolling
-      " trips me up... And nowrap when we leave
-      autocmd BufEnter * setlocal wrap
-      autocmd BufLeave * setlocal nowrap
-
-      " Create dir on save if it doesn't exist
-      " TODO: this trips up the lcd switching?
-      autocmd BufWritePre *
-            \ call MakeDirIfNotExists(expand('<afile>'), +expand('<abuf>'))
-            " format BEFORE save
-            " \ | if strlen(&formatexpr) || strlen(&formatprg) | exe 'normal! gqG' | endif
-
-      " Hack to make <C-x><C-f> work with files relative to current buffer
-      autocmd InsertEnter * let cwd = getcwd() |
-            \ if isdirectory(expand('%:p:h')) | lcd %:p:h | endif
-      autocmd InsertLeave * execute 'lcd' fnameescape(cwd)
-
-      " undo shell command errors
-      autocmd ShellFilterPost * if v:shell_error | undo | endif
-    augroup END
-  " }}}
-
-  " Auto-reload vim when ~/.vimrc is saved
-  augroup ReloadVimrc
-    autocmd!
-    autocmd BufRead vimrc,fansi.vim setlocal foldmethod=marker |
-          \ lcd ~/Code/mac-setup |
-          \ nnoremap <buffer> <Leader>ev :bd<Cr>
-    autocmd BufWritePost vimrc,fansi.vim source $MYVIMRC
-  augroup END
-
-" }}}
-
-" Theme {{{
-
-  set background=dark
-
-  " Enable file type detection
-  filetype plugin indent on
-
-  " Change cursor in insert mode
-  let &t_SI="\e[5 q"
-  let &t_EI="\e[2 q"
-
-  colorscheme fansi
-  syntax enable
-
-  " Set highlight options
-  hi! link Folded LineNr
-  hi! link SignColumn LineNr
-  hi! link EndOfBuffer NonText
-
-  " Status line
-  hi User1 ctermfg=1 ctermbg=0 cterm=bold
-  hi User2 ctermfg=2 ctermbg=0
-  hi User3 ctermfg=3 ctermbg=0 cterm=bold
-  hi User4 ctermfg=4 ctermbg=0
-  hi User7 ctermfg=7 ctermbg=0
-
-  hi User8 ctermfg=none ctermbg=0
-  hi User9 ctermfg=12 ctermbg=0 cterm=bold
-
-  function! StatusLine() abort
-    let statusline = ''
-    " buffer number
-    " TODO: make this local to buffer
-    let bufnr_padding = &numberwidth  + (&signcolumn == 'yes' ? 1 : 0) + &foldcolumn
-    let statusline.= '%' . bufnr_padding . 'n '
-
-    " help/read only
-    let statusline.= '%(%h%r %)'
-
-    " filename
-    let statusline.= '%(%4*»%* %8*%<%f%* %(%3*%M%* %)%)'
-    let statusline.= '%(%{exists("w:quickfix_title") ? w:quickfix_title : ""} %)'
-
-    " line/column number
-    let statusline.= '%(%7*:%l,%c%V%* %)'
-
-    " split
-    let statusline.= '%='
-    " let statusline.= '%( %7*%P%* %)'        " percentage through file
-
-    " linter errors
-    function! ALEProblems(...) abort
-      " Earlier versions of vim do not have reduce() so we skip ALEProblems.
-      " This is because opening prefs in Kitty terminal uses /usr/bin/vim.
-      if !has("patch-8.2.0878")
-        return ''
-      endif
-
-      let problems = ale#statusline#Count(bufnr())
-      let total = 0
-
-      if a:0 > 0
-        let total = reduce(a:000, {acc, value
-              \ -> acc + (has_key(problems, value) ? problems[value] : 0)
-              \ }, total)
-      else
-        let total = reduce(values(problems), {acc, value -> acc + value}, total)
-      endif
-
-      return total == 0 ? '' : total
-    endfunction
-
-    let statusline.= '%(%2*%{ALEProblems() == 0 ? "✓" : ""} %*%)'
-    let statusline.= '%(%3*%{ALEProblems("warning", "style_warning")}! %*%)'
-    let statusline.= '%(%1*%{ALEProblems("error", "style_error")}‼ %*%)'
-
-    " branch name
-    let statusline .= '%(%4*«%* %9*%<%{FugitiveHead()}%* %)'
-
-    " this makes sure the statusline is redrawn
-    " :h stl-%{
-    let &ro = &ro
-
-    return statusline
-  endfunction
-
-  set statusline=%!StatusLine()
-
+" Change cursor in insert mode
+let &t_SI="\e[5 q"
+let &t_EI="\e[2 q"
 " }}}

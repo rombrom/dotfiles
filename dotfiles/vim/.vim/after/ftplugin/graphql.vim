@@ -1,2 +1,2 @@
 " init ale mappings, etc.
-call webdev#Init()
+call init#webdev()
