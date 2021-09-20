@@ -8,8 +8,8 @@ noremap <expr> <Down> v:count == 0 ? "g\<Down>" : "\<Down>"
 command W w
 command Q q
 
-" Clear highlight with leader
-nnoremap <silent> <Leader>c :noh<Cr>
+" Clear highlights in normal mode
+nnoremap <silent> <C-c> :noh<Cr>
 
 " <Tab> advances through the jumplist, so <S-Tab> moves backwards
 nnoremap <S-Tab> <C-o>
