@@ -10,7 +10,15 @@ zstyle ':vcs_info:*' unstagedstr ' +'
 zstyle ':vcs_info:*' formats '%F{12}%16<…<%b%<<%F{3}%c%u%f '
 zstyle ':vcs_info:*' actionformats '%F{12}%b %F{11}%a%F{3}%c%u%f '
 
+PS1='%B%F{4}$(__gobble $PWD)%f ${vcs_info_msg_0_}%F{8}%#%f%b '
+RPS1='%F{8}%T%f'
+
 add-zsh-hook precmd vcs_info
+add-zsh-hook precmd title_init
+
+function title_init {
+  print -Pn "\e]0;$(__gobble $PWD)\a"
+}
 
 function __gobble() {
   local str=${(D)1}
@@ -34,6 +42,3 @@ function __gobble() {
 
   print ${(pj:$sep:)parts}
 }
-
-PS1='%B%F{4}$(__gobble $PWD)%f ${vcs_info_msg_0_}%F{8}%#%f%b '
-RPS1='%F{8}%T%f'
