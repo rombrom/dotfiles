@@ -31,7 +31,8 @@ manpath=(
 )
 
 cdpath=(
-  "$HOME/Code"
+  $HOME/Code
+  $HOME
 )
 
 # NOTE: VIM mode needs to be set explicitly, I think, because EDITOR is is
