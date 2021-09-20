@@ -33,7 +33,6 @@ command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr Grep(<f-args>)
 cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() ==# 'grep')  ? 'Grep'  : 'grep'
 cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'LGrep' : 'lgrep'
 
-
 nnoremap <silent> <Leader>g :set operatorfunc=GrepOperator<Cr>g@
 vnoremap <silent> <Leader>g :<C-u>call GrepOperator(visualmode())<Cr>
 nnoremap <silent> <Leader>gg :Grep <C-r>=EscapeRegExp(expand('<cword>'))<Cr><Cr>
