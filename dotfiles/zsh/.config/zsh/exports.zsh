@@ -12,7 +12,7 @@ export KEYTIMEOUT=1
 # Make commands use colors if possible
 export CLICOLOR=yes
 
-# VIM manpager \m/
+export BAT_STYLE='header'
 export MANPAGER='col -bx | vim -MR +MANPAGER -'
 export BAT_THEME='ansi' # TODO: create a bat theme based on bluebox
 
