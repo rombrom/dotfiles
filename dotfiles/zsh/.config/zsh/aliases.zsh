@@ -42,7 +42,7 @@ alias -g Y='| pbcopy'
 
 # kitty stuff
 if [[ "$TERM" = "xterm-kitty" ]]; then
-  alias title='kitty @set-tab-title'
+  alias title='kitty @ set-tab-title'
   alias icat='kitty +kitten icat'
 fi
 
