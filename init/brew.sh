@@ -61,7 +61,6 @@ brew install --casks \
   google-chrome \
   kitty \
   microsoft-teams \
-  spotify \
   steam # daddy needs his Factorio
 
 # install azure dependencies
