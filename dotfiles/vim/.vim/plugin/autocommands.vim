@@ -6,11 +6,6 @@ augroup Misc
     \   exe "normal! g'\"" |
     \ endif
 
-  " Wrap lines in file currently being edited (the horizontal scrolling
-  " trips me up...) and nowrap when we leave
-  autocmd BufEnter * setlocal wrap
-  autocmd BufLeave * setlocal nowrap
-
   " Create dir on save if it doesn't exist
   " TODO: this trips up the lcd switching?
   autocmd BufWritePre * call utils#mkdirp(expand('<afile>'), +expand('<abuf>'))
@@ -24,8 +19,8 @@ augroup Misc
   autocmd ShellFilterPost * if v:shell_error | undo | endif
 
   " auto load vimrc
-  autocmd BufRead vimrc,fansi.vim setlocal foldmethod=marker |
-    \ lcd ~/Code/mac-setup |
-    \ nnoremap <buffer> <Leader>ev :bd<Cr>
-  autocmd BufWritePost vimrc,fansi.vim source $MYVIMRC
+  autocmd BufRead ~/Code/mac-setup/dotfiles/vim/.vim/**
+        \ setlocal foldmethod=marker | lcd ~/Code/mac-setup
+
+  autocmd BufWritePost ~/Code/mac-setup/dotfiles/vim/.vim/** source %
 augroup END
