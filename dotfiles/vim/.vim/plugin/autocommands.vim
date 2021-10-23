@@ -1,3 +1,5 @@
+let s:cwd = getcwd()
+
 augroup Misc
   autocmd!
   " Return to last edit position when opening files
@@ -11,9 +13,8 @@ augroup Misc
   autocmd BufWritePre * call utils#mkdirp(expand('<afile>'), +expand('<abuf>'))
 
   " Hack to make <C-x><C-f> work with files relative to current buffer
-  autocmd InsertEnter * let cwd = getcwd() |
-        \ if isdirectory(expand('%:p:h')) | lcd %:p:h | endif
-  autocmd InsertLeave * execute 'lcd' fnameescape(cwd)
+  autocmd InsertEnter * if isdirectory(expand('%:p:h')) | lcd %:p:h | endif
+  autocmd InsertLeave * execute 'lcd' fnameescape(s:cwd)
 
   " undo shell command errors
   autocmd ShellFilterPost * if v:shell_error | undo | endif
