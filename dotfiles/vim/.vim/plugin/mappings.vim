@@ -24,6 +24,9 @@ map ' `
 " CTRL-U in insert mode deletes a lot. Put an undo-point before it.
 inoremap <C-u> <C-g>u<C-u>
 
+" autosuggest last spelling mistake in insert mode
+inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+
 " primitive tab completion
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
