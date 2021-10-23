@@ -1,9 +1,3 @@
-function! init#mkdirp(file, buf) abort
-  if empty(getbufvar(a:buf, '&buftype')) && a:file !~# '\v^\w+\:\/'
-    call mkdir(fnamemodify(a:file, ':h'), 'p')
-  endif
-endfunction
-
 function init#statusline() abort
   hi User1 ctermfg=1 ctermbg=0 cterm=bold
   hi User2 ctermfg=2 ctermbg=0

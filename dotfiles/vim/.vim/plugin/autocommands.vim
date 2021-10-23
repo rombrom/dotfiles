@@ -13,7 +13,7 @@ augroup Misc
 
   " Create dir on save if it doesn't exist
   " TODO: this trips up the lcd switching?
-  autocmd BufWritePre * call init#mkdirp(expand('<afile>'), +expand('<abuf>'))
+  autocmd BufWritePre * call utils#mkdirp(expand('<afile>'), +expand('<abuf>'))
 
   " Hack to make <C-x><C-f> work with files relative to current buffer
   autocmd InsertEnter * let cwd = getcwd() |

@@ -7,22 +7,8 @@ function! Grep(...) abort
   return system(join([&grepprg] + [a:1] + [expandcmd(join(a:000[1:-1], ' '))], ' '))
 endfunction
 
-function! EscapeRegExp(str) abort
-  " this sick boi escapes regexp special characters
-  return substitute(escape(trim(a:str), '[]{}().+*?\|^$'), '\\', '\\\\\\\\\', 'g')
-endfunction
-
 function! GrepOperator(type) abort
-  if a:type ==# 'v'
-    normal! `<v`>y
-  elseif a:type ==# 'char'
-    normal! `[v`]y
-  else
-    return
-  endif
-
-  let pattern = EscapeRegExp(@@)
-
+  let pattern = utils#getTarget(a:type)
   " TODO: figure this out; why does checking for space work?
   silent execute 'Grep ' . (stridx(pattern, ' ') > 0 ? shellescape(pattern) : pattern)
 endfunction
@@ -35,5 +21,5 @@ cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'L
 
 nnoremap <silent> <Leader>g :set operatorfunc=GrepOperator<Cr>g@
 vnoremap <silent> <Leader>g :<C-u>call GrepOperator(visualmode())<Cr>
-nnoremap <silent> <Leader>gg :Grep <C-r>=EscapeRegExp(expand('<cword>'))<Cr><Cr>
-nnoremap <silent> <Leader>gG :Grep <C-r>=EscapeRegExp(expand('<cWORD>'))<Cr><Cr>
+nnoremap <silent> <Leader>gg :Grep <C-r>=utils#EscapeRegExp(expand('<cword>'))<Cr><Cr>
+nnoremap <silent> <Leader>gG :Grep <C-r>=utils#EscapeRegExp(expand('<cWORD>'))<Cr><Cr>
