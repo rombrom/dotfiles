@@ -61,6 +61,7 @@ brew install --casks \
   google-chrome \
   kitty \
   microsoft-teams \
+  visual-studio-code \ # for pair programming
   steam # daddy needs his Factorio
 
 # install azure dependencies
