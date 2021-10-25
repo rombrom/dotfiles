@@ -25,7 +25,6 @@ function __gobble() {
   local max=${2:-16}
   local sep=${3:-/}
 
-  local length=$#str
   local parts=(${(ps:$sep:)${str}})
 
   for (( i = 1; i < $#parts; i++ )); do
