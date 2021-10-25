@@ -35,8 +35,8 @@ brew install \
   stow \
   tree \
   vim \
-  watchexec \
-  watchman \
+  watchexec \ # preferred general purpose file watcher
+  watchman \  # needed for React Native development...
   wget \
   zsh \
   zsh-completions
