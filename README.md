@@ -2,6 +2,10 @@
 
 ![Bluebox Screenshot](https://raw.githubusercontent.com/rombrom/mac-setup/master/bluebox.png)
 
+## Running
+
+**Danger**: executing the following script might have unintended consequences if you don't know what it does.
+
 ```
 ./init.sh
 ```
