@@ -28,6 +28,8 @@ zstyle ':completion:*:*:-tilde-:*:*' ignored-patterns '_*'
 zstyle ':completion:*:(cd|pushd):*' tag-order \
   'local-directories named-directories directory-stack path-directories'
 
+# TODO: last-modified file expansion?
+
 # ignore zsh completion functions
 zstyle ':completion:*:functions' ignored-patterns '_*'
 
