@@ -20,7 +20,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'gerw/vim-HiLinkTrace'
-Plug 'knubie/vim-kitty-navigator', { 'do': 'cp -f *.py $HOME/.config/kitty' }
+Plug 'knubie/vim-kitty-navigator', { 'do': 'cp  ./*.py $HOME/.config/kitty/' }
 Plug 'mattn/emmet-vim'
 Plug 'sheerun/vim-polyglot'
 
@@ -38,7 +38,6 @@ call plug#end()
 
 " {{{ Options
 "
-set exrc                          " Can haz $CWD/.vimrc
 set hidden                        " Allow unsaved buffers
 
 " Editing
@@ -46,6 +45,7 @@ set autoread                      " Re-read files when changed outside vim
 set backspace=indent,eol,start    " Allow backspace in insert mode
 set clipboard=unnamed             " Use the macOS clipboard
 set complete+=kspell              " Add dictionary to autocomplete options
+set complete-=i                   " Don't scan included files from `path`
 set completeopt=menuone,noinsert,noselect,popup
 set dictionary+=/usr/share/dict/words " Use the linked dictionary of macOS
 set display+=lastline
@@ -124,7 +124,7 @@ set winminwidth=20
 set winwidth=88
 
 " Experimental
-set path=.,,**                    " Let :find work as a fuzzy-matcher
+set path=.,,
 set sessionoptions=buffers,folds,tabpages,winsize
 set wildignore=**/dist/**,**/node_modules/** " and ignore some folders
 
