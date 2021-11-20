@@ -3,6 +3,8 @@
 alias ls="gls -v --color=always --group-directories-first --indicator-style=slash"
 alias l="ls -Ahl"
 alias lc="ls --format=single-column"
+alias lt="ls -halt"
+alias ltr="ls -haltr"
 
 # navigation
 alias ..='cd ..'
