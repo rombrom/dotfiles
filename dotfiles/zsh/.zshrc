@@ -45,16 +45,6 @@ bindkey -v
 # TODO: back to a custom load order?
 export LS_COLORS='no=0;37:fi=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:';
 
-# plugins (loaded before compinit)
-[[ ! -d "$HOME/.zinit" ]] && \
-  git clone --depth=1 https://github.com/zdharma/zinit.git ~/.zinit/bin
-
-source "$HOME/.zinit/bin/zinit.zsh"
-
-zinit wait lucid for \
-  depth'1' pick"contrib/completion/zsh" docker/cli \
-  depth'1' pick"contrib/completion/zsh" docker/compose
-
 # load config files
 for file ($HOME/.config/zsh/*); do
   [[ -f "$file" ]] && source "$file"

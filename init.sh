@@ -17,7 +17,7 @@ echo "Installing Node packages..."
 echo ""
 source ./init/node.sh
 
-# Install essential Node utils
+# Install essential Python utils
 echo "Installing Python packages..."
 echo ""
 source ./init/python.sh
@@ -34,6 +34,17 @@ stow --dir=dotfiles --target="$HOME" \
   --stow vim \
   --stow zsh \
   --verbose
+
+# Generate zsh completions
+echo "Getting zsh completions"
+COMPLETIONS=./dotfiles/zsh/.config/zsh/completions
+curl -L \
+  https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/zsh/_docker \
+  > $COMPLETIONS/_docker
+curl -L \
+  https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose \
+  > $COMPLETIONS/_docker-compose
+poetry completions zsh > $COMPLETIONS/_poetry
 
 echo "Installing vim plugins"
 echo ""
