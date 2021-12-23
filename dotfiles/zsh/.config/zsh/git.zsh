@@ -18,6 +18,7 @@ alias gm='git merge'
 alias gp='git push origin HEAD'
 alias gpn='git push origin HEAD --no-verify'
 alias gr='git rebase'
+alias grh='git reset --hard'
 alias grm='git rebase master'
 alias gss='git status --short'
 
