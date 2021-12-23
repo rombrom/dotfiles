@@ -15,12 +15,15 @@ packadd! cfilter       " Add Cfilter Lfitler commands
 packadd! editexisting  " Open existing vim instance if open
 packadd! matchit       " Make % command work better
 
+Plug 'knubie/vim-kitty-navigator', {
+      \ 'do': 'cp  ./*.py $HOME/.config/kitty/'
+\}
+
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'gerw/vim-HiLinkTrace'
-Plug 'knubie/vim-kitty-navigator', { 'do': 'cp  ./*.py $HOME/.config/kitty/' }
 Plug 'mattn/emmet-vim'
 Plug 'sheerun/vim-polyglot'
 
