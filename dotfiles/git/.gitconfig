@@ -23,7 +23,7 @@
 
 	# start review
 	review = !vim -p $(git files) \
-		+\"tabdo Gdiff ${REVIEW_BASE:-master}\" \
+		+\"tabdo Gvdiffsplit ${REVIEW_BASE:-master}\" \
 		+\"let g:gitgutter_diff_base = '${REVIEW_BASE:-master}'\"
 
 	# list changed files w/ change statistics
