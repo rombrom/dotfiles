@@ -16,7 +16,6 @@ path=(
   /usr/local/opt/gnu-sed/libexec/gnubin
   /usr/local/opt/gnu-getopt/bin
   /usr/local/opt/grep/libexec/gnubin
-  /usr/local/opt/node@12/bin
   /usr/local/opt/python@3.9/libexec/bin
   $path
 )
