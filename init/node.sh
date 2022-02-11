@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 
 # update path for this session
-export PATH="/usr/local/opt/node@12/bin:$PATH"
+export PATH="/usr/local/opt/node@14/bin:$PATH"
 
 # Update NPM to the latest version
 npm install -g \
-  @nrwl/cli \
-  eslint \
-  eslint-config-prettier \
-  eslint-plugin-prettier \
-  eslint_d \
-  prettier \
-  stylelint \
-  stylelint-config-standard \
-  stylelint-scss \
-  typescript
+  @nrwl/cli@latest \
+  eslint@latest \
+  eslint-config-prettier@latest \
+  eslint-plugin-prettier@latest \
+  eslint_d@latest \
+  prettier@latest \
+  stylelint@latest \
+  stylelint-config-standard@latest \
+  typescript@latest \
+  typescript-language-server@latest
 
 # Clean cache
 npm cache clean -f

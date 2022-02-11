@@ -15,6 +15,7 @@ brew install \
   bat \
   bats-core \
   coreutils \
+  cmake \
   dnsmasq \
   fd \
   findutils \
@@ -28,6 +29,7 @@ brew install \
   grep \
   imagemagick \
   jq \
+  nmap \
   pandoc \
   postman \
   ripgrep \
@@ -43,8 +45,10 @@ brew install \
 
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
-# Install Node v12
+# Install Node versions
 brew install node@12
+brew install node@14
+brew install node@16
 
 # Install Recent Python
 brew install python
