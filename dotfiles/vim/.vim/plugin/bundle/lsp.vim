@@ -27,6 +27,8 @@ function! s:enable_lsp(...) abort
 
     if has_key(l:cap, 'referencesProvider')
       nmap <silent> <buffer> <leader>gr <plug>(lsp-references)
+      nmap <silent> <buffer> ]r <plug>(lsp-next-reference)
+      nmap <silent> <buffer> [r <plug>(lsp-previous-reference)
     endif
 
     if has_key(l:cap, 'renameProvider')
