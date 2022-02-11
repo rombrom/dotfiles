@@ -48,15 +48,3 @@ nnoremap <Leader>s :saveas <C-r>=expand('%:h')<Cr>/
 " quickly edit vimrc and color theme
 nnoremap <Leader>ev :tabe $MYVIMRC<Cr>
 nnoremap <Leader>ec :tabe $HOME/.vim/colors/fansi.vim<Cr>
-
-
-" Plug '/usr/local/opt/fzf | Plug 'junegunn/fzf.vim'
-"
-nnoremap <C-p> :Files<Cr>
-nnoremap <C-g> :Rg<Cr>
-nnoremap <C-o> :Tags<Cr>
-
-
-" Plug 'tpope/vim-fugitive'
-"
-nnoremap <Leader>ga :G add %<Cr>

@@ -1,2 +1,4 @@
-" init ale mappings, etc.
-call init#webdev()
+if executable('prettier')
+  setlocal formatexpr=
+  setlocal formatprg=prettier\ --stdin-filepath=%
+endif

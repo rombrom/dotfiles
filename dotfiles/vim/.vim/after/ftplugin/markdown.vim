@@ -1,7 +1,10 @@
 setlocal spell
 setlocal wrap
 
-call init#webdev()
+if executable('prettier')
+  setlocal formatexpr=
+  setlocal formatprg=prettier\ --stdin-filepath=%
+endif
 
 " for vim-surround: map <Leader>k to make a link.
 " this creates a new surroundable object to ASCI k

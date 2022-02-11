@@ -1,89 +1,109 @@
-" netrw
-"
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3
-let g:netrw_winsize =-22
+" Editing
+set autoread                      " Re-read files when changed outside vim
+set backspace=indent,eol,start    " Allow backspace in insert mode
+set clipboard=unnamed             " Use the macOS clipboard
+set complete+=kspell              " Add dictionary to autocomplete options
+set complete-=i                   " Don't scan included files from `path`
+set completeopt=menuone,noinsert,noselect,popup
+set dictionary+=/usr/share/dict/words " Use the linked dictionary of macOS
+set display+=lastline
+set encoding=utf-8 nobomb
+set esckeys                       " Allow arrow keys in insert mode
+set formatoptions+=jn             " Delete comment character when joining lines
+set history=200                   " never found use of setting this higher
+set nostartofline
+set spelllang=en,nl               " Use English and Dutch
+set omnifunc=syntaxcomplete#Complete " Default omnifunc
 
-" Plug 'editorconfig/editorconfig-vim'
-"
-let g:EditorConfig_exclude_patterns = ['fugitive://.*', 'scp://.*']
+" Indentation and wrapping
+set autoindent                    " Automatic indentation in insert mode
+set breakindent                   " Indent text wrapping
+set cindent                       " Smart autmatic indentation
+set expandtab                     " Use spaces for tabs
+set linebreak                     " Break after words
+set shiftround                    " Round < & > to nearest softtabstop
+set shiftwidth=2                  " Use 2 spaces for indentation
+set smarttab
+set softtabstop=2
+let &showbreak='› '               " Show a wrapping indicator
+set smarttab                      " Delete shiftwidth amount of chars
+set nowrap                        " Let lines overflow a window
 
-" Plug 'mattn/emmet-vim'
-"
-" Use double <Leader> for expansion
-let g:user_emmet_leader_key='<Leader><Leader>'
-" make emmet behave well with JSX in JS and TS files
-let g:user_emmet_settings = {
-\  'javascript' : {
-\    'extends' : 'jsx',
-\  },
-\  'typescript' : {
-\    'extends' : 'tsx',
-\  },
-\}
+" Search & tags
+set gdefault                      " Use /g flag for RegExp by default
+set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case\ --hidden\ --glob\ '!.git'\ --ignore
+set hlsearch                      " highlight matches
+set ignorecase
+set incsearch                     " search as characters are entered
+set smartcase
 
-" Plug 'dense-analysis/ale'
-"
-" ALE needs the following globally installed binaries. Some of these are
-" preferences (configs, etc.), others are required to lint and fix things
-" node_modules:
-" - eslint
-" - eslint-config-prettier
-" - eslint-plugin-prettier
-" - prettier
-" - stylelint
-" - stylelint-config-standard
-" - typescript
-let g:ale_fix_on_save = 1
-let g:ale_set_balloons = 1
-let g:ale_completion_max_suggestions = 999
-let g:ale_lint_on_text_changed = 'normal'
-let g:ale_sign_error = '‼'
-let g:ale_sign_warning = '! '
-let g:ale_sign_column_always = 1
+" Terminal behavior
+set lazyredraw
+set mouse=a                       " Enable mouse in all modes
+set title                         " Show the filename in the window titlebar
+set ttimeoutlen=50                " Return to NORMAL quickly after <ESC>
+set ttyfast                       " Optimize for fast terminal connections
+set ttymouse=sgr                  " Enable proper mouse support
+set vb t_vb=                      " Remove 'bell' in vim
 
-" use eslint_d to spead up eslint fixing
-let g:ale_javascript_eslint_executable = 'eslint_d'
-let g:ale_javascript_eslint_use_global = 1
+" UI
+if has("8.0.1037")
+  set diffopt+=algorithm:histogram,indent-heuristic,vertical
+endif
 
-let g:ale_linters = {
-\  'python': ['black', 'flake8', 'mypy', 'pyflakes', 'pyls']
-\}
+set ballooneval
+set balloonevalterm
+set background=dark
+set cursorlineopt=screenline,number
+set statusline=%!init#statusline()
+set tabline=%!init#tabline()
+set foldcolumn=0
+set foldenable                    " enable folding
+set foldlevelstart=99             " open all folds by default
+set foldmethod=indent
+set foldnestmax=10                " 10 nested fold max; > 10 == absurd
+set hidden                        " Allow unsaved buffers
+set laststatus=2                  " Always show status line
+set list
+set listchars=tab:»\ ,extends:›,precedes:‹,nbsp:·,trail:·
+set scrolloff=3                   " Keep 5 lines above/below cursor visible
+set shortmess=atI                 " Don’t show the intro message
+set showcmd                       " Show command as it’s being typed
+set showmatch                     " highlight matching [{()}]
+set signcolumn=yes
+set spelllang=en,nl               " Use English and Dutch
+set synmaxcol=1000                " We don't need that much syntax per line
+set wildmenu                      " visual autocomplete for command menu
 
-" make linting possible in strange files
-let g:ale_linter_aliases = {
-  \'javascriptreact': ['css', 'javascript', 'jsx'],
-  \'typescriptreact': ['css', 'typescript', 'tsx'],
-\}
+" Windows
+set splitbelow splitright         " The same behavior as tmux
+set winheight=25
+set winminheight=6
+set winminwidth=20
+set winwidth=88
 
-" tslint is deprecated. we don't want it
-let g:ale_linters_ignore = {
-  \'graphql': ['eslint', 'gqlint'],
-  \'typescript': ['tslint'],
-  \'typescriptreact': ['tslint'],
-\}
+" Experimental
+set path=.,,
+set sessionoptions=buffers,folds,tabpages,winsize
+set wildignore=**/dist/**,**/node_modules/** " and ignore some folders
 
-let g:ale_fixers = {
-\  '*': ['remove_trailing_lines', 'trim_whitespace'],
-\  'css': ['prettier', 'stylelint'],
-\  'html': ['prettier'],
-\  'javascript': ['prettier', 'eslint'],
-\  'javascriptreact': ['prettier', 'eslint'],
-\  'typescript': ['prettier', 'eslint'],
-\  'typescriptreact': ['prettier', 'eslint'],
-\  'markdown': ['prettier'],
-\  'python': ['autoimport', 'black', 'isort'],
-\  'sass': ['prettier'],
-\  'scss': ['prettier'],
-\  'svelte': ['prettier', 'eslint'],
-\  'php': ['php_cs_fixer'],
-\}
+" Backup & undo
+set writebackup     " Protect files against crash-during-write
+set nobackup        " but remove the backup after succesful write
+set backupcopy=auto "  use rename-and-write-new method whenever safe
+set backupdir=~/.vim/backup//
 
-" Plug 'sheerun/vim-polyglot'
-"
-let g:vim_svelte_plugin_use_typescript = 1
+set swapfile        " write a swap every now and then
+set directory=~/.vim/swap//
 
-" Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
-"
-let g:fzf_buffers_jump = 1
-let g:fzf_tags_command = '.git/hooks/ctags || ctags -R --tag-relative'
+set undofile        " persistent undo is AWESOME
+set undodir=~/.vim/undo//
+
+" Theme
+colorscheme fansi
+filetype plugin indent on
+syntax enable
+
+" Change cursor in insert mode
+let &t_SI="\e[5 q"
+let &t_EI="\e[2 q"

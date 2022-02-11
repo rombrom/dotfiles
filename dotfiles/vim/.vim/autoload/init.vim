@@ -8,13 +8,13 @@ function init#statusline() abort
   hi User8 ctermfg=none ctermbg=0
   hi User9 ctermfg=12 ctermbg=0 cterm=bold
 
-  let statusline = ' '
+  let statusline = ' %n '
 
   " help/read only
   let statusline.= '%(%h%r %4*»%* %)'
 
   " filename
-  let statusline.= '%(%8*%f%* %(%3*%M%* %)%)'
+  let statusline.= '%(%4*»%* %8*%f%* %(%3*%M%* %)%)'
   let statusline.= '%(%{exists("w:quickfix_title") ? w:quickfix_title : ""} %)'
 
   " line/column number
@@ -22,7 +22,7 @@ function init#statusline() abort
 
   " split
   let statusline.= '%='
-  " let statusline.= '%( %7*%P%* %)'        " percentage through file
+  let statusline.= '%( %7*%P%* %)'        " percentage through file
 
   " linter errors
   function! ALEProblems(...) abort
@@ -91,30 +91,4 @@ function init#tabline() abort
   let tabline .= '%#TabLineFill#%T'
 
   return tabline
-endfunction
-
-
-function init#webdev() abort
-  " pretter formatter
-  if executable('prettier')
-    setlocal formatexpr=
-    setlocal formatprg=prettier\ --stdin-filepath=%
-  endif
-
-  " mappings
-  nmap <buffer> <Leader>dd <Plug>(ale_go_to_definition)
-  nmap <buffer> <Leader>ds <Plug>(ale_go_to_definition_in_split)
-  nmap <buffer> <Leader>dt <Plug>(ale_go_to_definition_in_tab)
-  nmap <buffer> <Leader>dv <Plug>(ale_go_to_definition_in_vsplit)
-
-  " add -relative option to find
-  nnoremap <buffer> <silent> <Plug>(ale_find_references) :ALEFindReferences -relative<Cr>
-
-  nmap <buffer> K <Plug>(ale_hover)
-  nmap <buffer> <Leader>af <Plug>(ale_lint)
-  nmap <buffer> <Leader>aF <Plug>(ale_fix)
-  nmap <buffer> <Leader>ai <Plug>(ale_import)
-  nmap <buffer> <Leader>aI :ALEOrganizeImports<Cr>
-  nmap <buffer> <Leader>ar <Plug>(ale_find_references)
-  nmap <buffer> <Leader>aR :ALERename<Cr>
 endfunction

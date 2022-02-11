@@ -10,5 +10,7 @@ augroup MyHTML
   au BufNewFile,BufRead *.html,*.svelte syntax sync fromstart
 augroup END
 
-" init ale mappings, etc.
-call init#webdev()
+if executable('prettier')
+  setlocal formatexpr=
+  setlocal formatprg=prettier\ --stdin-filepath=%
+endif
