@@ -108,7 +108,7 @@ hi Cursor ctermfg=none ctermbg=8 cterm=reverse
 hi! link iCursor Cursor
 hi! link lCursor Cursor
 hi! link vCursor Cursor
-hi MatchParen ctermfg=none ctermbg=8
+hi MatchParen ctermfg=none ctermbg=0
 
 " selection
 hi Visual ctermfg=none ctermbg=0 cterm=none
