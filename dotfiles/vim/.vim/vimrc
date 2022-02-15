@@ -10,10 +10,6 @@ endif
 
 call plug#begin('~/.vim/bundle')
 
-packadd! cfilter       " Add Cfilter Lfitler commands
-packadd! editexisting  " Open existing vim instance if open
-packadd! matchit       " Make % command work better
-
 Plug 'knubie/vim-kitty-navigator', {
   \ 'do': 'cp  ./*.py $HOME/.config/kitty/'
 \}
@@ -46,3 +42,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 
 call plug#end()
+
+packadd! cfilter       " Add Cfilter Lfitler commands
+packadd! editexisting  " Open existing vim instance if open
+packadd! matchit       " Make % command work better
