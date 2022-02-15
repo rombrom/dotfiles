@@ -18,11 +18,17 @@ function! s:enable_lsp(...) abort
     endif
 
     if has_key(l:cap, 'definitionProvider')
-      nmap <silent> <buffer> gd <plug>(lsp-definition)
       nmap <silent> <buffer> <Leader>dd <Plug>(lsp-definition)
       nmap <silent> <buffer> <Leader>ds :rightbelow LspDefinition<Cr>
       nmap <silent> <buffer> <Leader>dt :tab LspDefinition<Cr>
       nmap <silent> <buffer> <Leader>dv :vertical LspDefinition<Cr>
+    endif
+
+    if has_key(l:cap, 'implementationProvider')
+      nmap <silent> <buffer> <Leader>ii <Plug>(lsp-implementation)
+      nmap <silent> <buffer> <Leader>is :rightbelow LspImplementation<Cr>
+      nmap <silent> <buffer> <Leader>it :tab LspImplementation<Cr>
+      nmap <silent> <buffer> <Leader>iv :vertical LspImplementation<Cr>
     endif
 
     if has_key(l:cap, 'referencesProvider')
