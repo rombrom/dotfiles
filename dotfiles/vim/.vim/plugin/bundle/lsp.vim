@@ -1,5 +1,10 @@
 " Plug 'prabirshrestha/vim-lsp'
 let g:lsp_document_code_action_signs_enabled = 0
+let g:lsp_document_highlight_enabled = 0
+
+" There is a !@#$% annoying issue where mouse movement sends some escape
+" codes, completely borking scrolling, arrow keys and other things.
+let g:lsp_hover_ui = 'preview'
 
 " Borrowed from: https://www.rockyourcode.com/use-vim-for-c-sharp-development-on-linux/
 " who borrowed from: https://hauleth.dev/post/vim-for-elixir/#completion-and-language-server
@@ -19,9 +24,9 @@ function! s:enable_lsp(...) abort
 
     if has_key(l:cap, 'definitionProvider')
       nmap <silent> <buffer> <Leader>dd <Plug>(lsp-definition)
-      nmap <silent> <buffer> <Leader>ds :rightbelow LspDefinition<Cr>
-      nmap <silent> <buffer> <Leader>dt :tab LspDefinition<Cr>
-      nmap <silent> <buffer> <Leader>dv :vertical LspDefinition<Cr>
+      nmap <silent> <buffer> <Leader>ds :rightbelow :LspDefinition<Cr>
+      nmap <silent> <buffer> <Leader>dt :tab :LspDefinition<Cr>
+      nmap <silent> <buffer> <Leader>dv :vertical :LspDefinition<Cr>
     endif
 
     if has_key(l:cap, 'implementationProvider')
