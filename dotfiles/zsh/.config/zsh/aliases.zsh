@@ -11,6 +11,7 @@ alias ..='cd ..'
 
 # this always happens
 alias :q='exit'
+alias :qa='exit'
 alias cp='cp -R'
 alias mkdir='mkdir -p'
 alias rg="rg --hidden --glob '!.git' --ignore"
