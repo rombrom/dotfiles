@@ -43,5 +43,4 @@ let g:ale_fixers = {
 \  'php': ['php_cs_fixer'],
 \}
 
-nmap <Leader>af <Plug>(ale_lint)
-nmap <Leader>aF <Plug>(ale_fix)
+nmap <Leader>af <Plug>(ale_fix)
