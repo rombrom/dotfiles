@@ -5,7 +5,7 @@ augroup Misc
   " Return to last edit position when opening files
   autocmd BufReadPost *
     \ if line("'\"") > 1 && line("'\"") <= line("$") |
-    \   exe "normal! g'\"" |
+    \   exe "normal! g'\" zz" |
     \ endif
 
   " Create dir on save if it doesn't exist

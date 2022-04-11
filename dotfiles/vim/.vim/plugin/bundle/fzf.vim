@@ -11,3 +11,5 @@ augroup END
 nnoremap <C-p> :Files<Cr>
 nnoremap <C-g> :Rg<Cr>
 nnoremap <C-o> :Tags<Cr>
+nnoremap <Leader>bb :Buffers<Cr>
+tnoremap <Leader>bb <C-w>:Buffers<Cr>

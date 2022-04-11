@@ -32,6 +32,16 @@ inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
 
+" buffer nav
+nnoremap <Leader>bd :bdelete!<Cr>
+tnoremap <Leader>bd <C-w>:bdelete!<Cr>
+nnoremap <Leader>bh :hide<Cr>
+tnoremap <Leader>bh <C-w>:hide<Cr>
+nnoremap <Leader>bn :bnext<Cr>
+tnoremap <Leader>bn <C-w>:bnext<Cr>
+nnoremap <Leader>bp :bprevious<Cr>
+tnoremap <Leader>bp <C-w>:bprevious<Cr>
+
 " easy tag jumps
 nnoremap <Leader>tj :tjump /
 nnoremap <Leader>tp :ptjump /
@@ -42,8 +52,11 @@ nnoremap <Leader>fn :sp <C-r>=expand('%:h')<Cr>
 
 " nnoremap <silent> <Leader>r normal :%s/<C-r>=expand('%:h')<Cr>
 
-" Quickly create a new file in the current folder
-nnoremap <Leader>s :saveas <C-r>=expand('%:h')<Cr>/
+" Quickly create a new buffer in the current folder
+nnoremap <Leader>nn :e <C-r>=expand('%:h')<Cr>/
+nnoremap <Leader>ns :sp <C-r>=expand('%:h')<Cr>/
+nnoremap <Leader>nt :tabe <C-r>=expand('%:h')<Cr>/
+nnoremap <Leader>nv :vsp <C-r>=expand('%:h')<Cr>/
 
 " quickly edit vimrc and color theme
 nnoremap <Leader>ev :tabe $MYVIMRC<Cr>
