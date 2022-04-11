@@ -9,6 +9,8 @@ export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --tiebreak=length,end \
   --color='16,bg+:-1,fg+:4,gutter:-1,hl:3,hl+:3,pointer:4,prompt:6' \
   --preview='bat {}'"
 
+export FZF_CTRL_T_COMMAND="fd"
+
 # Auto-completion
 [[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.zsh" 2> /dev/null
 
