@@ -21,34 +21,9 @@ alias gr='git rebase'
 alias grh='git reset --hard'
 alias grm='git rebase master'
 alias gss='git status --short'
+alias gsw='git switch'
 
-# fuzzy git stuff
-alias gcof="git checkout \$( \
-  git branch --all --sort -committerdate | grep -v '^*' | \
-  fzf --preview 'git log --color --oneline {1}' \
-  )"
-
-alias gbfd="git branch -D \$( \
+alias gbd="git branch -D \$( \
   git branch --sort -committerdate | grep -v '^*' | \
   fzf --multi --preview 'git log --color --oneline {1}' \
   )"
-
-function gco() {
-  local branch="$( \
-    git branch --sort -committerdate | \
-    fzf --print-query --query=$1 \
-        --preview 'git log --color --oneline {1}' | \
-    tr -d '[[:space:]]'
-  )"
-
-  [[ -z "$branch" ]] && return
-
-  if ! git checkout "$branch"; then
-    read -rsk1 foo\?"Press Enter to create branch"
-    echo
-
-    if [[ "$foo" == $'\n' ]]; then
-      git checkout -b "$branch"
-    fi
-  fi
-}
