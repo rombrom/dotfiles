@@ -19,3 +19,5 @@ bindkey "^[[B" down-line-or-beginning-search
 
 zle -N edit-command-line
 bindkey '\C-x\C-e' edit-command-line
+
+bindkey '\C-x\C-i' _complete_help

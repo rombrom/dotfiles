@@ -5,6 +5,7 @@ alias gba='git branch --all'
 alias gc='git commit -v'
 alias gca='git commit -av'
 alias gce='git commit -av --amend --no-edit'
+alias gcf='git clean -df'
 alias gcl='git clone'
 alias gcm='git checkout master'
 alias gcn='git commit -v --no-verify'
@@ -33,13 +34,21 @@ alias gbfd="git branch -D \$( \
   )"
 
 function gco() {
-  if ! git checkout "$@"; then
-    echo
+  local branch="$( \
+    git branch --sort -committerdate | \
+    fzf --print-query --query=$1 \
+        --preview 'git log --color --oneline {1}' | \
+    tr -d '[[:space:]]'
+  )"
+
+  [[ -z "$branch" ]] && return
+
+  if ! git checkout "$branch"; then
     read -rsk1 foo\?"Press Enter to create branch"
     echo
 
     if [[ "$foo" == $'\n' ]]; then
-      git checkout -b "$@"
+      git checkout -b "$branch"
     fi
   fi
 }
