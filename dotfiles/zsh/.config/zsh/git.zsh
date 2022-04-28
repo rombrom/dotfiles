@@ -1,3 +1,6 @@
+# experiment
+alias g='vim +G +only'
+
 # aliases
 alias ga='git add'
 alias gb='git branch'
