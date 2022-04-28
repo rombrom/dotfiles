@@ -26,9 +26,9 @@ brew install \
   gnu-getopt \
   gnu-sed \
   gnu-tar \
+  gojq \
   grep \
   imagemagick \
-  jq \
   nmap \
   pandoc \
   postman \

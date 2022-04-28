@@ -19,6 +19,9 @@ alias rg="rg --hidden --glob '!.git' --ignore"
 # Always enable colored `grep` output
 alias grep='grep --color'
 
+# use gojq as jq
+alias jq='gojq'
+
 # Ignore common "junk" folders
 alias tree='tree --dirsfirst -I "node_modules"'
 
