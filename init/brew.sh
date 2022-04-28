@@ -28,6 +28,8 @@ brew install \
   gnu-tar \
   gojq \
   grep \
+  helix \
+  hexyl \
   imagemagick \
   nmap \
   pandoc \
