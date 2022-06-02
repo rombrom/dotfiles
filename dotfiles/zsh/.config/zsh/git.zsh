@@ -12,6 +12,7 @@ alias gcf='git clean -df'
 alias gcl='git clone'
 alias gcm='git checkout master'
 alias gcn='git commit -v --no-verify'
+alias gco='git checkout'
 alias gd='git diff'
 alias gf='git fetch --prune'
 alias gl='git pull'
@@ -24,7 +25,6 @@ alias gr='git rebase'
 alias grh='git reset --hard'
 alias grm='git rebase master'
 alias gss='git status --short'
-alias gsw='git switch'
 
 alias gbd="git branch -D \$( \
   git branch --sort -committerdate | grep -v '^*' | \
