@@ -10,6 +10,7 @@ fpath=(
 
 path=(
   "$HOME/.local/bin"
+  "$HOME/node_modules/.bin"
   /usr/local/opt/coreutils/libexec/gnubin
   /usr/local/opt/findutils/libexec/gnubin
   /usr/local/opt/gnu-tar/libexec/gnubin
@@ -17,6 +18,7 @@ path=(
   /usr/local/opt/gnu-getopt/bin
   /usr/local/opt/grep/libexec/gnubin
   /usr/local/opt/python@3.9/libexec/bin
+  /usr/local/opt/openjdk/bin
   $path
 )
 

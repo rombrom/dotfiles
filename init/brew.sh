@@ -32,6 +32,7 @@ brew install \
   hexyl \
   imagemagick \
   nmap \
+  node \
   pandoc \
   postman \
   ripgrep \
@@ -47,13 +48,11 @@ brew install \
 
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
-# Install Node versions
-brew install node@12
-brew install node@14
-brew install node@16
-
 # Install Recent Python
 brew install python
+
+# Clojure experiments
+brew install clojure java leiningen
 
 # fix zsh-completion directory permissions
 chmod -R go-w '/usr/local/share/zsh'
