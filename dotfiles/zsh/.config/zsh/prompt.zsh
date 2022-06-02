@@ -41,3 +41,29 @@ function __gobble() {
 
   print ${(pj:$sep:)parts}
 }
+
+function __redraw() {
+  local precmd
+  for precmd in $precmd_functions; do
+    $precmd
+  done
+  zle reset-prompt
+}
+
+TOGGLED=
+function expand-prompt() {
+  TOGGLED=$((1-TOGGLED))
+
+  if ! (( $TOGGLED )); then
+    zstyle ':vcs_info:*' formats '%F{12}%16<…<%b%<<%F{3}%c%u%f '
+    PS1='%B%F{4}$(__gobble $PWD)%f ${vcs_info_msg_0_}%F{8}%#%f%b '
+  else
+    zstyle ':vcs_info:*' formats '%F{12}%b%F{3}%c%u%f '
+    PS1='%B%F{4}%~%f ${vcs_info_msg_0_}%F{8}%#%f%b '
+  fi
+
+  __redraw
+}
+
+zle -N expand-prompt
+bindkey '\C-e' expand-prompt
