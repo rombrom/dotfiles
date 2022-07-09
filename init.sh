@@ -17,6 +17,9 @@ echo "Installing Node packages..."
 echo ""
 source ./init/node.sh
 
+# Install fun bun
+curl https://bun.sh/install | bash
+
 # Install essential Python utils
 echo "Installing Python packages..."
 echo ""
