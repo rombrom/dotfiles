@@ -31,8 +31,9 @@ Plug 'prabirshrestha/vim-lsp'
 Plug 'rhysd/vim-lsp-ale'
 Plug 'mattn/vim-lsp-settings'
 Plug 'sheerun/vim-polyglot'
+Plug 'freitass/todo.txt-vim'
 
-" Popie jopie
+" Popie Jopie
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-fugitive'
