@@ -1,5 +1,8 @@
 # experiment
-alias g='vim +G +only'
+function g() {
+  [[ $# -eq 0 ]] && vim +G +only
+  [[ $# -gt 0 ]] && git $@
+}
 
 # aliases
 alias ga='git add'
