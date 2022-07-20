@@ -7,7 +7,6 @@ command Scratch split scratch | setlocal buftype=nofile bufhidden=hide noswapfil
 " List todos in HEAD vs. default branch
 command! Todo cgetexpr Grep('TODO', '$(git files)')
 
-" Plug '/usr/local/opt/fzf | Plug 'junegunn/fzf.vim'
-"
+" Files
 command! -bang -nargs=? -complete=dir Files
 \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)

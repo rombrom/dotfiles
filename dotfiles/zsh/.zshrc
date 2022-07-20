@@ -11,23 +11,23 @@ fpath=(
 path=(
   "$HOME/.local/bin"
   "$HOME/node_modules/.bin"
-  /usr/local/opt/coreutils/libexec/gnubin
-  /usr/local/opt/findutils/libexec/gnubin
-  /usr/local/opt/gnu-tar/libexec/gnubin
-  /usr/local/opt/gnu-sed/libexec/gnubin
-  /usr/local/opt/gnu-getopt/bin
-  /usr/local/opt/grep/libexec/gnubin
-  /usr/local/opt/python@3.9/libexec/bin
-  /usr/local/opt/openjdk/bin
+  $HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin
+  $HOMEBREW_PREFIX/opt/findutils/libexec/gnubin
+  $HOMEBREW_PREFIX/opt/gnu-tar/libexec/gnubin
+  $HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin
+  $HOMEBREW_PREFIX/opt/gnu-getopt/bin
+  $HOMEBREW_PREFIX/opt/grep/libexec/gnubin
+  $HOMEBREW_PREFIX/opt/python@3.9/libexec/bin
+  $HOMEBREW_PREFIX/opt/openjdk/bin
   $path
 )
 
 manpath=(
-  /usr/local/opt/coreutils/libexec/gnuman
-  /usr/local/opt/findutils/libexec/gnuman
-  /usr/local/opt/gnu-tar/libexec/gnuman
-  /usr/local/opt/gnu-sed/libexec/gnuman
-  /usr/local/opt/grep/libexec/gnuman
+  $HOMEBREW_PREFIX/opt/coreutils/libexec/gnuman
+  $HOMEBREW_PREFIX/opt/findutils/libexec/gnuman
+  $HOMEBREW_PREFIX/opt/gnu-tar/libexec/gnuman
+  $HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnuman
+  $HOMEBREW_PREFIX/opt/grep/libexec/gnuman
   $manpath
 )
 
@@ -52,3 +52,6 @@ for file ($HOME/.config/zsh/*); do
 done;
 
 [[ -n "$ENABLE_ZPROF" ]] && zprof
+
+# bun completions
+[ -s "/Users/rommert/.bun/_bun" ] && source "/Users/rommert/.bun/_bun"

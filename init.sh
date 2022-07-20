@@ -7,10 +7,26 @@ if ! type "brew" 2>/dev/null; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
+# Make brew available
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # Install utilities via Homebrew
 echo "Installing Homebrew packages..."
 echo ""
 source ./init/brew.sh
+
+# Sync dotfiles
+echo "Synchronizing dotfiles..."
+echo ""
+stow --dir=dotfiles --target="$HOME" \
+  --stow ctags \
+  --stow git \
+  --stow kitty \
+  --stow misc \
+  --stow vim \
+  --stow zsh \
+  --verbose
+
 
 # Install essential Node utils
 echo "Installing Node packages..."
@@ -21,22 +37,9 @@ source ./init/node.sh
 curl https://bun.sh/install | bash
 
 # Install essential Python utils
-echo "Installing Python packages..."
-echo ""
-source ./init/python.sh
-
-# Sync dotfiles
-echo "Synchronizing dotfiles..."
-echo ""
-stow --dir=dotfiles --target="$HOME" \
-  --stow ctags \
-  --stow git \
-  --stow kitty \
-  --stow misc \
-  --stow tig \
-  --stow vim \
-  --stow zsh \
-  --verbose
+#echo "Installing Python packages..."
+#echo ""
+#source ./init/python.sh
 
 # Generate zsh completions
 echo "Getting zsh completions"
@@ -47,7 +50,6 @@ curl -L \
 curl -L \
   https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose \
   > $COMPLETIONS/_docker-compose
-poetry completions zsh > $COMPLETIONS/_poetry
 
 echo "Installing vim plugins"
 echo ""
@@ -56,7 +58,7 @@ vim +PlugInstall +qa
 # Sync settings
 echo "Copying settings..."
 echo ""
-cp -v ./settings/dnsmasq.conf /usr/local/etc/dnsmasq.conf
+cp -v ./settings/dnsmasq.conf $HOMEBREW_PREFIX/etc/dnsmasq.conf
 
 sudo mkdir -p /etc/resolver
 sudo cp -v ./settings/localhost.resolver /etc/resolver/localhost
@@ -67,4 +69,4 @@ sudo brew services start dnsmasq
 # change shell to newly installed zsh
 echo "Changing shell to /usr/local/bin/zsh"
 echo ""
-sudo chsh -s "$(which zsh)" "$(whoami)"
+sudo chsh -s "$(command -v zsh)" "$(whoami)"
