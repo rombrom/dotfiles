@@ -8,7 +8,13 @@ if ! type "brew" 2>/dev/null; then
 fi
 
 # Make brew available
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if command -V /usr/local/bin/brew; then
+  brew shellenv >> "$HOME/.zprofile"
+  eval "$(/usr/local/bin/brew shellenv)"
+elif command -V /opt/homebrew/bin/brew; then
+  brew shellenv >> "$HOME/.zprofile"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
 # Install utilities via Homebrew
 echo "Installing Homebrew packages..."
