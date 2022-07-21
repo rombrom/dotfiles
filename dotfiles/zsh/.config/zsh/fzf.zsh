@@ -1,6 +1,6 @@
 # Setup fzf
-if [[ ! "$PATH" == */usr/local/opt/fzf/bin* ]]; then
-  export PATH="$PATH:/usr/local/opt/fzf/bin"
+if [[ ! "$PATH" == */$HOMEBREW_PREFIX/opt/fzf/bin* ]]; then
+  export PATH="$PATH:$HOMEBREW_PREFIX/opt/fzf/bin"
 fi
 
 # Make fzf use ripgrep by default
@@ -12,7 +12,9 @@ export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --tiebreak=length,end \
 export FZF_CTRL_T_COMMAND="fd"
 
 # Auto-completion
-[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.zsh" 2> /dev/null
+if [[ $- == *i* ]] then;
+  source "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh" 2> /dev/null
+fi
 
 # Key bindings
-source "/usr/local/opt/fzf/shell/key-bindings.zsh"
+source "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"

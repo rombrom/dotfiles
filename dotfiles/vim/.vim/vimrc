@@ -15,7 +15,7 @@ Plug 'knubie/vim-kitty-navigator', {
 \}
 
 " UI/UX related
-Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+Plug $HOMEBREW_PREFIX.'/opt/fzf' | Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'mattn/emmet-vim'

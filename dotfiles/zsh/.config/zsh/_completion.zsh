@@ -34,6 +34,6 @@ zstyle ':completion:*:(cd|pushd):*' tag-order \
 zstyle ':completion:*:functions' ignored-patterns '_*'
 
 # misc completions
-source /usr/local/etc/bash_completion.d/az
-source /usr/local/etc/bash_completion.d/npm
-source /usr/local/etc/bash_completion.d/pipx
+source $HOMEBREW_PREFIX/etc/bash_completion.d/az
+source $HOMEBREW_PREFIX/etc/bash_completion.d/npm
+# source $HOMEBREW_PREFIX/etc/bash_completion.d/pipx
