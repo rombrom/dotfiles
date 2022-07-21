@@ -51,7 +51,7 @@ function init#statusline() abort
   let statusline.= '%(%1*%{ALEProblems("error", "style_error")}‼ %*%)'
 
   " branch name
-  let statusline .= '%(%4*«%* %9*%<%{FugitiveHead()}%* %)'
+  let statusline .= '%(%4*«%* %9*%<%{FugitiveHead(8)}%* %)'
 
   " this makes sure the statusline is redrawn
   " :h stl-%{

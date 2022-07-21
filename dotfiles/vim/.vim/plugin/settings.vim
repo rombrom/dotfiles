@@ -74,7 +74,7 @@ set signcolumn=yes
 set spelllang=en,nl               " Use English and Dutch
 set synmaxcol=1000                " We don't need that much syntax per line
 set wildmenu                      " visual autocomplete for command menu
-set wildoptions=pum
+set wildoptions+=fuzzy,pum
 
 " Windows
 set splitbelow splitright         " The same behavior as tmux
