@@ -8,7 +8,7 @@ function! utils#getTarget(type) abort
     return
   endif
 
-  return utils#EscapeRegExp(@@)
+  return @@
 endfunction
 
 " auto create subfolders like mkdir -p
@@ -21,8 +21,7 @@ endfunction
 " escape regular expression tokens for ripgrep
 " there are some issues with this still, I think.
 function! utils#EscapeRegExp(str) abort
-  " this sick boi escapes regexp special characters
-  return substitute(escape(trim(a:str), '[]{}().+*?\|^$'), '\\', '\\\\\\\\\', 'g')
+  return escape(trim(a:str), '[]{}().+*?\|^$')
 endfunction
 
 " 'Gobbles' paths from:
