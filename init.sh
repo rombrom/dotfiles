@@ -9,10 +9,10 @@ fi
 
 # Make brew available
 if command -V /usr/local/bin/brew; then
-  brew shellenv >> "$HOME/.zprofile"
+  /usr/local/bin/brew shellenv >> "$HOME/.zprofile"
   eval "$(/usr/local/bin/brew shellenv)"
 elif command -V /opt/homebrew/bin/brew; then
-  brew shellenv >> "$HOME/.zprofile"
+  /opt/homebrew/bin/brew shellenv >> "$HOME/.zprofile"
   eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
