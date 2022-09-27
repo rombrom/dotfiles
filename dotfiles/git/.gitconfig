@@ -19,22 +19,22 @@
 [alias]
 	# Some of these are from/inspired by https://blog.jez.io/cli-code-review/
 	# list changed files
-	files = !git diff --name-only $(git merge-base HEAD \"${REVIEW_BASE:-master}\")
+	files = !git diff --name-only $(git merge-base HEAD \"${REVIEW_BASE:-main}\")
 
 	# start review
 	review = !vim -p $(git files) \
-		+\"tabdo Gvdiffsplit ${REVIEW_BASE:-master}\" \
-		+\"let g:gitgutter_diff_base = '${REVIEW_BASE:-master}'\"
+		+\"tabdo Gvdiffsplit ${REVIEW_BASE:-main}\" \
+		+\"let g:gitgutter_diff_base = '${REVIEW_BASE:-main}'\"
 
 	# list changed files w/ change statistics
-	stat = !git diff --stat $(git merge-base HEAD \"${REVIEW_BASE:-master}\")
+	stat = !git diff --stat $(git merge-base HEAD \"${REVIEW_BASE:-main}\")
 
 	# list TODO's in current HEAD vs default branch
-	todo = !vim +'Grep TODO $(git diff --name-only $(git merge-base HEAD ${REVIEW_BASE:-master}))' +'cfirst'
+	todo = !vim +'Grep TODO $(git diff --name-only $(git merge-base HEAD ${REVIEW_BASE:-main}))' +'cfirst'
 
 [init]
 	templatedir = ~/.git_template
-	defaultBranch = master
+	defaultBranch = main
 
 [color]
 	# Use colors in Git commands that are capable of colored output when
