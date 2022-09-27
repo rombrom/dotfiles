@@ -10,7 +10,6 @@ brew upgrade
 brew tap universal-ctags/universal-ctags
 
 # Install core utilities
-brew install azure-cli
 brew install bat
 brew install bats-core
 brew install coreutils
@@ -20,6 +19,7 @@ brew install fd
 brew install findutils
 brew install fzf
 brew install gawk
+brew install gh
 brew install ghostscript
 brew install git
 brew install gnu-getopt
@@ -31,7 +31,7 @@ brew install helix
 brew install hexyl
 brew install imagemagick
 brew install nmap
-brew install node
+brew install node corepack
 brew install pandoc
 brew install postman
 brew install ripgrep
@@ -40,14 +40,13 @@ brew install stow
 brew install tree
 brew install vim
 brew install watchexec
-brew install watchman
 brew install wget
 brew install zsh
 brew install zsh-completions
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
 # Install Recent Python
-brew install python
+brew install miniforge
 
 # Clojure experiments
 #brew install clojure java leiningen
@@ -59,16 +58,22 @@ chmod -R go-w "$HOMEBREW_PREFIX/share/zsh"
 brew install --cask 1password
 brew install --cask appcleaner
 brew install --cask docker
+brew install --cask discord
+brew install --cask figma
 brew install --cask homebrew/cask-versions/firefox-developer-edition
 brew install --cask homebrew/cask-versions/google-chrome-beta
 brew install --cask kitty
-brew install --cask microsoft-teams
+brew install --cask linear-linear
+brew install --cask notion
 brew install --cask visual-studio-code
 brew install --cask steam
+brew install --cask telegram
+brew install --cask whatsapp
 
-# install azure dependencies
-
-command -V az && az extension add --name azure-devops
+# Stable diffusion
+brew install --cask miniconda
+brew install protobuf
+brew install rust
 
 # Remove outdated versions from the cellar.
 brew cleanup
