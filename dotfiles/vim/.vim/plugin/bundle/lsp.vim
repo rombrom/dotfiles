@@ -45,6 +45,11 @@ function! s:enable_lsp(...) abort
     if has_key(l:cap, 'renameProvider')
       nmap <silent> <buffer> <leader>gR <plug>(lsp-rename)
     endif
+
+    for l:method in g:lsp_tagfunc_source_methods
+      if has_key(l:cap, l:method . 'Provider')
+        setlocal tagfunc=lsp#tagfunc
+    endfor
   endfor
 endfunction
 
