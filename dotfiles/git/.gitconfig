@@ -66,10 +66,14 @@
 	whitespace = fix
 
 [diff]
+	algorithm = histogram
+	colorMoved = true
 	tool = vimdiff
 
 [difftool]
-	prompt = false
+	# leave this on, because it can be hard to C-c a
+	# difftool sesh
+	prompt = true
 
 [merge]
 	# Include summaries of merged commits in newly created merge commit messages
@@ -80,14 +84,15 @@
 [mergetool "vimdiff"]
 	cmd = vim -d -f -c \"Gvdiffsplit!\" \"$MERGED\"
 
+[fetch]
+	prune = true
+
 [push]
-	# Use the Git 1.x.x default to avoid errors on machines with old Git
-	# installations. To use `simple` instead, add this to your `~/.extra` file:
-	# `git config --global push.default simple`. See http://git.io/mMah-w.
-	default = matching
+	default = upstream
+	useForceIfIncludes = true
 
 [pull]
-	ff = only
+	rebase = true
 
 [includeIf "gitdir:Code/work/**"]
 	path = Code/work/.gitconfig
