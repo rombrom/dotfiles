@@ -8,7 +8,8 @@ noremap <expr> <Down> v:count == 0 ? "g\<Down>" : "\<Down>"
 command W w
 command Q q
 
-" Clear highlights in normal mode
+" Clear highlights in normal mode. After much fussing, C-c just
+" seems like a really intuitive binding for this.
 nnoremap <silent> <C-c> :noh<Cr>
 
 " <Tab> advances through the jumplist, so <S-Tab> moves backwards
@@ -26,11 +27,6 @@ inoremap <C-u> <C-g>u<C-u>
 
 " autosuggest last spelling mistake in insert mode
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
-
-" primitive tab completion
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
 
 " buffer nav
 nnoremap <Leader>bd :bdelete!<Cr>
@@ -50,8 +46,6 @@ nnoremap <Leader>tp :ptjump /
 nnoremap <silent> <Leader>fy :let @*=join([expand('%'), line('.')], ':')<Cr>
 nnoremap <Leader>fn :sp <C-r>=expand('%:h')<Cr>
 
-" nnoremap <silent> <Leader>r normal :%s/<C-r>=expand('%:h')<Cr>
-
 " Quickly create a new buffer in the current folder
 nnoremap <Leader>nn :e <C-r>=expand('%:h')<Cr>/
 nnoremap <Leader>ns :sp <C-r>=expand('%:h')<Cr>/
@@ -60,4 +54,3 @@ nnoremap <Leader>nv :vsp <C-r>=expand('%:h')<Cr>/
 
 " quickly edit vimrc and color theme
 nnoremap <Leader>ev :tabe $MYVIMRC<Cr>
-nnoremap <Leader>ec :tabe $HOME/.vim/colors/fansi.vim<Cr>
