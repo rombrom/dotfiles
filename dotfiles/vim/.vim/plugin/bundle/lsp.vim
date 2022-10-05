@@ -49,6 +49,7 @@ function! s:enable_lsp(...) abort
     for l:method in g:lsp_tagfunc_source_methods
       if has_key(l:cap, l:method . 'Provider')
         setlocal tagfunc=lsp#tagfunc
+      endif
     endfor
   endfor
 endfunction
