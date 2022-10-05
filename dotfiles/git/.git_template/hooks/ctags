@@ -2,6 +2,6 @@
 set -e;
 trap 'rm -f "$$.tags"' EXIT
 
-git ls-files . ':!:package-lock.json' | \
+git ls-files . ':!:*lock.json' ':!:*.lock' | \
   ctags --tag-relative -L - -f "$$.tags"
 mv "$$.tags" "tags"
