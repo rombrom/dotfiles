@@ -9,9 +9,6 @@ Thumbs.db
 # Ctags stuff
 tags
 !tags/
-ctags
-!ctags/
-.ctags.d
 
 # Editor config files
 .vscode
