@@ -10,8 +10,9 @@ noremap <expr> <Down> v:count == 0 ? "g\<Down>" : "\<Down>"
 nnoremap Y y$;
 
 " These things happen too often
-command W w
-command Q q
+command -bang W w
+command -bang Q q
+command -bang Qa qa
 
 " Clear highlights in normal mode. After much fussing, C-c just
 " seems like a really intuitive binding for this.
