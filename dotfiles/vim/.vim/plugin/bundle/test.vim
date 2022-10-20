@@ -1,2 +1,2 @@
 " Plug 'vim-test/vim-test'
-let test#strategy = 'vimterminal'
+let test#strategy = 'dispatch'
