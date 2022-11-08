@@ -3,6 +3,7 @@ function init#statusline() abort
   hi User2 ctermfg=2 ctermbg=0
   hi User3 ctermfg=3 ctermbg=0 cterm=bold
   hi User4 ctermfg=4 ctermbg=0
+  hi User6 ctermfg=6 ctermbg=0
   hi User7 ctermfg=7 ctermbg=0
 
   hi User8 ctermfg=none ctermbg=0
@@ -49,6 +50,9 @@ function init#statusline() abort
   let statusline.= '%(%2*%{ALEProblems() == 0 ? "✓" : ""} %*%)'
   let statusline.= '%(%3*%{ALEProblems("warning", "style_warning")}! %*%)'
   let statusline.= '%(%1*%{ALEProblems("error", "style_error")}‼ %*%)'
+
+  " gutentags
+  let statusline.= '%6*%{gutentags#statusline("", "", "♺")}%* '
 
   " branch name
   let statusline .= '%(%4*«%* %9*%<%{FugitiveHead(8)}%* %)'
