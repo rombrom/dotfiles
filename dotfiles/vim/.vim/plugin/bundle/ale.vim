@@ -7,8 +7,8 @@ let g:ale_sign_warning = '! '
 let g:ale_sign_column_always = 1
 
 " use eslint_d to spead up eslint fixing
-let g:ale_javascript_eslint_executable = 'eslint_d'
-let g:ale_javascript_eslint_use_global = 1
+" let g:ale_javascript_eslint_executable = 'eslint_d'
+" let g:ale_javascript_eslint_use_global = 1
 
 let g:ale_linters = {
 \  'python': ['black', 'flake8', 'mypy', 'pyflakes', 'pyls']
