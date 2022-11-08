@@ -1,6 +1,7 @@
 " Plug 'prabirshrestha/vim-lsp'
 let g:lsp_document_code_action_signs_enabled = 0
 let g:lsp_document_highlight_enabled = 0
+let g:lsp_preview_doubletap = [function('lsp#ui#vim#output#closepreview')]
 
 " There is a !@#$% annoying issue where mouse movement sends some escape
 " codes, completely borking scrolling, arrow keys and other things.
