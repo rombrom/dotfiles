@@ -42,10 +42,10 @@ source ./init/node.sh
 # Install fun bun
 curl https://bun.sh/install | bash
 
-# Install essential Python utils
-#echo "Installing Python packages..."
-#echo ""
-#source ./init/python.sh
+# Foundry
+# TODO
+curl -L https://foundry.paradigm.xyz | bash
+$HOME/.foundry/bin/foundryup
 
 # Generate zsh completions
 echo "Getting zsh completions"

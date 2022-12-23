@@ -9,15 +9,17 @@ fpath=(
 )
 
 path=(
-  "$HOME/.local/bin"
-  "$HOME/node_modules/.bin"
+  $HOME/.foundry/bin
+  $HOME/.local/bin
+  $HOME/node_modules/.bin
+
+  $HOMEBREW_PREFIX/opt/node@18/bin
   $HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin
   $HOMEBREW_PREFIX/opt/findutils/libexec/gnubin
   $HOMEBREW_PREFIX/opt/gnu-tar/libexec/gnubin
   $HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin
   $HOMEBREW_PREFIX/opt/gnu-getopt/bin
   $HOMEBREW_PREFIX/opt/grep/libexec/gnubin
-  $HOMEBREW_PREFIX/opt/python@3.9/libexec/bin
   $HOMEBREW_PREFIX/opt/openjdk/bin
   $path
 )
@@ -54,18 +56,3 @@ done;
 
 # # bun completions
 # [ -s "/Users/rommert/.bun/_bun" ] && source "/Users/rommert/.bun/_bun"
-
-# # >>> conda initialize >>>
-# # !! Contents within this block are managed by 'conda init' !!
-# __conda_setup="$('/opt/homebrew/Caskroom/miniforge/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-# if [ $? -eq 0 ]; then
-#     eval "$__conda_setup"
-# else
-#     if [ -f "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh" ]; then
-#         . "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh"
-#     else
-#         export PATH="/opt/homebrew/Caskroom/miniforge/base/bin:$PATH"
-#     fi
-# fi
-# unset __conda_setup
-# # <<< conda initialize <<<

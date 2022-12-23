@@ -9,11 +9,16 @@ brew upgrade
 # prepare taps
 brew tap universal-ctags/universal-ctags
 
+# Libraries
+brew install libusb # required by https://getfoundry.sh/
+
 # Install core utilities
 brew install bat
 brew install bats-core
-brew install coreutils
+brew install boxes
 brew install cmake
+brew install coreutils
+brew install deno
 brew install dnsmasq
 brew install fd
 brew install findutils
@@ -45,18 +50,10 @@ brew install zsh
 brew install zsh-completions
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
 
-# Install Recent Python
-brew install miniforge
-
-# Clojure experiments
-#brew install clojure java leiningen
-
-# fix zsh-completion directory permissions
-chmod -R go-w "$HOMEBREW_PREFIX/share/zsh"
-
 # install casks
 brew install --cask 1password
 brew install --cask appcleaner
+brew install --cask brave-browser
 brew install --cask docker
 brew install --cask discord
 brew install --cask figma
@@ -70,10 +67,13 @@ brew install --cask steam
 brew install --cask telegram
 brew install --cask whatsapp
 
-# Stable diffusion
-brew install --cask miniconda
-brew install protobuf
-brew install rust
+# iTunes + Discord
+brew tap nextfire/tap
+brew install apple-music-discord-rpc
+brew services restart apple-music-discord-rpc
+
+# fix zsh-completion directory permissions
+chmod -R go-w "$HOMEBREW_PREFIX/share/zsh"
 
 # Remove outdated versions from the cellar.
 brew cleanup
