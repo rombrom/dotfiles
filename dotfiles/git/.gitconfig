@@ -30,7 +30,7 @@
 	stat = !git diff --stat $(git merge-base HEAD \"${REVIEW_BASE:-main}\")
 
 	# list TODO's in current HEAD vs default branch
-	todo = !vim +'Grep TODO $(git diff --name-only $(git merge-base HEAD ${REVIEW_BASE:-main}))' +'cfirst'
+	todo = !vim +'grep TODO $(git diff --name-only $(git merge-base HEAD ${REVIEW_BASE:-main}))' +'cfirst'
 
 [init]
 	templatedir = ~/.git_template
