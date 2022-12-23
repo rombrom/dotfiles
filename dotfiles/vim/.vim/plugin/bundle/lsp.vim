@@ -5,7 +5,7 @@ let g:lsp_preview_doubletap = [function('lsp#ui#vim#output#closepreview')]
 
 " There is a !@#$% annoying issue where mouse movement sends some escape
 " codes, completely borking scrolling, arrow keys and other things.
-let g:lsp_hover_ui = 'preview'
+" let g:lsp_hover_ui = 'preview'
 
 " Borrowed from: https://www.rockyourcode.com/use-vim-for-c-sharp-development-on-linux/
 " who borrowed from: https://hauleth.dev/post/vim-for-elixir/#completion-and-language-server
@@ -15,12 +15,16 @@ function! s:enable_lsp(...) abort
   for l:server in l:servers
     let l:cap = lsp#get_server_capabilities(l:server)
 
+    if has_key(l:cap, 'hoverProvider')
+      setlocal keywordprg=:LspHover
+    endif
+
     if has_key(l:cap, 'completionProvider')
       setlocal omnifunc=lsp#complete
     endif
 
-    if has_key(l:cap, 'hoverProvider')
-      setlocal keywordprg=:LspHover
+    if has_key(l:cap, 'definitionProvider') || has_key(l:cap, 'implementationProvider')
+      setlocal tagfunc=lsp#tagfunct
     endif
 
     if has_key(l:cap, 'definitionProvider')
