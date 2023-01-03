@@ -66,4 +66,4 @@ function expand-prompt() {
 }
 
 zle -N expand-prompt
-bindkey '\C-e' expand-prompt
+bindkey '\C-x\C-x' expand-prompt
