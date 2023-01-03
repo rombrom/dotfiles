@@ -27,6 +27,10 @@ function __gobble() {
 
   local parts=(${(ps:$sep:)${str}})
 
+  if [[ $str = $sep* ]]; then
+    parts=('' $parts)
+  fi
+
   for (( i = 1; i < $#parts; i++ )); do
     local part=$parts[$i]
 
