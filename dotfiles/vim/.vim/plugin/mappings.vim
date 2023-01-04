@@ -7,7 +7,7 @@ noremap <expr> <Down> v:count == 0 ? "g\<Down>" : "\<Down>"
 " Y does the same as yy by default, instead of being consistent
 " with C, D (change/delete until end of line). I've began shooting
 " myself in the foot without this one.
-nnoremap Y y$;
+nnoremap Y y$
 
 " These things happen too often
 command -bang W w
