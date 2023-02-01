@@ -34,14 +34,15 @@ let g:ale_fixers = {
 \  'javascript': ['prettier', 'eslint'],
 \  'javascriptreact': ['prettier', 'eslint'],
 \  'json': ['prettier'],
-\  'typescript': ['prettier', 'eslint'],
-\  'typescriptreact': ['prettier', 'eslint'],
 \  'markdown': ['prettier'],
+\  'php': ['php_cs_fixer'],
 \  'python': ['autoimport', 'black', 'isort'],
 \  'sass': ['prettier'],
 \  'scss': ['prettier'],
 \  'svelte': ['prettier', 'eslint'],
-\  'php': ['php_cs_fixer'],
+\  'typescript': ['prettier', 'eslint'],
+\  'typescriptreact': ['prettier', 'eslint'],
+\  'yaml': ['prettier'],
 \}
 
 nmap <Leader>af <Plug>(ale_fix)
