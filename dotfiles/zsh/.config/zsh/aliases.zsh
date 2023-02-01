@@ -7,6 +7,7 @@ alias lt="ls -halt"
 alias ltr="ls -haltr"
 
 # navigation
+alias ~='cd ~'
 alias ..='cd ..'
 
 # this always happens
