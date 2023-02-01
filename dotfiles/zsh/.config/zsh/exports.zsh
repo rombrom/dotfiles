@@ -19,3 +19,6 @@ export BAT_THEME='ansi' # TODO: create a bat theme based on bluebox
 # Avoid issues with `gpg` as installed via Homebrew.
 # https://stackoverflow.com/a/42265848/96656
 export GPG_TTY=$(tty)
+
+# Ripgrep config
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
