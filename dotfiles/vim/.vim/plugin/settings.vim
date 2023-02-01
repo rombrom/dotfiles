@@ -72,7 +72,6 @@ set shortmess=atI                 " Don’t show the intro message
 set showcmd                       " Show command as it’s being typed
 set showmatch                     " highlight matching [{()}]
 set signcolumn=yes
-set spelllang=en,nl               " Use English and Dutch
 set synmaxcol=1000                " We don't need that much syntax per line
 set wildmenu                      " visual autocomplete for command menu
 set wildoptions+=fuzzy,pum
