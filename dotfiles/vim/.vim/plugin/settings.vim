@@ -79,7 +79,7 @@ set wildoptions+=fuzzy,pum
 " Windows
 set splitbelow splitright         " The same behavior as tmux
 set winheight=25
-set winminheight=6
+set winminheight=8
 set winminwidth=20
 set winwidth=88
 
