@@ -22,9 +22,7 @@
 	files = !git diff --name-only $(git merge-base HEAD \"${REVIEW_BASE:-main}\")
 
 	# start review
-	review = !vim -p $(git files) \
-		+\"tabdo Gvdiffsplit ${REVIEW_BASE:-main}\" \
-		+\"let g:gitgutter_diff_base = '${REVIEW_BASE:-main}'\"
+	review = !vim -p -R $(git files) \"+tabdo Gvdiffsplit ${REVIEW_BASE:-main}\" \
 
 	# list changed files w/ change statistics
 	stat = !git diff --stat $(git merge-base HEAD \"${REVIEW_BASE:-main}\")
