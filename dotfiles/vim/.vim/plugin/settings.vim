@@ -12,6 +12,7 @@ set esckeys                       " Allow arrow keys in insert mode
 set formatoptions+=jn             " Delete comment character when joining lines
 set history=200                   " never found use of setting this higher
 set nostartofline
+set nrformats+=unsigned           " Just :h 'nrformats'
 set spelllang=en,nl               " Use English and Dutch
 set omnifunc=syntaxcomplete#Complete " Default omnifunc
 
