@@ -13,12 +13,14 @@ brew tap universal-ctags/universal-ctags
 brew install libusb # required by https://getfoundry.sh/
 
 # Install core utilities
+brew install act
 brew install bat
 brew install bats-core
 brew install boxes
 brew install cmake
 brew install coreutils
 brew install deno
+brew install dive
 brew install dnsmasq
 brew install fd
 brew install findutils
@@ -36,11 +38,9 @@ brew install helix
 brew install hexyl
 brew install imagemagick
 brew install nmap
-brew install node corepack
 brew install pandoc
 brew install postman
 brew install ripgrep
-brew install shellcheck
 brew install stow
 brew install tree
 brew install vim
@@ -49,6 +49,15 @@ brew install wget
 brew install zsh
 brew install zsh-completions
 brew install --HEAD universal-ctags/universal-ctags/universal-ctags
+
+# Some dev deps
+brew install lua luarocks lua-language-server
+brew install shellcheck
+
+# At some point I'll switch to some version manager. Maybe.
+brew install node corespack
+brew install node@18
+brew install node@16
 
 # install casks
 brew install --cask 1password
