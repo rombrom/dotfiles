@@ -29,6 +29,7 @@ stow --dir=dotfiles --target="$HOME" \
   --stow git \
   --stow kitty \
   --stow misc \
+  --stow neovim \
   --stow vim \
   --stow zsh \
   --verbose

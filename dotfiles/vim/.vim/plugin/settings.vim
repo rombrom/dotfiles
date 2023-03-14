@@ -4,11 +4,10 @@ set backspace=indent,eol,start    " Allow backspace in insert mode
 set clipboard=unnamed             " Use the macOS clipboard
 set complete+=kspell              " Add dictionary to autocomplete options
 set complete-=i                   " Don't scan included files from `path`
-set completeopt=menuone,noinsert,noselect,popup
+set completeopt=menuone,noinsert,noselect
 set dictionary+=/usr/share/dict/words " Use the linked dictionary of macOS
 set display+=lastline
 set encoding=utf-8 nobomb
-set esckeys                       " Allow arrow keys in insert mode
 set formatoptions+=jn             " Delete comment character when joining lines
 set history=200                   " never found use of setting this higher
 set nostartofline
@@ -44,7 +43,7 @@ set mouse=a                       " Enable mouse in all modes
 set title                         " Show the filename in the window titlebar
 set ttimeoutlen=50                " Return to NORMAL quickly after <ESC>
 set ttyfast                       " Optimize for fast terminal connections
-set ttymouse=sgr                  " Enable proper mouse support
+
 set vb t_vb=                      " Remove 'bell' in vim
 
 " UI
@@ -52,8 +51,6 @@ if has("8.0.1037")
   set diffopt+=algorithm:histogram,indent-heuristic,vertical
 endif
 
-set ballooneval
-set balloonevalterm
 set background=dark
 set cursorlineopt=screenline,number
 set statusline=%!init#statusline()
@@ -74,7 +71,7 @@ set showmatch                     " highlight matching [{()}]
 set signcolumn=yes
 set synmaxcol=1000                " We don't need that much syntax per line
 set wildmenu                      " visual autocomplete for command menu
-set wildoptions+=fuzzy,pum
+set wildoptions+=pum
 
 " Windows
 set splitbelow splitright         " The same behavior as tmux
@@ -108,3 +105,12 @@ syntax enable
 " Change cursor in insert mode
 let &t_SI="\e[5 q"
 let &t_EI="\e[2 q"
+
+" nvim transition
+if !has('nvim')
+  set ttymouse=sgr
+  set completeopt+=popup
+  set ballooneval
+  set balloonevalterm
+  set wildoptions+=fuzzy
+endif

@@ -47,5 +47,8 @@ Plug 'tpope/vim-unimpaired'
 call plug#end()
 
 packadd! cfilter       " Add Cfilter Lfitler commands
-packadd! editexisting  " Open existing vim instance if open
 packadd! matchit       " Make % command work better
+
+if !has('nvim')
+  packadd! editexisting  " Open existing vim instance if open
+endif
