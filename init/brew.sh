@@ -43,7 +43,7 @@ brew install postman
 brew install ripgrep
 brew install stow
 brew install tree
-brew install vim
+brew install neovim vim
 brew install watchexec
 brew install wget
 brew install zsh

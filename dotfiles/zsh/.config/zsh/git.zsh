@@ -1,6 +1,6 @@
 # experiment
 function g() {
-  [[ $# -eq 0 ]] && vim +G +only
+  [[ $# -eq 0 ]] && $EDITOR +G +only
   [[ $# -gt 0 ]] && git $@
 }
 

@@ -1,3 +1,9 @@
+# Enable aliases to be sudo’ed
+alias sudo='sudo '
+
+# The transition
+alias vim='nvim'
+
 # Use ls colors by default
 # Need to use gls due to coreutils install from brew
 alias ls="gls -v --color=always --group-directories-first --indicator-style=slash"
@@ -24,9 +30,6 @@ alias jq='gojq'
 
 # Ignore common "junk" folders
 alias tree='tree --dirsfirst -I "node_modules"'
-
-# Enable aliases to be sudo’ed
-alias sudo='sudo '
 
 # Clean up LaunchServices to remove duplicates in the “Open With” menu
 alias lscleanup="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
