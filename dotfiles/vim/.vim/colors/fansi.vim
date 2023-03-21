@@ -144,7 +144,12 @@ hi! link Question FANSIRedLightBold
   hi! link LineNrAbove LineNr
   hi! link LineNrBelow LineNr
   hi! link SignColumn FANSIBlackLight
-  hi! link VertSplit FANSIBlack
+
+  if has('nvim')
+    hi! link WinSeparator FANSIBlack
+  else
+    hi! link VertSplit FANSIBlack
+  endif
 
   " completion menu
   hi Pmenu ctermfg=none ctermbg=0
@@ -153,8 +158,10 @@ hi! link Question FANSIRedLightBold
   hi PmenuThumb ctermfg=15
 
   " search
-  hi IncSearch ctermfg=11 ctermbg=none cterm=reverse
+  hi CurSearch ctermfg=11 ctermbg=none cterm=reverse
   hi Search ctermfg=3 ctermbg=none cterm=reverse
+  hi! link IncSearch CurSearch
+  hi! link Substitute Search
 
   " statusline
   hi StatusLine ctermfg=none ctermbg=0 cterm=none
@@ -178,11 +185,19 @@ hi DiffChange ctermfg=4 ctermbg=none cterm=reverse
 hi DiffDelete ctermfg=1 ctermbg=none cterm=reverse
 hi DiffText ctermfg=0 ctermbg=12
 
-" spelling
-hi SpellBad ctermfg=1 ctermbg=none cterm=italic,underline
-hi SpellCap ctermfg=none ctermbg=none cterm=italic,underline
+" spelling & diagnostics
+hi! SpellBad ctermfg=1 ctermbg=none cterm=italic,undercurl guisp=none
+hi! SpellCap ctermfg=none ctermbg=none cterm=italic,undercurl guisp=none
 hi! link SpellLocal SpellCap
 hi! link SpellRare SpellCap
+hi! link DiagnosticError FANSIRed
+hi! link DiagnosticWarn FANSIYellow
+hi! link DiagnosticInfo FANSIBlue
+hi! link DiagnosticHint FANSIGreyLight
+hi DiagnosticUnderlineError cterm=undercurl guisp=#f55c45
+hi DiagnosticUnderlineWarn cterm=undercurl guisp=#ebb242
+hi DiagnosticUnderlineInfo cterm=undercurl guisp=#5fb8b8
+hi DiagnosticUnderlineHint cterm=undercurl guisp=#9aaab8
 
 " Syntax: {{{
   hi Comment ctermfg=8 ctermbg=none cterm=italic
