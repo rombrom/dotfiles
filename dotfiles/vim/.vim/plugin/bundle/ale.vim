@@ -5,6 +5,7 @@ let g:ale_lint_on_text_changed = 'normal'
 let g:ale_sign_error = '‼'
 let g:ale_sign_warning = '! '
 let g:ale_sign_column_always = 1
+let g:ale_virtualtext_cursor = 'disabled'
 
 " use eslint_d to spead up eslint fixing
 " let g:ale_javascript_eslint_executable = 'eslint_d'
