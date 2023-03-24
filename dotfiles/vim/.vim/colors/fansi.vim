@@ -186,8 +186,14 @@ hi DiffDelete ctermfg=1 ctermbg=none cterm=reverse
 hi DiffText ctermfg=0 ctermbg=12
 
 " spelling & diagnostics
-hi! SpellBad ctermfg=1 ctermbg=none cterm=italic,undercurl guisp=none
-hi! SpellCap ctermfg=none ctermbg=none cterm=italic,undercurl guisp=none
+hi! SpellBad ctermfg=1 ctermbg=none cterm=italic,undercurl
+hi! SpellCap ctermfg=none ctermbg=none cterm=italic,undercurl
+
+if has('nvim')
+  hi SpellBad guisp=none
+  hi SpellCap guisp=none
+endif
+
 hi! link SpellLocal SpellCap
 hi! link SpellRare SpellCap
 hi! link DiagnosticError FANSIRed
