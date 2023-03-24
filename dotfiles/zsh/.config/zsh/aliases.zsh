@@ -2,7 +2,7 @@
 alias sudo='sudo '
 
 # The transition
-alias vim='nvim'
+# alias vim='nvim'
 
 # Use ls colors by default
 # Need to use gls due to coreutils install from brew
