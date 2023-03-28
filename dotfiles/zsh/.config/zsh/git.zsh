@@ -15,7 +15,6 @@ alias gcf='git clean -df'
 alias gcl='git clone'
 alias gcm='git checkout main'
 alias gcn='git commit -v --no-verify'
-alias gco='git checkout'
 alias gd='git diff'
 alias gf='git fetch --prune'
 alias gl='git pull'
@@ -28,7 +27,26 @@ alias gr='git rebase'
 alias grh='git reset --hard'
 alias gss='git status --short'
 
+function gco() {
+  if [[ "$#" -eq 0 ]]; then
+    local branches="$( \
+      git --no-pager branch --all --sort -committerdate | \
+      grep -Ev '(^[*+]|HEAD)' | sed -E 's#[[:blank:]]*(remotes/\w+/)?##' \
+    )"
+    local tags="$(git --no-pager tag)"
+    local ref="$( \
+      (echo $branches; echo $tags) | \
+      fzf --multi --preview 'git log --color --oneline {1}' \
+    )"
+    [[ ! -z "$ref" ]] && git checkout "$ref"
+  else
+    git checkout $@
+  fi
+}
+
 alias gbd="git branch -D \$( \
   git branch --sort -committerdate | grep -v '^*' | \
   fzf --multi --preview 'git log --color --oneline {1}' \
   )"
+
+compdef -e 'words[1]=(git checkout); service=git; (( CURRENT+=1 )); _git' gco
