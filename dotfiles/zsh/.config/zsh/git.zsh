@@ -31,7 +31,9 @@ function gco() {
   if [[ "$#" -eq 0 ]]; then
     local branches="$( \
       git --no-pager branch --all --sort -committerdate | \
-      grep -Ev '(^[*+]|HEAD)' | sed -E 's#[[:blank:]]*(remotes/\w+/)?##' \
+      grep -Ev '(^[*+]|HEAD)' | \
+      sed -E 's#[[:blank:]]*(remotes/\w+/)?##' | \
+      uniq
     )"
     local tags="$(git --no-pager tag)"
     local ref="$( \
