@@ -66,7 +66,7 @@
 [diff]
 	algorithm = histogram
 	colorMoved = true
-	tool = nvimdiff
+	tool = vimdiff
 
 [difftool]
 	# leave this on, because it can be hard to C-c a
@@ -76,10 +76,10 @@
 [merge]
 	# Include summaries of merged commits in newly created merge commit messages
 	log = true
-	tool = nvimdiff
+	tool = vimdiff
 	conflictStyle = diff3
 
-[mergetool "nvimdiff"]
+[mergetool "vimdiff"]
 	cmd = $EDITOR -d -f -c \"Gvdiffsplit!\" \"$MERGED\"
 
 [fetch]

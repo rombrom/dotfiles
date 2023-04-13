@@ -94,15 +94,9 @@ set backupdir=~/.vim/backup//
 set swapfile        " write a swap every now and then
 set directory=~/.vim/swap//
 
-" Because sometimes I need to switch to vim to check some things in the
-" setup, undofiles keep being saved in consistent formats between both
-" runtimes.
-if has('nvim')
-  set undofile        " persistent undo is AWESOME
-  set undodir=~/.vim/undo//
-else
-  set noundofile
-endif
+set undofile        " persistent undo is AWESOME
+set undodir=~/.vim/undo//
+set noundofile
 
 " Theme
 colorscheme fansi
