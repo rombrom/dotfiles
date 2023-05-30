@@ -10,10 +10,6 @@ endif
 
 call plug#begin('~/.vim/bundle')
 
-Plug 'knubie/vim-kitty-navigator', {
-  \ 'do': 'cp  ./*.py $HOME/.config/kitty/'
-\}
-
 " UI/UX related
 Plug $HOMEBREW_PREFIX.'/opt/fzf' | Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-gitgutter'
