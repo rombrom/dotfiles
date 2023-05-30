@@ -58,6 +58,8 @@ brew install shellcheck
 brew install node corespack
 brew install node@18
 brew install node@16
+brew install python
+brew install pdm
 
 # install casks
 brew install --cask 1password
