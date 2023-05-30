@@ -30,10 +30,10 @@ alias gss='git status --short'
 function gco() {
   if [[ "$#" -eq 0 ]]; then
     local branches="$( \
-      git --no-pager branch --all --sort -committerdate | \
+      git --no-pager branch --all | \
       grep -Ev '(^[*+]|HEAD)' | \
       sed -E 's#[[:blank:]]*(remotes/\w+/)?##' | \
-      uniq
+      sort -u
     )"
     local tags="$(git --no-pager tag)"
     local ref="$( \
