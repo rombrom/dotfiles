@@ -2,3 +2,4 @@
 --glob=!.git
 --hidden
 --ignore
+--smart-case
