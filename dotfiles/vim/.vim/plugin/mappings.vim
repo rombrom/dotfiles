@@ -10,6 +10,9 @@ noremap <expr> <Down> v:count == 0 ? "g\<Down>" : "\<Down>"
 nnoremap Y y$
 
 " These things happen too often
+if has('nvim')
+  command -bang X x
+endif
 command -bang W w
 command -bang Q q
 command -bang Qa qa
