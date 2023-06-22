@@ -3,8 +3,8 @@ export LANG=en_US.UTF-8
 export LC_ALL='en_US.UTF-8'
 
 # Set default editor
-export VISUAL="vim"
-export EDITOR="vim"
+export VISUAL="nvim"
+export EDITOR="nvim"
 
 # Reduce ESC delay in zsh vi-mode
 export KEYTIMEOUT=1
