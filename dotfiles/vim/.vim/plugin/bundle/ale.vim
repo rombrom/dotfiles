@@ -11,9 +11,9 @@ let g:ale_virtualtext_cursor = 'disabled'
 " let g:ale_javascript_eslint_executable = 'eslint_d'
 " let g:ale_javascript_eslint_use_global = 1
 
-let g:ale_linters = {
-\  'python': ['black', 'flake8', 'mypy', 'pyflakes', 'pyls']
-\}
+" let g:ale_linters = {
+" \  'python': []
+" \}
 
 " make linting possible in strange files
 let g:ale_linter_aliases = {
@@ -46,5 +46,7 @@ let g:ale_fixers = {
 \  'typescriptreact': ['prettier', 'eslint'],
 \  'yaml': ['prettier'],
 \}
+
+let g:ale_python_auto_poetry = 1
 
 nmap <Leader>af <Plug>(ale_fix)
