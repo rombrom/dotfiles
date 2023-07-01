@@ -96,7 +96,6 @@ set directory=~/.vim/swap//
 
 set undofile        " persistent undo is AWESOME
 set undodir=~/.vim/undo//
-set noundofile
 
 " Theme
 colorscheme fansi
