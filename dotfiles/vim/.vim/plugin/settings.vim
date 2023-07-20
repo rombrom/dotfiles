@@ -98,7 +98,7 @@ set undofile        " persistent undo is AWESOME
 set undodir=~/.vim/undo//
 
 " Theme
-colorscheme fansi
+colorscheme fansi2
 filetype plugin indent on
 syntax enable
 

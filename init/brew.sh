@@ -29,6 +29,7 @@ brew install gawk
 brew install gh
 brew install ghostscript
 brew install git
+brew install git-lfs
 brew install gnu-getopt
 brew install gnu-sed
 brew install gnu-tar
@@ -59,6 +60,8 @@ brew install node corespack
 brew install node@18
 brew install node@16
 brew install python
+brew install poetry
+brew install virtuanenv
 brew install pdm
 
 # install casks
@@ -67,6 +70,7 @@ brew install --cask appcleaner
 brew install --cask brave-browser
 brew install --cask docker
 brew install --cask discord
+brew install --cask disk-inventory-x
 brew install --cask figma
 brew install --cask homebrew/cask-versions/firefox-developer-edition
 brew install --cask homebrew/cask-versions/google-chrome-beta
@@ -76,6 +80,7 @@ brew install --cask notion
 brew install --cask visual-studio-code
 brew install --cask steam
 brew install --cask telegram
+brew install --cask wezterm
 brew install --cask whatsapp
 
 # iTunes + Discord

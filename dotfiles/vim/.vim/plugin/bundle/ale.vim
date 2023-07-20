@@ -38,7 +38,7 @@ let g:ale_fixers = {
 \  'json': ['prettier'],
 \  'markdown': ['prettier'],
 \  'php': ['php_cs_fixer'],
-\  'python': ['autoimport', 'black', 'isort'],
+\  'python': ['autoimport', 'black', 'isort', 'ruff'],
 \  'sass': ['prettier'],
 \  'scss': ['prettier'],
 \  'svelte': ['prettier', 'eslint'],
