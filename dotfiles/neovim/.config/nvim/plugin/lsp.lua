@@ -3,6 +3,7 @@ local lspconfig = require "lspconfig"
 lspconfig.cssls.setup {}
 lspconfig.dockerls.setup {}
 lspconfig.docker_compose_language_service.setup {}
+lspconfig.graphql.setup {}
 lspconfig.html.setup {}
 lspconfig.jsonls.setup {}
 
