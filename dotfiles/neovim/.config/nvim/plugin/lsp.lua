@@ -1,27 +1,36 @@
 local lspconfig = require "lspconfig"
 
-local servers = {
-  "cssls",
-  "dockerls",
-  "docker_compose_language_service",
-  -- "emmetls",
-  -- "eslint",
-  "html",
-  "jsonls",
-  "lua_ls",
-  "pyright",
-  -- "ruff_lsp",
-  "solc",
-  "svelte",
-  -- "stylelint_lsp",
-  "tailwindcss",
-  "tsserver",
-  "yamlls",
+lspconfig.cssls.setup {}
+lspconfig.dockerls.setup {}
+lspconfig.docker_compose_language_service.setup {}
+lspconfig.html.setup {}
+lspconfig.jsonls.setup {}
+
+lspconfig.lua_ls.setup {
+ settings = {
+    Lua = {
+      runtime = { version = 'LuaJIT' },
+      diagnostics = { globals = {'vim'} },
+      workspace = {
+        checkThirdParty = false,
+        library = vim.api.nvim_get_runtime_file("", true),
+      },
+      telemetry = { enable = false },
+    },
+  },
 }
 
-for _, server in ipairs(servers) do
-  lspconfig[server].setup {}
-end
+lspconfig.pyright.setup {}
+lspconfig.solc.setup {}
+lspconfig.svelte.setup {}
+lspconfig.tailwindcss.setup {}
+lspconfig.tsserver.setup {}
+lspconfig.yamlls.setup {}
+-- TODO?
+-- "emmetls",
+-- "eslint",
+-- "ruff_lsp",
+-- "stylelint_lsp",
 
 -- Global mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
