@@ -35,7 +35,6 @@ require('packer').startup(function(use)
   -- Langage support: linters lsp syntax
   use "dense-analysis/ale"
   use "neovim/nvim-lspconfig"
-  -- use "sheerun/vim-polyglot"
 
   -- Popie Jopie
   use "tpope/vim-commentary"
