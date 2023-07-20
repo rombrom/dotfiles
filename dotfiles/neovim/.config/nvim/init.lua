@@ -17,7 +17,6 @@ local packer_bootstrap = ensure_packer()
 require('packer').startup(function(use)
   -- nvim
   use 'wbthomason/packer.nvim'
-  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 
   -- UX/UI
   use { vim.env.HOMEBREW_PREFIX .. "/opt/fzf" }
@@ -29,12 +28,10 @@ require('packer').startup(function(use)
   use "vim-test/vim-test"
   use "wellle/targets.vim"
 
-  -- Theme debugging
-  -- "gerw/vim-HiLinkTrace"
-
   -- Langage support: linters lsp syntax
-  use "dense-analysis/ale"
+  use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use "neovim/nvim-lspconfig"
+  use "dense-analysis/ale"
 
   -- Popie Jopie
   use "tpope/vim-commentary"
