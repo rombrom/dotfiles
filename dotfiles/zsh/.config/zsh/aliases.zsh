@@ -18,6 +18,7 @@ alias :q='exit'
 alias :qa='exit'
 alias cp='cp -R'
 alias mkdir='mkdir -p'
+alias nom='npm'
 
 # Always enable colored `grep` output
 alias grep='grep --color'
