@@ -33,6 +33,9 @@ require('packer').startup(function(use)
   use "neovim/nvim-lspconfig"
   use "dense-analysis/ale"
 
+  -- Not Popie Jopie
+  use { "kylechui/nvim-surround", tag = '*' }
+
   -- Popie Jopie
   use "tpope/vim-commentary"
   use "tpope/vim-dispatch"
@@ -40,7 +43,6 @@ require('packer').startup(function(use)
   use "tpope/vim-fugitive"
   use "tpope/vim-obsession"
   use "tpope/vim-repeat"
-  use "tpope/vim-surround"
   use "tpope/vim-unimpaired"
 
   -- Automatically set up your configuration after cloning packer.nvim
