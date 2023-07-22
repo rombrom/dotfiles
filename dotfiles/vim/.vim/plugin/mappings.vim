@@ -20,6 +20,7 @@ command -bang Qa qa
 " Clear highlights in normal mode. After much fussing, C-c just
 " seems like a really intuitive binding for this.
 nnoremap <silent> <C-c> :noh<Cr>
+nnoremap <silent> <Esc> :noh<Cr>
 
 " <Tab> advances through the jumplist, so <S-Tab> moves backwards
 nnoremap <S-Tab> <C-o>
