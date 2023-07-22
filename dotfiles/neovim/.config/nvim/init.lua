@@ -33,6 +33,11 @@ require('packer').startup(function(use)
 
   -- Langage support: linters lsp syntax
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  use {
+    'nvim-treesitter/nvim-treesitter-context',
+    config = function() require'treesitter-context'.setup { separator = '─' } end,
+    requires = 'nvim-treesitter/nvim-treesitter'
+  }
   use 'neovim/nvim-lspconfig'
   use 'dense-analysis/ale'
 
