@@ -27,6 +27,7 @@ echo ""
 stow --dir=dotfiles --target="$HOME" \
   --stow ctags \
   --stow git \
+  --stow hammerspoon \
   --stow kitty \
   --stow misc \
   --stow neovim \
