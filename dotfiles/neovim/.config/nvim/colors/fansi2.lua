@@ -172,6 +172,9 @@ local definitions = {
   QuickFixLine = { fg = palette.blue, attrs = {'reverse'} },
   WildMenu = 'PmenuSel',
 
+  -- Floating windows
+  NormalFloat = { bg = 'none' },
+
   -- Statusline
   StatusLine = { bg = palette.black },
   StatusLineNC = { fg = palette.grey, bg = palette.black },

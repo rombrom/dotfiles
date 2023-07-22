@@ -21,7 +21,10 @@ require('packer').startup(function(use)
   -- UX/UI
   use { vim.env.HOMEBREW_PREFIX .. "/opt/fzf" }
   use 'junegunn/fzf.vim'
-  use 'lewis6991/gitsigns.nvim'
+  use {
+    'lewis6991/gitsigns.nvim',
+    config = function() require'gitsigns'.setup {} end
+  }
   use 'editorconfig/editorconfig-vim'
   use 'ludovicchabant/vim-gutentags'
   use 'mattn/emmet-vim'
@@ -34,7 +37,11 @@ require('packer').startup(function(use)
   use 'dense-analysis/ale'
 
   -- Not Popie Jopie
-  use { 'kylechui/nvim-surround', tag = '*' }
+  use {
+    'kylechui/nvim-surround',
+    config = function() require'nvim-surround'.setup {} end,
+    tag = '*'
+  }
 
   -- Popie Jopie
   use 'tpope/vim-commentary'
