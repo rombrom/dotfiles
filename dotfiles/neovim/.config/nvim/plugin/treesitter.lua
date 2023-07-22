@@ -1,4 +1,11 @@
-require'nvim-treesitter.configs'.setup {
+local ok, module = pcall(require, 'nvim-treesitter.configs')
+
+if not ok then
+  print('Error loading "nvim-treesitter.configs".')
+  return
+end
+
+module.setup {
   auto_install = true,
   ensure_installed = {
     'awk',

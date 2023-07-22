@@ -1,13 +1,18 @@
-local lspconfig = require "lspconfig"
+local ok, module = pcall(require, 'lspconfig')
 
-lspconfig.cssls.setup {}
-lspconfig.dockerls.setup {}
-lspconfig.docker_compose_language_service.setup {}
-lspconfig.graphql.setup {}
-lspconfig.html.setup {}
-lspconfig.jsonls.setup {}
+if not ok then
+  print('Error loading "lspconfig".')
+  return
+end
 
-lspconfig.lua_ls.setup {
+module.cssls.setup {}
+module.dockerls.setup {}
+module.docker_compose_language_service.setup {}
+module.graphql.setup {}
+module.html.setup {}
+module.jsonls.setup {}
+
+module.lua_ls.setup {
  settings = {
     Lua = {
       runtime = { version = 'LuaJIT' },
@@ -21,12 +26,12 @@ lspconfig.lua_ls.setup {
   },
 }
 
-lspconfig.pyright.setup {}
-lspconfig.solc.setup {}
-lspconfig.svelte.setup {}
-lspconfig.tailwindcss.setup {}
-lspconfig.tsserver.setup {}
-lspconfig.yamlls.setup {}
+module.pyright.setup {}
+module.solc.setup {}
+module.svelte.setup {}
+module.tailwindcss.setup {}
+module.tsserver.setup {}
+module.yamlls.setup {}
 -- TODO?
 -- "emmetls",
 -- "eslint",
