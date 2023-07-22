@@ -21,7 +21,7 @@ require('packer').startup(function(use)
   -- UX/UI
   use { vim.env.HOMEBREW_PREFIX .. "/opt/fzf" }
   use "junegunn/fzf.vim"
-  use "airblade/vim-gitgutter"
+  use "lewis6991/gitsigns.nvim"
   use "editorconfig/editorconfig-vim"
   use "ludovicchabant/vim-gutentags"
   use "mattn/emmet-vim"

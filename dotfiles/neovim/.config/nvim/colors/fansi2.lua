@@ -213,6 +213,12 @@ local definitions = {
   DiffDelete = { fg = palette.red, attrs = {'reverse'} },
   -- TODO: check this.
   DiffText = { fg = palette.blueLight, attrs = {'reverse'} },
+  diffAdded = 'TextGreen',
+  diffFile = 'TextYellowLight',
+  diffIndexLine = 'TextYellowLight',
+  diffLine = 'TextMagentaLight',
+  diffRemoved = 'TextRed',
+  diffSubname = 'Normal',
 
   -- Spelling
   SpellBad = { attrs = {'undercurl'}, sp = palette.red },
@@ -413,6 +419,13 @@ local definitions = {
   ALEErrorSign = 'DiagnosticSignError',
   ALEWarningSign = 'DiagnosticSignWarn',
   ALEInfoSign = 'DiagnosticSignInfo',
+
+  -- gitsigns
+  -- -------------------------------------------------------------------------
+  GitSignsAdd = 'TextGreen',
+  GitSignsChange = 'TextBlue',
+  GitSignsDelete = 'TextRed',
+  GitSignsUntracked = 'TextYellow',
 
   -- netrw
   -- -------------------------------------------------------------------------
