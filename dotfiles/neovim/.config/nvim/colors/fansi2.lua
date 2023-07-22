@@ -15,7 +15,7 @@
 -- ---------------------------------------------------------------------------
 
 -- Merges a table of tables into one table. Last wins.
-function merge(tables)
+local function merge(tables)
   local res = {}
   for _, t in ipairs(tables) do
     for k, v in pairs(t) do res[k] = v end
@@ -24,7 +24,7 @@ function merge(tables)
 end
 
 -- Reduces over all values in a list.
-function reduce(list, reducer, initial)
+local function reduce(list, reducer, initial)
   local accumulator = initial
 
   for _, value in ipairs(list) do
@@ -38,7 +38,7 @@ end
 --
 -- Attributes can be any boolean definition as documented as {val}
 -- in the `:h nvim_set_hl()` documentation.
-function get_attrs(definition)
+local function get_attrs(definition)
   if not definition.attrs then return {} end
 
   return reduce(definition.attrs, function(attrs, value)
@@ -52,7 +52,7 @@ end
 -- If `fg` or `bg` is found, set the `fg`, `bg`, `ctermfg` and `ctermbg`
 -- keys accordingly to be consumed by `:h nvim_set_hl()`.
 -- The `sp` key isn't supported in `notermguicolors`.
-function get_colors(definition)
+local function get_colors(definition)
   local colors = {}
 
   if definition.bg then
@@ -73,7 +73,7 @@ function get_colors(definition)
 end
 
 -- Returns a group definition as per `:h nvim_set_hl()`
-function get_group(definition)
+local function get_group(definition)
   if type(definition) == 'string' then return { link = definition } end
 
   local attrs = get_attrs(definition)
