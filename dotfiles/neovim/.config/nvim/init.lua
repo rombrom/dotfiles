@@ -20,30 +20,30 @@ require('packer').startup(function(use)
 
   -- UX/UI
   use { vim.env.HOMEBREW_PREFIX .. "/opt/fzf" }
-  use "junegunn/fzf.vim"
-  use "lewis6991/gitsigns.nvim"
-  use "editorconfig/editorconfig-vim"
-  use "ludovicchabant/vim-gutentags"
-  use "mattn/emmet-vim"
-  use "vim-test/vim-test"
-  use "wellle/targets.vim"
+  use 'junegunn/fzf.vim'
+  use 'lewis6991/gitsigns.nvim'
+  use 'editorconfig/editorconfig-vim'
+  use 'ludovicchabant/vim-gutentags'
+  use 'mattn/emmet-vim'
+  use 'vim-test/vim-test'
+  use 'wellle/targets.vim'
 
   -- Langage support: linters lsp syntax
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  use "neovim/nvim-lspconfig"
-  use "dense-analysis/ale"
+  use 'neovim/nvim-lspconfig'
+  use 'dense-analysis/ale'
 
   -- Not Popie Jopie
-  use { "kylechui/nvim-surround", tag = '*' }
+  use { 'kylechui/nvim-surround', tag = '*' }
 
   -- Popie Jopie
-  use "tpope/vim-commentary"
-  use "tpope/vim-dispatch"
-  use "tpope/vim-eunuch"
-  use "tpope/vim-fugitive"
-  use "tpope/vim-obsession"
-  use "tpope/vim-repeat"
-  use "tpope/vim-unimpaired"
+  use 'tpope/vim-commentary'
+  use 'tpope/vim-dispatch'
+  use 'tpope/vim-eunuch'
+  use 'tpope/vim-fugitive'
+  use 'tpope/vim-obsession'
+  use 'tpope/vim-repeat'
+  use 'tpope/vim-unimpaired'
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
