@@ -13,10 +13,10 @@ module.html.setup {}
 module.jsonls.setup {}
 
 module.lua_ls.setup {
- settings = {
+  settings = {
     Lua = {
       runtime = { version = 'LuaJIT' },
-      diagnostics = { globals = {'vim'} },
+      diagnostics = { globals = { 'vim' } },
       workspace = {
         checkThirdParty = false,
         library = vim.api.nvim_get_runtime_file("", true),
@@ -70,3 +70,21 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, opts)
   end,
 })
+
+local border = {
+  { "╭", "FloatBorder" },
+  { "─", "FloatBorder" },
+  { "╮", "FloatBorder" },
+  { "│", "FloatBorder" },
+  { "╯", "FloatBorder" },
+  { "─", "FloatBorder" },
+  { "╰", "FloatBorder" },
+  { "│", "FloatBorder" },
+}
+
+local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+  opts = opts or {}
+  opts.border = opts.border or border
+  return orig_util_open_floating_preview(contents, syntax, opts, ...)
+end
