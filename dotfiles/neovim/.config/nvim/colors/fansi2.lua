@@ -193,7 +193,7 @@ local definitions = {
   NonText = 'TextBlackLight',
   CursorColumn = 'ColorColumn',
   CursorLine = 'CursorColumn',
-  CursorLineNr = 'TextGreyLight',
+  CursorLineNr = 'TextGrey',
   Folded = 'TextBlackLight',
   FoldColumn = 'Folded',
   LineNr = 'TextBlackLight',
@@ -423,12 +423,25 @@ local definitions = {
   ALEWarningSign = 'DiagnosticSignWarn',
   ALEInfoSign = 'DiagnosticSignInfo',
 
+  -- fugitive
+  -- -------------------------------------------------------------------------
+  fugitiveStagedHeading = 'TextGreen',
+  fugitiveStagedModifier = 'TextGreen',
+  fugitiveUnstagedHeading = 'TextYellow',
+  fugitiveUnstagedModifier = 'TextYellow',
+  fugitiveUntrackedHeading = 'TextMagenta',
+  fugitiveUntrackedModifier = 'TextMagenta',
+
+  -- fzf-lua
+  -- -------------------------------------------------------------------------
+  FzfLuaBorder = 'FloatBorder',
+
   -- gitsigns
   -- -------------------------------------------------------------------------
   GitSignsAdd = 'TextGreen',
-  GitSignsChange = 'TextBlue',
+  GitSignsChange = 'TextYellow',
   GitSignsDelete = 'TextRed',
-  GitSignsUntracked = 'TextYellow',
+  GitSignsUntracked = 'TextMagenta',
 
   -- netrw
   -- -------------------------------------------------------------------------
