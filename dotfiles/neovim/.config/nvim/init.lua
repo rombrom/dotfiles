@@ -3,9 +3,9 @@
 --
 local ensure_packer = function()
   local fn = vim.fn
-  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+  local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
   if fn.empty(fn.glob(install_path)) > 0 then
-    fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+    fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path })
     vim.cmd [[packadd packer.nvim]]
     return true
   end
@@ -15,35 +15,33 @@ end
 local packer_bootstrap = ensure_packer()
 
 require('packer').startup(function(use)
-  -- nvim
   use 'wbthomason/packer.nvim'
 
-  -- UX/UI
+  -- UI/UX & Workflow
   use 'ibhagwan/fzf-lua'
   use {
     'lewis6991/gitsigns.nvim',
-    config = function() require'gitsigns'.setup() end
+    config = function() require 'gitsigns'.setup() end
   }
-  use 'editorconfig/editorconfig-vim'
   use 'ludovicchabant/vim-gutentags'
   use 'mattn/emmet-vim'
   use 'vim-test/vim-test'
   use 'wellle/targets.vim'
 
-  -- Langage support: linters lsp syntax
+  -- Langage support: linters, lsp, syntax
+  use 'dense-analysis/ale'
+  use 'neovim/nvim-lspconfig'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use {
     'nvim-treesitter/nvim-treesitter-context',
-    config = function() require'treesitter-context'.setup { separator = '─' } end,
+    config = function() require 'treesitter-context'.setup { separator = '─' } end,
     requires = 'nvim-treesitter/nvim-treesitter'
   }
-  use 'neovim/nvim-lspconfig'
-  use 'dense-analysis/ale'
 
   -- Not Popie Jopie
   use {
     'kylechui/nvim-surround',
-    config = function() require'nvim-surround'.setup() end,
+    config = function() require 'nvim-surround'.setup() end,
     tag = '*'
   }
 
