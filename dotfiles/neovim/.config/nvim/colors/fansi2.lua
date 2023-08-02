@@ -211,9 +211,9 @@ local definitions = {
   -- Syntax
   -- -------------------------------------------------------------------------
   -- Diffs
-  DiffAdd = { fg = palette.green, attrs = {'reverse'} },
-  DiffChange = { fg = palette.blue, attrs = {'reverse'} },
-  DiffDelete = { fg = palette.red, attrs = {'reverse'} },
+  DiffAdd = 'TextGreen',
+  DiffChange = 'TextBlue',
+  DiffDelete = 'TextRed',
   -- TODO: check this.
   DiffText = { fg = palette.blueLight, attrs = {'reverse'} },
   diffAdded = 'TextGreen',
