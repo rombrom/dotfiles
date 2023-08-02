@@ -25,6 +25,8 @@ require('packer').startup(function(use)
   }
   use 'ludovicchabant/vim-gutentags'
   use 'mattn/emmet-vim'
+  use 'NvChad/nvim-colorizer.lua'
+
   use 'vim-test/vim-test'
   use 'wellle/targets.vim'
 
