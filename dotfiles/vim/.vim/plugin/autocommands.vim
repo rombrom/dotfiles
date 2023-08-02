@@ -24,4 +24,7 @@ augroup Misc
         \ setlocal foldmethod=marker | lcd ~/Code/mac-setup
 
   autocmd BufWritePost ~/Code/mac-setup/dotfiles/vim/.vim/** source %
+
+  " auto insert mode
+  autocmd TermOpen * startinsert
 augroup END
