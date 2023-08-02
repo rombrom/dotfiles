@@ -90,7 +90,7 @@ end
 local palette = {
   bg = { 'none', '#181b1f' },
   fg = { 'none', '#fff1d6' },
-  black = {0, '#181b1f' },
+  black = {0, '#31373d' },
   blackLight = {8, '#757d85' },
   red = {1, '#f55c45' },
   redLight = {9, '#f58c31' },
