@@ -21,8 +21,10 @@ let g:ale_linter_aliases = {
 let g:ale_linters_ignore = {
   \'graphql': ['eslint', 'gqlint'],
   \'typescript': ['deno', 'tslint'],
-  \'typescriptreact': ['deno', 'tslint'],
+  \'typescriptreact': ['deno', 'tslint', 'vscodecss'],
 \}
+                                        " ^ whoever added this as a default to
+                                        " ALE should be keelhauled.
 
 let g:ale_fixers = {
 \  '*': ['remove_trailing_lines', 'trim_whitespace'],
