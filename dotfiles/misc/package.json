@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ignored/solidity-language-server": "^0.6.14",
     "@microsoft/compose-language-service": "^0.2.0",
     "@tailwindcss/language-server": "^0.0.13",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
