@@ -38,14 +38,6 @@ inoremap <C-u> <C-g>u<C-u>
 " autosuggest last spelling mistake in insert mode
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
 
-" Indent restores selection
-vnoremap < <gv
-vnoremap > >gv
-
-" Center up and down buffer movements
-nnoremap <C-d> <C-d>zz
-nnoremap <C-u> <C-u>zz
-
 " buffer nav
 nnoremap <Leader>bd :bdelete!<Cr>
 tnoremap <Leader>bd <C-w>:bdelete!<Cr>
