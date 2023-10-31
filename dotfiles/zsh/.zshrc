@@ -47,6 +47,3 @@ for file ($HOME/.config/zsh/*); do
 done;
 
 [[ -n "$ENABLE_ZPROF" ]] && zprof
-
-# # bun completions
-# [ -s "/Users/rommert/.bun/_bun" ] && source "/Users/rommert/.bun/_bun"
