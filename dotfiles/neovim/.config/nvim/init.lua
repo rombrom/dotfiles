@@ -18,7 +18,8 @@ require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
 
   -- UI/UX & Workflow
-  use 'ibhagwan/fzf-lua'
+  use 'junegunn/fzf'
+  use 'junegunn/fzf.vim'
   use {
     'lewis6991/gitsigns.nvim',
     config = function() require 'gitsigns'.setup() end
@@ -39,15 +40,6 @@ require('packer').startup(function(use)
     config = function() require 'treesitter-context'.setup { separator = '─' } end,
     requires = 'nvim-treesitter/nvim-treesitter'
   }
-
-  -- Completion
-  use 'hrsh7th/cmp-nvim-lsp'
-  use 'hrsh7th/cmp-buffer'
-  use 'hrsh7th/cmp-path'
-  use 'hrsh7th/cmp-cmdline'
-  use 'hrsh7th/cmp-vsnip'
-  use 'hrsh7th/vim-vsnip'
-  use 'hrsh7th/nvim-cmp'
 
   -- Not Popie Jopie
   use {
@@ -72,11 +64,5 @@ require('packer').startup(function(use)
   end
 end)
 
--- -- Yeah...
-vim.opt.runtimepath:prepend {
-  vim.env.HOME .. '/.vim',
-  vim.o.runtimepath,
-  vim.env.HOME .. '/.vim/after',
-}
-
-vim.cmd('source ' .. vim.env.HOME .. '/.vim/vimrc')
+-- Enables :Cfilter to filter quickfix entries
+vim.cmd [[packadd! cfilter]]

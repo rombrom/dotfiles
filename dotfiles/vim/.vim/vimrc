@@ -1,6 +1,0 @@
-packadd! cfilter       " Add Cfilter Lfitler commands
-packadd! matchit       " Make % command work better
-
-if !has('nvim')
-  packadd! editexisting  " Open existing vim instance if open
-endif

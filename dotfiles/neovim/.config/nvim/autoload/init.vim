@@ -1,13 +1,13 @@
 function init#statusline() abort
-  hi User1 ctermfg=1 ctermbg=0 cterm=bold
-  hi User2 ctermfg=2 ctermbg=0
-  hi User3 ctermfg=3 ctermbg=0 cterm=bold
-  hi User4 ctermfg=4 ctermbg=0
-  hi User6 ctermfg=6 ctermbg=0
-  hi User7 ctermfg=7 ctermbg=0
+  " hi User1 ctermfg=1 ctermbg=0 cterm=bold
+  " hi User2 ctermfg=2 ctermbg=0
+  " hi User3 ctermfg=3 ctermbg=0 cterm=bold
+  " hi User4 ctermfg=4 ctermbg=0
+  " hi User6 ctermfg=6 ctermbg=0
+  " hi User7 ctermfg=7 ctermbg=0
 
-  hi User8 ctermfg=none ctermbg=0
-  hi User9 ctermfg=12 ctermbg=0 cterm=bold
+  " hi User8 ctermfg=none ctermbg=0
+  " hi User9 ctermfg=12 ctermbg=0 cterm=bold
 
   let statusline = ' %n '
 

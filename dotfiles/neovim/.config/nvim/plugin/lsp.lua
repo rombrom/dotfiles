@@ -5,12 +5,6 @@ if not ok then
   return
 end
 
-local ok, cmp = pcall(require, 'cmp_nvim_lsp')
-
-if not ok then
-  print('Error loading "cmp_nvim_lsp".')
-end
-
 -- I use a pattern of mappings which open in current window, split or vsplit
 local function windowKeymaps(scope, callback, opts)
   local keys = { [scope] = false, s = 'split', v = 'vsplit' }
@@ -24,7 +18,6 @@ end
 
 -- LSP Configuration shared by all servers
 local shared_config = {
-  capabilities = cmp.default_capabilities(),
   on_attach = function(_, bufnr)
     -- Enable completion triggered by <c-x><c-o>
     vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
@@ -40,7 +33,7 @@ local shared_config = {
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
     vim.keymap.set('n', '<leader>k', vim.lsp.buf.signature_help, opts)
     vim.keymap.set('n', '<leader>gR', vim.lsp.buf.rename, opts)
-    vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set({ 'n', 'v' }, '<leader>aa', vim.lsp.buf.code_action, opts)
     vim.keymap.set('n', '<leader>r', vim.lsp.buf.references, opts)
     vim.keymap.set('n', '<leader>sf', function()
       vim.lsp.buf.format { async = true }
