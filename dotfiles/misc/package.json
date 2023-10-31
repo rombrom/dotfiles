@@ -24,6 +24,8 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "ethers": "^5.7.2",
     "graphql-language-service-cli": "^3.3.25",
+    "postcss-html": "^1.5.0",
+    "postcss-scss": "^4.0.6",
     "prettier": "^2.8.8",
     "pyright": "^1.1.318",
     "stylelint": "^15.10.2",
@@ -31,7 +33,7 @@
     "svelte-language-server": "^0.15.16",
     "typescript": "^5.1.6",
     "typescript-language-server": "^3.3.2",
-    "vercel": "^31.0.4",
+    "vercel": "^31.2.2",
     "vscode-langservers-extracted": "^4.7.0",
     "yaml-language-server": "^1.14.0"
   }

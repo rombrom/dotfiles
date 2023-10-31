@@ -1,4 +1,15 @@
 {
+  "$schema": "https://json.schemastore.org/stylelintrc.json",
   "customSyntax": "postcss-html",
-  "extends": ["stylelint-config-standard"]
+  "extends": ["stylelint-config-standard"],
+  "overrides": [
+    {
+      "files": ["*.scss", "**/*.scss"],
+      "customSyntax": "postcss-scss"
+    },
+    {
+      "files": ["*.html", "**/*.html"],
+      "customSyntax": "postcss-html"
+    }
+  ]
 }
