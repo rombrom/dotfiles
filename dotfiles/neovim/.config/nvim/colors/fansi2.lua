@@ -190,7 +190,7 @@ local definitions = {
   ColorColumn = { bg = palette.black },
   Conceal = 'TextBlue',
   SpecialKey = 'TextBlackLight',
-  NonText = 'TextBlackLight',
+  NonText = 'TextBlack',
   CursorColumn = 'ColorColumn',
   CursorLine = 'CursorColumn',
   CursorLineNr = 'TextGrey',
@@ -361,7 +361,7 @@ local definitions = {
 
   -- Identifiers
   -- ['@variable'] = 'Identifier',
-  ['@variable.builtin'] = 'TextCyan',
+  ['@variable.builtin'] = 'TextCyanLight',
   -- ['@constant'] = 'Constant',
   -- ['@constant.builtin'] = 'Special',
   -- ['@constant.macro'] = 'Define',
@@ -406,8 +406,9 @@ local definitions = {
   -- ['@lsp.type.macro'] = 'Macro',
   -- ['@lsp.type.method'] = 'Function',
   -- ['@lsp.type.namespace'] = 'Structure',
-  -- ['@lsp.type.parameter'] = 'Identifier',
-  -- ['@lsp.type.property'] = 'Identifier',
+  -- ['@lsp.type.parameter'] = '@parameter',
+  -- ['@lsp.type.property'] = '@property',
+  -- ['@lsp.mod.defaultLibrary'] = '@variable.builtin',
   -- ['@lsp.type.struct'] = 'Structure',
   -- ['@lsp.type.type'] = 'Type',
   -- ['@lsp.type.typeParameter'] =' ',
@@ -455,7 +456,14 @@ local definitions = {
 -- Theme lift off
 -- ---------------------------------------------------------------------------
 vim.cmd.hi('clear')
+vim.opt.termguicolors = true
+
+for _, group in ipairs(vim.fn.getcompletion('@lsp', 'highlight')) do
+  vim.api.nvim_set_hl(0, group, {})
+end
 
 for name, definition in pairs(definitions) do
   vim.api.nvim_set_hl(0, name, get_group(definition))
 end
+
+return palette
