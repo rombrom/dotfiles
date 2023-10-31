@@ -37,11 +37,6 @@ cdpath=(
   $HOME
 )
 
-# NOTE: VIM mode needs to be set explicitly, I think, because EDITOR is is
-# probably unset in macOS global env. Also, we want to set it here before
-# zle.zsh (or other bindings) are loaded.
-bindkey -v
-
 # NOTE: LS_COLORS will be used by the completion settings to set completion
 # colors. Can't define it in exports.
 export LS_COLORS='no=0;37:fi=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:';
