@@ -35,11 +35,6 @@ require('packer').startup(function(use)
   use 'dense-analysis/ale'
   use 'neovim/nvim-lspconfig'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-  use {
-    'nvim-treesitter/nvim-treesitter-context',
-    config = function() require 'treesitter-context'.setup { separator = '─' } end,
-    requires = 'nvim-treesitter/nvim-treesitter'
-  }
 
   -- Not Popie Jopie
   use {
