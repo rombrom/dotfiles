@@ -38,13 +38,16 @@ brew install grep
 brew install helix
 brew install hexyl
 brew install imagemagick
+brew install neovim
 brew install nmap
+brew install oha
 brew install pandoc
 brew install postman
 brew install ripgrep
 brew install stow
 brew install tree
-brew install neovim vim
+brew install vegeta
+brew install vim
 brew install watchexec
 brew install wget
 brew install zsh
