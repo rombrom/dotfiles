@@ -27,30 +27,37 @@ require('packer').startup(function(use)
   use 'ludovicchabant/vim-gutentags'
   use 'mattn/emmet-vim'
   use 'NvChad/nvim-colorizer.lua'
-
   use 'vim-test/vim-test'
-  use 'wellle/targets.vim'
 
   -- Langage support: linters, lsp, syntax
   use 'dense-analysis/ale'
   use 'neovim/nvim-lspconfig'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  use "nvim-treesitter/playground"
+
+  -- Popie Jopie
+  -- use 'tpope/vim-commentary'
+  use 'tpope/vim-dispatch'
+  use 'tpope/vim-eunuch'
+  use 'tpope/vim-fugitive'
+  use 'tpope/vim-obsession'
+  use 'tpope/vim-repeat'
+  use 'tpope/vim-rsi'
+  use 'tpope/vim-unimpaired'
 
   -- Not Popie Jopie
+  use 'wellle/targets.vim'
+  use {
+    'echasnovski/mini.comment',
+    config = function() require 'mini.comment'.setup() end
+  }
+
   use {
     'kylechui/nvim-surround',
     config = function() require 'nvim-surround'.setup() end,
     tag = '*'
   }
 
-  -- Popie Jopie
-  use 'tpope/vim-commentary'
-  use 'tpope/vim-dispatch'
-  use 'tpope/vim-eunuch'
-  use 'tpope/vim-fugitive'
-  use 'tpope/vim-obsession'
-  use 'tpope/vim-repeat'
-  use 'tpope/vim-unimpaired'
   -- Theme
   use '~/Code/fansi2'
 
