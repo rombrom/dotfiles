@@ -96,6 +96,7 @@ set undofile        " persistent undo is AWESOME
 colorscheme fansi2
 filetype plugin indent on
 syntax enable
+set termguicolors
 
 " Change cursor in insert mode
 let &t_SI="\e[5 q"
