@@ -1,6 +1,8 @@
 # Enable aliases to be sudo’ed
 alias sudo='sudo '
 
+alias vi="nvim"
+
 # Use ls colors by default
 # Need to use gls due to coreutils install from brew
 alias ls="gls -v --color=always --group-directories-first --indicator-style=slash"
