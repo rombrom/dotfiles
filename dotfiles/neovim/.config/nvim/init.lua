@@ -51,6 +51,8 @@ require('packer').startup(function(use)
   use 'tpope/vim-obsession'
   use 'tpope/vim-repeat'
   use 'tpope/vim-unimpaired'
+  -- Theme
+  use '~/Code/fansi2'
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
