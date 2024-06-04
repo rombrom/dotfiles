@@ -48,6 +48,16 @@ packer.startup(function(use)
   use 'tpope/vim-unimpaired'
 
   -- Not Popie Jopie
+  use {
+    'folke/zen-mode.nvim',
+    config = function()
+      require 'zen-mode'.setup({
+        plugins = { kitty = { enabled = true } },
+        window = { width = 80 },
+      })
+      vim.keymap.set('n', '<Leader>z', ':ZenMode<Cr>')
+    end
+  }
   use 'wellle/targets.vim'
   use {
     'echasnovski/mini.comment',
