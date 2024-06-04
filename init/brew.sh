@@ -23,6 +23,7 @@ brew install deno
 brew install dive
 brew install dnsmasq
 brew install fd
+brew install ffmpeg
 brew install findutils
 brew install fzf
 brew install gawk
