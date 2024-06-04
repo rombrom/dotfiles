@@ -34,14 +34,19 @@ function __gobble() {
   for (( i = 1; i < $#parts; i++ )); do
     local part=$parts[$i]
 
-    if [[ ${#${(pj:$sep:)parts}} > $max ]]; then
+    if [[ ${#${(pj:$sep:)parts}} -gt $max ]]; then
       if [[ $part =~ '^\.' ]]; then
-        parts[$i]=$part[0,2]
+        part=$part[0,2]
       else
-        parts[$i]=$part[0,1]
+        part=$part[0,1]
       fi
+      parts[$i]=$part
     fi
   done
+
+  if [[ $#parts[$#parts] -gt $max ]]; then
+    parts[$#parts]="${parts[$#parts]:0:($max-1)}…"
+  fi
 
   print ${(pj:$sep:)parts}
 }
