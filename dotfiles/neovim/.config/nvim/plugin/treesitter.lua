@@ -31,6 +31,7 @@ module.setup {
     'scss',
     'solidity',
     'sql',
+    'svelte',
     'terraform',
     'toml',
     'tsx',
