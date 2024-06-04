@@ -44,6 +44,7 @@ packer.startup(function(use)
   use 'tpope/vim-obsession'
   use 'tpope/vim-repeat'
   use 'tpope/vim-rsi'
+  use 'tpope/vim-surround'
   use 'tpope/vim-unimpaired'
 
   -- Not Popie Jopie
@@ -51,12 +52,6 @@ packer.startup(function(use)
   use {
     'echasnovski/mini.comment',
     config = function() require 'mini.comment'.setup() end
-  }
-
-  use {
-    'kylechui/nvim-surround',
-    config = function() require 'nvim-surround'.setup() end,
-    tag = '*'
   }
 
   -- Theme
