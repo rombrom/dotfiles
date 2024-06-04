@@ -12,9 +12,10 @@ local ensure_packer = function()
   return false
 end
 
-local packer_bootstrap = ensure_packer()
+local has_packer = ensure_packer()
+local packer = require 'packer'
 
-require('packer').startup(function(use)
+packer.startup(function(use)
   use 'wbthomason/packer.nvim'
 
   -- UI/UX & Workflow
@@ -63,8 +64,8 @@ require('packer').startup(function(use)
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
-  if packer_bootstrap then
-    require('packer').sync()
+  if has_packer then
+    packer.sync()
   end
 end)
 
