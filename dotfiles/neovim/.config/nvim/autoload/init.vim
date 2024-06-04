@@ -23,7 +23,9 @@ function init#statusline() abort
 
   " split
   let statusline.= '%='
-  let statusline.= '%( %7*%P%* %)'        " percentage through file
+  " cahracter below cursor: decimal, hex
+  let statusline.= '%(%7*[%b/0x%B]%* %)'
+  let statusline.= '%(%7*%P%* %)'        " percentage through file
 
   " linter errors
   function! ALEProblems(...) abort
@@ -52,7 +54,7 @@ function init#statusline() abort
   let statusline.= '%(%1*%{ALEProblems("error", "style_error")}‼%* %)'
 
   " gutentags
-  let statusline.= '%6*%{gutentags#statusline("", "", "♺")}%* '
+  let statusline.= '%6*%{gutentags#statusline("", "", "♺ ")}%*'
 
   " branch name
   let statusline .= '%(%4*«%* %9*%<%{FugitiveHead(8)}%* %)'
