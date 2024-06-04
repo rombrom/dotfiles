@@ -8,7 +8,7 @@ set completeopt=menuone,noinsert,noselect
 set dictionary+=/usr/share/dict/words " Use the linked dictionary of macOS
 set display+=lastline
 set encoding=utf-8 nobomb
-set formatoptions+=jn             " Delete comment character when joining lines
+set formatoptions+=n             " Delete comment character when joining lines
 set history=200                   " never found use of setting this higher
 set nostartofline
 set nrformats+=unsigned           " Just :h 'nrformats'
