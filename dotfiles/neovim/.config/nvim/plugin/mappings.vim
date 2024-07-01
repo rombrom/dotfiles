@@ -1,3 +1,10 @@
+" Sheesh. Neovim sends `CTRL-@` (:h i_CTRL-@) when pressing <C-Space>. Can't
+" repro this in vanilla vim, which inserts a space. It's annoying af when
+" doing fast completions. Just make it a regular space pls.
+if has('nvim')
+  inoremap <C-Space> <Space>
+endif
+
 " Move visually instead of by line
 noremap <expr> k      v:count == 0 ? 'gk' : 'k'
 noremap <expr> j      v:count == 0 ? 'gj' : 'j'
