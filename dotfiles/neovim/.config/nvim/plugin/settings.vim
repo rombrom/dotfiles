@@ -50,8 +50,8 @@ set vb t_vb=                      " Remove 'bell' in vim
 set diffopt+=algorithm:histogram,indent-heuristic,vertical
 set background=dark
 set cursorlineopt=screenline,number
-set statusline=%!init#statusline()
-set tabline=%!init#tabline()
+set statusline=%!ui#statusline()
+set tabline=%!ui#tabline()
 set foldcolumn=0
 set foldenable                    " enable folding
 set foldlevelstart=99             " open all folds by default
