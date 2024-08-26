@@ -47,10 +47,7 @@ set ttyfast                       " Optimize for fast terminal connections
 set vb t_vb=                      " Remove 'bell' in vim
 
 " UI
-if has("8.0.1037")
-  set diffopt+=algorithm:histogram,indent-heuristic,vertical
-endif
-
+set diffopt+=algorithm:histogram,indent-heuristic,vertical
 set background=dark
 set cursorlineopt=screenline,number
 set statusline=%!init#statusline()
