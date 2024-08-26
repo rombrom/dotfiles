@@ -6,6 +6,6 @@ let g:gutentags_file_list_command = {
 
 augroup GutenTags
     autocmd!
-    autocmd User GutentagsUpdating call init#statusline()
-    autocmd User GutentagsUpdated call init#statusline()
+    autocmd User GutentagsUpdating call ui#statusline()
+    autocmd User GutentagsUpdated call ui#statusline()
 augroup END
