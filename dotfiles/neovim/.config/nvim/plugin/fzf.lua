@@ -16,13 +16,17 @@ fzf.setup({
     }
   },
 
+  defaults = { header = false },
+
   previewers = {
     bat = {
       args = '--color=always --style=changes'
     }
   },
 
-  defaults = { header = false },
+  winopts = {
+    backdrop = 100,
+  },
 })
 
 vim.g.fzf_buffers_jump = 1
