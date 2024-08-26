@@ -44,10 +44,13 @@ packer.startup(function(use)
   use 'tpope/vim-obsession'
   use 'tpope/vim-repeat'
   use 'tpope/vim-rsi'
-  use 'tpope/vim-surround'
   use 'tpope/vim-unimpaired'
 
   -- Not Popie Jopie
+  use {
+    'echasnovski/mini.comment',
+    config = function() require 'mini.comment'.setup() end
+  }
   use {
     'folke/zen-mode.nvim',
     config = function()
@@ -58,11 +61,12 @@ packer.startup(function(use)
       vim.keymap.set('n', '<Leader>z', ':ZenMode<Cr>')
     end
   }
-  use 'wellle/targets.vim'
   use {
-    'echasnovski/mini.comment',
-    config = function() require 'mini.comment'.setup() end
+    'kylechui/nvim-surround',
+    tag = '*',
+    config = function() require 'nvim-surround'.setup() end
   }
+  use 'wellle/targets.vim'
 
   -- Theme
   use '~/Code/fansi2'
