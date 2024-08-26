@@ -13,7 +13,7 @@
     "@ignored/solidity-language-server": "^0.6.14",
     "@microsoft/compose-language-service": "^0.2.0",
     "@subsquid/cli": "^2.7.0",
-    "@tailwindcss/language-server": "^0.0.14",
+    "@tailwindcss/language-server": "0.0.21",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "dockerfile-language-server-nodejs": "^0.10.2",
@@ -31,11 +31,11 @@
     "pyright": "^1.1.318",
     "stylelint": "^15.10.2",
     "stylelint-config-standard": "^34.0.0",
-    "svelte-language-server": "^0.16.9",
+    "svelte-language-server": "0.16.13",
     "typescript": "^5.4.5",
     "typescript-language-server": "^4.3.3",
     "vercel": "^33.7.0",
-    "vscode-langservers-extracted": "^4.7.0",
+    "vscode-langservers-extracted": "4.10.0",
     "yaml-language-server": "^1.14.0"
   }
 }
