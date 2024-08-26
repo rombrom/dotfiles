@@ -11,6 +11,7 @@ tags
 !tags/
 
 # Config files
+.ignore
 .rgignore
 .vscode
 Session.vim
