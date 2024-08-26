@@ -19,8 +19,8 @@ packer.startup(function(use)
   use 'wbthomason/packer.nvim'
 
   -- UI/UX & Workflow
-  use 'junegunn/fzf'
-  use 'junegunn/fzf.vim'
+  use 'ibhagwan/fzf-lua'
+
   use {
     'lewis6991/gitsigns.nvim',
     config = function() require 'gitsigns'.setup() end

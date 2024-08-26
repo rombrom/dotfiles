@@ -1,7 +1,34 @@
-vim.g.fzf_buffers_jump = 1
-vim.g.fzf_tags_command = 'ctag -R --tag-relative'
+local fzf = require('fzf-lua');
 
-vim.keymap.set('n', '<C-b>', ':Buffers<Cr>')
-vim.keymap.set('n', '<C-g>', ':Rg<Cr>')
-vim.keymap.set('n', '<C-o>', ':Tags<Cr>')
-vim.keymap.set('n', '<C-p>', ':Files<Cr>')
+fzf.setup({
+  'max-perf',
+
+  actions = {
+    files = {
+      true, -- inherit from defaults (:h fzf-lua-default-options)
+      ["ctrl-s"] = false,
+      ["ctrl-x"] = fzf.actions.file_split,
+    },
+    buffers = {
+      true, -- inherit from defaults (:h fzf-lua-default-options)
+      ["ctrl-s"] = false,
+      ["ctrl-x"] = fzf.actions.buf_split,
+    }
+  },
+
+  previewers = {
+    bat = {
+      args = '--color=always --style=changes'
+    }
+  },
+
+  defaults = { header = false },
+})
+
+vim.g.fzf_buffers_jump = 1
+-- vim.g.fzf_tags_command = 'ctag -R --tag-relative'
+
+vim.keymap.set('n', '<C-b>', fzf.buffers)
+vim.keymap.set('n', '<C-g>', fzf.live_grep)
+vim.keymap.set('n', '<C-o>', fzf.tags)
+vim.keymap.set('n', '<C-p>', fzf.files)
