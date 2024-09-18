@@ -88,7 +88,7 @@ for name, config in pairs(servers) do
     config = {}
   end
 
-  lspconfig[name].setup(vim.tbl_extend('keep', config, shared_config))
+  lspconfig[name].setup(vim.tbl_extend('keep', shared_config, config))
 end
 
 -- Global mappings.
