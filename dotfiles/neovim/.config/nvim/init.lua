@@ -20,7 +20,7 @@ packer.startup(function(use)
 
   -- UI/UX & Workflow
   use 'ibhagwan/fzf-lua'
-
+  use 'stevearc/dressing.nvim'
   use {
     'lewis6991/gitsigns.nvim',
     config = function() require 'gitsigns'.setup() end
