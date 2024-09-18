@@ -56,7 +56,7 @@ packer.startup(function(use)
     config = function()
       require 'zen-mode'.setup({
         plugins = { kitty = { enabled = true } },
-        window = { width = 80 },
+        window = { backdrop = 1, width = 80 },
       })
       vim.keymap.set('n', '<Leader>z', ':ZenMode<Cr>')
     end
