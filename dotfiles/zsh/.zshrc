@@ -8,6 +8,7 @@ fpath=(
 )
 
 path=(
+  $HOME/.cargo/bin
   $HOME/.foundry/bin
   $HOME/.local/bin
   $HOME/node_modules/.bin

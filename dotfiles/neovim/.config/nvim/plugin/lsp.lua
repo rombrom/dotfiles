@@ -74,6 +74,12 @@ local servers = {
     },
   },
 
+  rust_analyzer = {
+    settings = {
+      ['rust-analyzer'] = { diagnostics = { enable = true } }
+    }
+  },
+
   tsserver = {
     init_options = {
       completionDisableFilterText = true

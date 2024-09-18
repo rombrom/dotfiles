@@ -45,6 +45,7 @@ brew install oha
 brew install pandoc
 brew install postman
 brew install ripgrep
+brew install rustup
 brew install stow
 brew install tree
 brew install vegeta

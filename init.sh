@@ -49,6 +49,10 @@ curl https://bun.sh/install | bash
 curl -L https://foundry.paradigm.xyz | bash
 $HOME/.foundry/bin/foundryup
 
+# Rust
+rustup-init
+rustup component add rust-analyzer
+
 # Generate zsh completions
 echo "Getting zsh completions"
 COMPLETIONS=./dotfiles/zsh/.config/zsh/completions
