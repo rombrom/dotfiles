@@ -42,6 +42,7 @@ brew install imagemagick
 brew install neovim
 brew install nmap
 brew install oha
+brew install oven-sh/bun/bun
 brew install pandoc
 brew install postman
 brew install ripgrep

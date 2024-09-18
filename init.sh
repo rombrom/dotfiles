@@ -41,9 +41,6 @@ echo "Installing Node packages..."
 echo ""
 source ./init/node.sh
 
-# Install fun bun
-curl https://bun.sh/install | bash
-
 # Foundry
 # TODO
 curl -L https://foundry.paradigm.xyz | bash
