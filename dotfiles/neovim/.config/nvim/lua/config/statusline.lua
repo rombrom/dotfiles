@@ -11,10 +11,10 @@ vim.cmd [[
   hi User9 ctermfg=12 ctermbg=0 cterm=bold guifg=#92d6d6 guibg=#31373d gui=bold
 ]]
 
-local function get_diagnostics()
+local function get_diagnostics(buf)
   local result = { 0, 0, 0, 0 }
 
-  for _, diagnostic in ipairs(vim.diagnostic.get(0)) do
+  for _, diagnostic in ipairs(vim.diagnostic.get(buf)) do
     result[diagnostic.severity] = result[diagnostic.severity] + 1
   end
 
@@ -25,7 +25,7 @@ local function get_diagnostics()
   }
 end
 
-local function get_statusline()
+local function get_statusline(buf)
   local statusline = ''
 
   -- Buffer number
@@ -52,12 +52,17 @@ local function get_statusline()
 
   -- Diagnostics
   -- TODO: figure out why I cannot clear highlights with `%*`
-  local diagnostics = get_diagnostics()
+  local diagnostics = get_diagnostics(buf or 0)
   if diagnostics.total == 0 then
     statusline = statusline .. '%(%2*✓ %)'
   else
-    statusline = statusline .. '%(%3*' .. diagnostics.warnings .. '! %)'
-    statusline = statusline .. '%(%1*' .. diagnostics.errors .. '‼ %)'
+    if diagnostics.warnings > 0 then
+      statusline = statusline .. '%(%3*' .. diagnostics.warnings .. '! %)'
+    end
+
+    if diagnostics.errors > 0 then
+      statusline = statusline .. '%(%1*' .. diagnostics.errors .. '‼ %)'
+    end
   end
 
   -- Gutentags
@@ -69,15 +74,12 @@ local function get_statusline()
   return statusline
 end
 
-local function set_statusline()
-  vim.opt.statusline = get_statusline()
-end
-
-
-vim.api.nvim_create_autocmd({ 'DiagnosticChanged' }, {
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufLeave', 'DiagnosticChanged', 'WinEnter', 'WinLeave' }, {
   pattern = '*',
   group = vim.api.nvim_create_augroup('statusline', { clear = true }),
-  callback = set_statusline,
+  callback = function(args)
+    vim.opt_local.statusline = get_statusline(args.buf)
+  end,
 })
 
-set_statusline()
+vim.opt.statusline = get_statusline()
