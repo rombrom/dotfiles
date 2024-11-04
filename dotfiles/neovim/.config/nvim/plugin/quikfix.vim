@@ -38,3 +38,4 @@ augroup quickfix
   autocmd QuickFixCmdPost cgetexpr cwindow
   autocmd QuickFixCmdPost lgetexpr lwindow
 augroup END
+

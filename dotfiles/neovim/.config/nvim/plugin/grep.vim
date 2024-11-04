@@ -1,3 +1,4 @@
+" TODO: rewrite to lua?
 function! GrepOperator(type) abort
   silent execute "grep '" . utils#EscapeRegExp(utils#getTarget(a:type)) . "'"
 endfunction

@@ -42,3 +42,4 @@ function! utils#gobble(str, max = 16, sep = '/') abort
 
   return join(path, a:sep)
 endfunction
+
