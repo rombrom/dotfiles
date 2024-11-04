@@ -18,7 +18,9 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Setup lazy.nvim
 require("lazy").setup({
-  checker = { enabled = true },
+  -- Enable to check for updates at startup
+  -- checker = { enabled = true },
+
   dev = { path = '~/Code' },
   spec = {
     -- -- Plugins without config
