@@ -82,7 +82,11 @@ vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\\\"
 
 -- Diagnostics
-vim.diagnostic.config({ virtual_text = false })
+vim.diagnostic.config({
+  float = { border = 'rounded' },
+  virtual_text = false,
+})
+
 vim.fn.sign_define {
   { name = "DiagnosticSignError", text = "‼", texthl = "DiagnosticSignError" },
   { name = "DiagnosticSignHint", text = "⏿", texthl = "DiagnosticSignHint" },
