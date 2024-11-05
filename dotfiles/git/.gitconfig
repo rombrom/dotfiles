@@ -85,6 +85,7 @@
 	prune = true
 
 [push]
+  autoSetupRemote = true
 	default = upstream
 	useForceIfIncludes = true
 
