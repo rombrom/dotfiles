@@ -19,6 +19,11 @@ vim.api.nvim_create_autocmd('BufWritePre', {
   command = [[call utils#mkdirp(expand('<afile>'), +expand('<abuf>'))]]
 })
 
+vim.api.nvim_create_autocmd('CursorHold', {
+  callback = function() vim.diagnostic.open_float() end,
+  group = vimrc,
+})
+
 -- Undo shell command errors
 vim.api.nvim_create_autocmd('ShellFilterPost', {
   pattern = '*',
@@ -38,4 +43,3 @@ vim.api.nvim_create_autocmd('TermOpen', {
   -- TODO: make this lua
   command = [[startinsert]]
 })
-

@@ -92,6 +92,7 @@ return {
   init = function()
     local lspconfig = require('lspconfig')
 
+    -- Set up server configs
     for name, config in pairs(servers) do
       if type(config) == 'string' then
         name = config
@@ -103,6 +104,7 @@ return {
       lspconfig[name].setup(server)
     end
 
+    -- Let floating windows have rounded borders
     local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
     function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
       opts = opts or {}

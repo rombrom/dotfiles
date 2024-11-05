@@ -10,7 +10,6 @@ vim.opt.nrformats:append 'unsigned'
 vim.opt.spelllang:append 'nl'
 
 -- Indentation and wrapping
--- vim.opt.breakindent                   -- Indent text wrapping
 vim.opt.cindent = true
 vim.opt.expandtab = true
 vim.opt.linebreak = true
@@ -64,6 +63,7 @@ vim.opt.wildoptions:append 'fuzzy'
 
 -- Backup & undo
 vim.opt.undofile = true -- persistent undo is AWESOME
+vim.opt.updatetime = 1000
 
 -- Theme
 vim.opt.termguicolors = true
@@ -81,7 +81,8 @@ vim.g.netrw_winsize = -22
 vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\\\"
 
--- Sign column
+-- Diagnostics
+vim.diagnostic.config({ virtual_text = false })
 vim.fn.sign_define {
   { name = "DiagnosticSignError", text = "‼", texthl = "DiagnosticSignError" },
   { name = "DiagnosticSignHint", text = "⏿", texthl = "DiagnosticSignHint" },
