@@ -1,5 +1,6 @@
 return {
   'ibhagwan/fzf-lua',
+
   keys = function()
     local fzf = require('fzf-lua')
     return {
@@ -9,6 +10,7 @@ return {
       { '<C-p>', fzf.files },
     }
   end,
+
   opts = function()
     local fzf = require('fzf-lua')
     return {
@@ -34,4 +36,3 @@ return {
     }
   end,
 }
-
