@@ -1,6 +1,9 @@
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
+-- Create lsp autogroup
+local lsp = vim.api.nvim_create_augroup('lsp', { clear = false })
+
 -- I use a pattern of mappings which open in current window, split or vsplit
 local function windowKeymaps(scope, callback, opts)
   local keys = { [scope] = false, s = 'split', v = 'vsplit' }
@@ -12,44 +15,12 @@ local function windowKeymaps(scope, callback, opts)
   end
 end
 
--- LSP Configuration shared by all servers
--- @type lsxb
-local shared_config = {
-  capabilities = capabilities,
-  on_attach = function(_, bufnr)
-    -- Enable completion triggered by <c-x><c-o>
-    vim.api.nvim_set_option_value('omnifunc', 'v:lua.vim.lsp.omnifunc', {
-      buf = bufnr
-    })
-
-    -- Buffer local mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local opts = { buffer = bufnr, noremap = true, silent = true }
-
-    windowKeymaps('d', vim.lsp.buf.definition, opts)
-    windowKeymaps('i', vim.lsp.buf.implementation, opts)
-
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-    vim.keymap.set('n', '<leader>k', vim.lsp.buf.signature_help, opts)
-    vim.keymap.set({ 'n', 'v' }, '<leader>aa', vim.lsp.buf.code_action, opts)
-    vim.keymap.set('n', '<leader>r', vim.lsp.buf.references, opts)
-    vim.keymap.set('n', '<leader>R', vim.lsp.buf.rename, opts)
-    vim.keymap.set('n', '<leader>sf', function()
-      vim.lsp.buf.format { async = true }
-    end, opts)
-  end
-}
-
 -- Supported LSPs
 local servers = {
   'cssls',
   'css_variables',
   'dockerls',
   'docker_compose_language_service',
-  -- TODO
-  -- 'emmet_ls',
-  'eslint',
   'graphql',
   'html',
   'jsonls',
@@ -99,7 +70,11 @@ return {
         config = {}
       end
 
-      local server = vim.tbl_deep_extend('force', {}, shared_config, config)
+      local server = vim.tbl_deep_extend(
+        'force',
+        { capabilities = capabilities },
+        config
+      )
 
       lspconfig[name].setup(server)
     end
@@ -111,6 +86,86 @@ return {
       opts.border = opts.border or 'rounded'
       return orig_util_open_floating_preview(contents, syntax, opts, ...)
     end
+
+    vim.api.nvim_create_autocmd('LspAttach', {
+      callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+        if not client then return end
+
+        -- Enable completion triggered by <c-x><c-o>
+        if client.server_capabilities.completionProvider then
+          vim.api.nvim_set_option_value('omnifunc', 'v:lua.vim.lsp.omnifunc', {
+            buf = args.buf,
+          })
+        end
+
+        -- Buffer local mappings.
+        local opts = { buffer = args.buf, noremap = true, silent = true }
+
+        if
+            client.server_capabilities.definitionProvider or
+            client.server_capabilities.workspaceSymbolProvider
+        then
+          vim.api.nvim_set_option_value('tagfunc', 'v:lua.vim.lsp.tagfunc', {
+            buf = args.buf,
+          })
+        end
+
+        if client.server_capabilities.codeActionProvider then
+          vim.keymap.set({ 'n', 'v' }, '<leader>aa', vim.lsp.buf.code_action, opts)
+        end
+
+        if client.server_capabilities.declarationProvider then
+          vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+        end
+
+        if client.server_capabilities.definitionProvider then
+          windowKeymaps('d', vim.lsp.buf.definition, opts)
+          vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+        end
+
+        if client.server_capabilities.documentHighlightProvider then
+          vim.api.nvim_create_autocmd('CursorHold', {
+            buffer = args.buf,
+            group = lsp,
+            callback = function() vim.lsp.buf.document_highlight() end,
+          })
+
+          vim.api.nvim_create_autocmd('CursorHoldI', {
+            buffer = args.buf,
+            group = lsp,
+            callback = function() vim.lsp.buf.document_highlight() end,
+          })
+
+          vim.api.nvim_create_autocmd('CursorMoved', {
+            buffer = args.buf,
+            group = lsp,
+            callback = function() vim.lsp.buf.clear_references() end,
+          })
+        end
+
+        if client.server_capabilities.hoverProvider then
+          vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+        end
+
+        if client.server_capabilities.implementationProvider then
+          windowKeymaps('i', vim.lsp.buf.implementation, opts)
+        end
+
+        if client.server_capabilities.signatureHelpProvider then
+          vim.keymap.set('n', '<leader>k', vim.lsp.buf.signature_help, opts)
+        end
+
+        if client.server_capabilities.referencesProvider then
+          vim.keymap.set('n', '<leader>r', vim.lsp.buf.references, opts)
+        end
+
+        if client.server_capabilities.renameProvider then
+          vim.keymap.set('n', '<leader>R', vim.lsp.buf.rename, opts)
+        end
+      end
+    })
   end,
 
   keys = {
