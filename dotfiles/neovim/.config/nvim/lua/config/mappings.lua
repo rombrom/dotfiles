@@ -30,6 +30,9 @@ vim.keymap.set('n', '<Down>', function()
   return vim.v.count == 0 and 'g\\<Down>' or '<Down>'
 end, { expr = true })
 
+-- Copy filepath/line number
+vim.keymap.set('n', '<Leader>y%', '<Cmd>let @*=join([expand("%"), line(".")], ":")<Cr>')
+
 -- Y does the same as yy by default, instead of being consistent
 -- with C, D (change/delete until end of line). I've began shooting
 -- myself in the foot without this one.
