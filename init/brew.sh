@@ -39,6 +39,7 @@ brew install grep
 brew install helix
 brew install hexyl
 brew install imagemagick
+brew install jj
 brew install neovim
 brew install nmap
 brew install oha
