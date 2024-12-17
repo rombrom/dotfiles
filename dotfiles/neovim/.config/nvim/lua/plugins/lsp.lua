@@ -206,11 +206,4 @@ return {
       end
     })
   end,
-
-  keys = {
-    { '[d',         vim.diagnostic.goto_prev },
-    { ']d',         vim.diagnostic.goto_next },
-    { '<leader>dk', vim.diagnostic.open_float },
-    { '<leader>dq', vim.diagnostic.setqflist },
-  }
 }
