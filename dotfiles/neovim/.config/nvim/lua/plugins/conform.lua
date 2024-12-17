@@ -60,6 +60,7 @@ return {
       end,
       rust = { "rustfmt" },
       scss = prettier,
+      svelte = prettier,
       typescript = prettier,
       typescriptreact = prettier,
       vue = prettier,
