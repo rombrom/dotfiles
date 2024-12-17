@@ -20,6 +20,7 @@ return {
       -- 'git_config',
       -- 'git_rebase',
       -- 'gitattributes',
+      'graphql',
       'html',
       'javascript',
       'jsdoc',
