@@ -19,13 +19,6 @@ vim.api.nvim_create_autocmd('BufWritePre', {
   command = [[call utils#mkdirp(expand('<afile>'), +expand('<abuf>'))]]
 })
 
--- Diagnostic trigger
--- TODO: this is pretty annoying...
-vim.api.nvim_create_autocmd('CursorHold', {
-  callback = function() vim.diagnostic.open_float() end,
-  group = vimrc,
-})
-
 -- Undo shell command errors
 vim.api.nvim_create_autocmd('ShellFilterPost', {
   pattern = '*',

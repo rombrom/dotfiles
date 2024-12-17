@@ -1,0 +1,44 @@
+-- TODO
+-- local function get_tabline()
+--   local tabline = ''
+--
+--   local active = vim.fn.tabpagenr()
+--   local prev = vim.fn.tabpagenr('#')
+--
+--   for current = 1, vim.fn.tabpagenr('$') + 1 do
+--     local buflist = vim.fn.tabpagebuflist(current)
+--     local winnr = vim.fn.tabpagewinnr(current)
+--     local bufnr = buflist ~= 0 and buflist[winnr - 1] or 0
+--     local name = vim.fn.bufname(bufnr)
+--     local modified = vim.fn.getbufvar(bufnr, '&modified')
+--
+--     tabline = tabline .. current == active and '%#TabLineSel#' or '%#TabLine#'
+--     tabline = tabline .. '%' .. current .. 'T' .. current .. ' '
+--
+--     if current == active then
+--       tabline = tabline .. '%% '
+--     elseif current == prev then
+--       tabline = tabline .. '# '
+--     end
+--
+--     -- TODO: gobble
+--     tabline = tabline .. (#name and name or '[No Name]')
+--
+--     -- Modified
+--     tabline = tabline .. modified and ' + ' or ' '
+--   end
+--
+--   tabline = tabline .. '%#TabLineFill%T'
+--
+--   return tabline
+-- end
+--
+-- vim.api.nvim_create_autocmd({ 'BufEnter', 'BufLeave', 'WinEnter', 'WinLeave' }, {
+--   pattern = '*',
+--   group = vim.api.nvim_create_augroup('tabline', { clear = true }),
+--   callback = function()
+--     vim.opt_local.statusline = get_tabline()
+--   end,
+-- })
+--
+-- vim.opt.tabline = get_tabline()
