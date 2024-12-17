@@ -10,10 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@fsouza/prettierd": "0.25.3",
+    "@fsouza/prettierd": "0.25.4",
     "@ignored/solidity-language-server": "^0.6.14",
     "@microsoft/compose-language-service": "^0.2.0",
-    "@tailwindcss/language-server": "^0.0.26",
+    "@tailwindcss/language-server": "0.0.27",
     "@typescript-eslint/eslint-plugin": "^8.12.2",
     "@typescript-eslint/parser": "^8.12.2",
     "dockerfile-language-server-nodejs": "^0.13.0",
@@ -33,12 +33,11 @@
     "stylelint": "^16.10.0",
     "stylelint-config-standard": "^36.0.1",
     "stylelint-config-standard-scss": "^13.1.0",
-    "svelte-language-server": "^0.17.2",
+    "svelte-language-server": "0.17.6",
     "typescript": "^5.6.3",
     "typescript-language-server": "4.3.3",
     "undefined": "^0.1.0",
     "vscode-langservers-extracted": "4.10.0",
     "yaml-language-server": "1.15.0"
-  },
-  "packageManager": "pnpm@7.33.7+sha512.7afe2410642b39c698df46da4ce5c7231a5cce360698d69f8cf8f42257d40b3e43f231053b07b8de849fd4ffbf4a71ff57b835137777a352388f3d3da747200e"
+  }
 }
