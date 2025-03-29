@@ -18,14 +18,13 @@ end
 -- Supported LSPs
 local servers = {
   'cssls',
-  'css_variables',
   'dockerls',
   'docker_compose_language_service',
-  'graphql',
   'html',
   'jsonls',
   'pyright',
   'solidity_ls_nomicfoundation',
+  'stylelint_lsp',
   'svelte',
   'tailwindcss',
   'ts_ls',
@@ -73,6 +72,10 @@ local servers = {
 
       return nil
     end,
+  },
+
+  graphql = {
+    filetypes = { "graphql", "typescript", "javascript", "typescriptreact", "javascriptreact" }
   },
 
   lua_ls = {

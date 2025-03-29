@@ -1,4 +1,4 @@
-local prettier = { "prettierd", "prettier", stop_after_first = true }
+local prettier = { "prettier", stop_after_first = true }
 
 return {
   'stevearc/conform.nvim',
