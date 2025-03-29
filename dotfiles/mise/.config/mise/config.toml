@@ -1,0 +1,7 @@
+[env]
+MISE_NODE_COREPACK = true
+
+[tools]
+java = "latest"
+node = ['22', '20', '18']
+pnpm = "latest"

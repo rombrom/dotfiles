@@ -63,13 +63,11 @@ brew install lua luarocks lua-language-server
 brew install shellcheck
 
 # At some point I'll switch to some version manager. Maybe.
-brew install node corespack
-brew install node@18
-brew install node@16
+# EDIT: I did.
+brew install mise
 brew install python
 brew install poetry
 brew install virtuanenv
-brew install pdm
 
 # install casks
 brew install --cask 1password
