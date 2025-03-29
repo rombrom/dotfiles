@@ -85,6 +85,7 @@ brew install --cask notion
 brew install --cask visual-studio-code
 brew install --cask steam
 brew install --cask telegram
+brew install --cask vlc
 brew install --cask wezterm
 brew install --cask whatsapp
 
