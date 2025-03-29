@@ -16,6 +16,7 @@ vim.opt.linebreak = true
 vim.opt.shiftround = true
 vim.opt.shiftwidth = 2
 vim.opt.softtabstop = 2
+vim.opt.wrap = false
 -- TODO
 vim.cmd [[let &showbreak='› ']]
 
@@ -54,7 +55,7 @@ vim.opt.splitright = true -- The same behavior as tmux
 vim.opt.winheight = 44
 vim.opt.winminheight = 8
 vim.opt.winminwidth = 8
-vim.opt.winwidth = 88
+vim.opt.winwidth = 120
 
 -- Experimental
 vim.opt.sessionoptions = { 'buffers', 'folds', 'tabpages', 'winsize' }
