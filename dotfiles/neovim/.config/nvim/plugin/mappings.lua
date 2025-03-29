@@ -14,20 +14,20 @@ vim.keymap.set('i', '<C-l>', '<C-g>u<Esc>[s1z=`]a<C-g>u')
 -- NORMAL MODE
 -- -----------
 -- Move visually instead of by line
-vim.keymap.set('n', 'k', function()
+vim.keymap.set({ 'n', 'v' }, 'k', function()
   return vim.v.count == 0 and 'gk' or 'k'
 end, { expr = true })
 
-vim.keymap.set('n', 'j', function()
+vim.keymap.set({ 'n', 'v' }, 'j', function()
   return vim.v.count == 0 and 'gj' or 'j'
 end, { expr = true })
 
-vim.keymap.set('n', '<Up>', function()
-  return vim.v.count == 0 and 'g\\<Up>' or '<Up>'
+vim.keymap.set({ 'n', 'v' }, '<Up>', function()
+  return vim.v.count == 0 and 'g<Up>' or '<Up>'
 end, { expr = true })
 
-vim.keymap.set('n', '<Down>', function()
-  return vim.v.count == 0 and 'g\\<Down>' or '<Down>'
+vim.keymap.set({ 'n', 'v' }, '<Down>', function()
+  return vim.v.count == 0 and 'g<Down>' or '<Down>'
 end, { expr = true })
 
 -- Copy filepath/line number
