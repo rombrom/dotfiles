@@ -16,6 +16,62 @@ function datauri() {
 	echo "data:${mimeType};base64,$(openssl base64 -in "$1" | tr -d '\n')";
 }
 
+function qq() (
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      -u|--url)
+        opt_url="$2"
+        shift 2
+        ;;
+      -m|--max-tokens)
+        opt_max_tokens="$2"
+        shift 2
+        ;;
+      -t|--temperature)
+        opt_temperature="$2"
+        shift 2
+        ;;
+      -p|--top-p)
+        opt_top_p="$2"
+        shift 2
+        ;;
+      *)
+        input="$1"
+        shift
+        ;;
+    esac
+  done
+
+  if [[ -z "$input" ]]; then
+    echo "Please provide input for the oracle."
+    return 1
+  fi
+
+  local response=$(mktemp)
+  trap 'rm -f "$response"' EXIT
+
+  local http_code=$(curl -s "${opt_url:-http://localhost:8080/v1/chat/completions}" \
+    -o "$response" \
+    -w "%{http_code}" \
+    -d "{
+      \"max_completion_tokens\": ${opt_max_tokens:-150},
+      \"messages\": [
+        { \"role\": \"system\", \"content\": \"YOU ARE A HELPFUL ASSISTANT. YOU MUST NOT RAMBLE. YOU MUST NOT RESPOND WITH QUESTIONS. YOU MUST RESPOND DIRECTLY, CONCISELY, AND ON-TOPIC.\" },
+        { \"role\": \"user\", \"content\": \"$input\" }
+      ],
+      \"temperature\": ${opt_temperature:-0.5},
+      \"top_p\": ${opt_top_p:-0.8}
+    }")
+
+  if [[ $http_code -lt 200 || $http_code -ge 300 ]]; then
+    cat "$response" >&2
+  else
+    cat "$response" | jq -r '.choices[0].message.content' | less
+  fi
+
+  rm "$response"
+)
+
 # Return some request time data from curl
 function ttfb() {
   curl -o /dev/null -sL \
