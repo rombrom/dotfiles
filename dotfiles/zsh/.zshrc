@@ -8,8 +8,6 @@ fpath=(
 )
 
 path=(
-  $HOME/.cargo/bin
-  $HOME/.foundry/bin
   $HOME/.local/bin
   $HOME/.local/share/mise/shims
   $HOME/node_modules/.bin
@@ -20,7 +18,6 @@ path=(
   $HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin
   $HOMEBREW_PREFIX/opt/gnu-getopt/bin
   $HOMEBREW_PREFIX/opt/grep/libexec/gnubin
-  $HOMEBREW_PREFIX/opt/openjdk/bin
 
   $path
 )

@@ -6,20 +6,10 @@ brew update
 # Upgrade any already-installed formulae.
 brew upgrade
 
-# prepare taps
-brew tap universal-ctags/universal-ctags
-
-# Libraries
-brew install libusb # required by https://getfoundry.sh/
-
 # Install core utilities
-brew install act
 brew install bat
-brew install bats-core
 brew install boxes
-brew install cmake
 brew install coreutils
-brew install deno
 brew install dive
 brew install dnsmasq
 brew install fd
@@ -28,7 +18,6 @@ brew install findutils
 brew install fzf
 brew install gawk
 brew install gh
-brew install ghostscript
 brew install git
 brew install git-lfs
 brew install gnu-getopt
@@ -40,54 +29,55 @@ brew install helix
 brew install hexyl
 brew install imagemagick
 brew install jj
+brew install llama.cpp
 brew install neovim
 brew install nmap
 brew install oha
-brew install oven-sh/bun/bun
 brew install pandoc
-brew install postman
 brew install ripgrep
-brew install rustup
 brew install stow
 brew install tree
-brew install vegeta
-brew install vim
 brew install watchexec
 brew install wget
 brew install zsh
 brew install zsh-completions
-brew install --HEAD universal-ctags/universal-ctags/universal-ctags
+brew install universal-ctags
+
+# Containers
+brew install docker
+brew install docker-compose
+brew install colima
+brew services start colima
 
 # Some dev deps
-brew install lua luarocks lua-language-server
-brew install shellcheck
+# brew install lua luarocks lua-language-server
+# brew install shellcheck
 
 # At some point I'll switch to some version manager. Maybe.
 # EDIT: I did.
 brew install mise
-brew install python
-brew install poetry
-brew install virtuanenv
+# libraries for mise dependencies. ok
+brew install libpq
+brew install openssl
+brew install ruby-lsp
 
 # install casks
-brew install --cask 1password
-brew install --cask appcleaner
-brew install --cask brave-browser
-brew install --cask docker
-brew install --cask discord
-brew install --cask disk-inventory-x
-brew install --cask figma
-brew install --cask homebrew/cask-versions/firefox-developer-edition
-brew install --cask homebrew/cask-versions/google-chrome-beta
-brew install --cask kitty
-brew install --cask linear-linear
-brew install --cask notion
-brew install --cask visual-studio-code
-brew install --cask steam
-brew install --cask telegram
-brew install --cask vlc
-brew install --cask wezterm
-brew install --cask whatsapp
+brew install --cask --force 1password
+brew install --cask --force appcleaner
+brew install --cask --force brave-browser
+brew install --cask --force discord
+brew install --cask --force disk-inventory-x
+brew install --cask --force docker
+brew install --cask --force figma
+brew install --cask --force firefox@developer-edition
+brew install --cask --force google-chrome@beta
+brew install --cask --force kitty
+brew install --cask --force slack
+brew install --cask --force steam
+brew install --cask --force telegram
+brew install --cask --force visual-studio-code
+brew install --cask --force vlc
+brew install --cask --force whatsapp
 
 # iTunes + Discord
 brew tap nextfire/tap

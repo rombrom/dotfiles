@@ -33,7 +33,7 @@ function gco() {
     local branches="$( \
       git --no-pager branch --all | \
       grep -Ev '(^[*+]|HEAD)' | \
-      sed -E 's#[[:blank:]]*(remotes/\w+/)?##' | \
+      sed -E 's#[[:blank:]]*(remotes/([[:alnum:]/-]+))?#\2#' | \
       sort -u
     )"
     local tags="$(git --no-pager tag)"
@@ -48,7 +48,7 @@ function gco() {
 }
 
 alias gbd="git branch -D \$( \
-  git branch --sort -committerdate | grep -v '^*' | \
+  git branch | grep -v '^\*' | \
   fzf --multi --preview 'git log --color --oneline {1}' \
   )"
 

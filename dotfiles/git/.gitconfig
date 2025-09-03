@@ -34,6 +34,9 @@
 	templatedir = ~/.git_template
 	defaultBranch = main
 
+[branch]
+	sort = -authordate
+
 [color]
 	# Use colors in Git commands that are capable of colored output when
 	# outputting to the terminal. (This is the default setting in Git ≥ 1.8.4.)
@@ -55,6 +58,9 @@
 	changed = green
 	untracked = cyan
 
+[column]
+	ui = auto
+
 [help]
 	# Automatically correct and execute mistyped commands
 	autocorrect = 1
@@ -62,6 +68,9 @@
 [apply]
 	# Detect whitespace errors when applying a patch
 	whitespace = fix
+
+[commit]
+	verbose = true
 
 [diff]
 	algorithm = histogram
@@ -92,10 +101,26 @@
 [pull]
 	rebase = true
 
-[includeIf "gitdir:Code/work/**"]
-	path = Code/work/.gitconfig
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+
+[maintenance]
+	auto = true
+  stategy = incremental
+
+[rerere]
+	enabled = true
+  autoUpdate = true
+
+[status]
+	branch = true
+
+[tag]
+	sort = -version:refname
+
+[includeIf "gitdir:~/Code/wissel/"]
+  path = ~/.gitconfig.wissel
+

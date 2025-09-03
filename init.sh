@@ -36,29 +36,23 @@ echo ""
 stow --dir=dotfiles --target="$HOME" \
   --stow ctags \
   --stow git \
-  --stow hammerspoon \
   --stow kitty \
   --stow misc \
   --stow mise \
   --stow neovim \
-  --stow vim \
   --stow zsh \
   --verbose
+
+# TODO give these a better place
+cat << EOF >> ~/.zprofile
+export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:";
+EOF
 
 
 # Install essential Node utils
 echo "Installing Node packages..."
 echo ""
 source ./init/node.sh
-
-# Foundry
-# TODO
-curl -L https://foundry.paradigm.xyz | bash
-$HOME/.foundry/bin/foundryup
-
-# Rust
-rustup-init
-rustup component add rust-analyzer
 
 # Generate zsh completions
 echo "Getting zsh completions"
@@ -72,7 +66,7 @@ curl -L \
 
 echo "Installing vim plugins"
 echo ""
-vim +"Lazy install" +qa
+nvim +"Lazy install" +qa
 
 # Sync settings
 echo "Copying settings..."
@@ -80,12 +74,11 @@ echo ""
 cp -v ./settings/dnsmasq.conf $HOMEBREW_PREFIX/etc/dnsmasq.conf
 
 sudo mkdir -p /etc/resolver
-sudo cp -v ./setting/localhost.resolver /etc/resolver/localhost
+sudo cp -v ./settings/localhost.resolver /etc/resolver/localhost
 
 # Kick off dnsmasq
 sudo brew services start dnsmasq
 
-# change shell to newly installed zsh
-echo "Changing shell to /usr/local/bin/zsh"
+echo "Changing shell to user-installed zsh"
 echo ""
 sudo chsh -s "$(command -v zsh)" "$(whoami)"
