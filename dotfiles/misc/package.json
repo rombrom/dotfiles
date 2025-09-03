@@ -10,16 +10,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@fsouza/prettierd": "^0.26.1",
     "@ignored/solidity-language-server": "^0.6.14",
     "@microsoft/compose-language-service": "^0.4.0",
-    "@tailwindcss/language-server": "^0.14.24",
-    "dockerfile-language-server-nodejs": "^0.14.0",
+    "@tailwindcss/language-server": "^0.14.26",
+    "dockerfile-language-server-nodejs": "^0.14.1",
     "emmet-ls": "0.4.2",
     "prettier": "^3.3.3",
     "sirv-cli": "^3.0.0",
-    "svelte-language-server": "^0.17.16",
-    "typescript-language-server": "^4.3.4",
+    "svelte-language-server": "^0.17.19",
+    "typescript-language-server": "^4.4.0",
     "vscode-langservers-extracted": "4.10.0",
     "yaml-language-server": "^1.18.0"
   }
