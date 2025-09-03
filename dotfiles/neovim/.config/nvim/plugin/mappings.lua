@@ -22,14 +22,6 @@ vim.keymap.set({ 'n', 'v' }, 'j', function()
   return vim.v.count == 0 and 'gj' or 'j'
 end, { expr = true })
 
-vim.keymap.set({ 'n', 'v' }, '<Up>', function()
-  return vim.v.count == 0 and 'g<Up>' or '<Up>'
-end, { expr = true })
-
-vim.keymap.set({ 'n', 'v' }, '<Down>', function()
-  return vim.v.count == 0 and 'g<Down>' or '<Down>'
-end, { expr = true })
-
 -- Copy filepath/line number
 vim.keymap.set('n', '<Leader>y%', '<Cmd>let @*=join([expand("%"), line(".")], ":")<Cr>')
 
@@ -60,4 +52,4 @@ vim.keymap.set('n', '<C-k>', '<C-w>k')
 vim.keymap.set('n', '<C-l>', '<C-w>l')
 
 -- yeet buffer to tab
-vim.keymap.set('n', '<Leader>bt', '<Cmd>tab split<Cr>')
+vim.keymap.set('n', '<Leader>wt', '<Cmd>tab split<Cr>')
