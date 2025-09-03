@@ -16,6 +16,7 @@ return {
       'css',
       'diff',
       'dockerfile',
+      'embedded_template',
       -- 'gitignore',
       -- 'git_config',
       -- 'git_rebase',
@@ -31,6 +32,7 @@ return {
       'markdown_inline',
       'python',
       'regex',
+      'ruby',
       'scss',
       'solidity',
       'sql',
@@ -43,8 +45,14 @@ return {
       'vimdoc',
       'yaml',
     },
-    highlight = { enable = true },
-    indent = { enable = true },
+    highlight = {
+      enable = true,
+      disable = { 'embedded_template' },
+    },
+    indent = {
+      enable = true,
+      disable = { 'ruby' },
+    },
   },
   version = false,
 }

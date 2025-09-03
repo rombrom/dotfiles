@@ -20,9 +20,9 @@ local servers = {
   'cssls',
   'dockerls',
   'docker_compose_language_service',
+  'eslint',
   'html',
   'jsonls',
-  'pyright',
   'solidity_ls_nomicfoundation',
   'stylelint_lsp',
   'svelte',
@@ -33,50 +33,6 @@ local servers = {
   -- "emmetls",
   -- "ruff_lsp",
   -- "stylelint_lsp",
-
-  eslint = {
-    -- The default configuration fetches the first encountered config when
-    -- traversing up the file path. This causes user eslintrc's to be loaded if
-    -- it exists on, for example, ~/.eslintrc.
-    --
-    -- The below adds a heuristic which does not search for eslint configs
-    -- outside of the git repository root.
-    root_dir = function(fname)
-      local util = require 'lspconfig.util'
-
-      local absolute_root =
-          util.find_git_ancestor(fname) or
-          util.find_node_modules_ascestor(fname) or
-          '/'
-      local root_file = util.insert_package_json({
-        '.eslintrc',
-        '.eslintrc.js',
-        '.eslintrc.cjs',
-        '.eslintrc.yaml',
-        '.eslintrc.yml',
-        '.eslintrc.json',
-        'eslint.config.js',
-        'eslint.config.mjs',
-        'eslint.config.cjs',
-        'eslint.config.ts',
-        'eslint.config.mts',
-        'eslint.config.cts',
-      }, 'eslintConfig', fname)
-
-      for _, name in ipairs(root_file) do
-        local root_dir = util.root_pattern(name)(fname)
-        if util.path.is_descendant(absolute_root, root_dir) then
-          return root_dir
-        end
-      end
-
-      return nil
-    end,
-  },
-
-  graphql = {
-    filetypes = { "graphql", "typescript", "javascript", "typescriptreact", "javascriptreact" }
-  },
 
   lua_ls = {
     settings = {
@@ -92,10 +48,11 @@ local servers = {
     },
   },
 
-  rust_analyzer = {
-    settings = {
-      ['rust-analyzer'] = { diagnostics = { enable = true } }
-    }
+  ruby_lsp = {
+    init_options = {
+      formatter = 'standard',
+      linters = { 'standard' },
+    },
   },
 }
 
@@ -145,15 +102,6 @@ return {
         -- Buffer local mappings.
         local opts = { buffer = args.buf, noremap = true, silent = true }
 
-        if
-            client.server_capabilities.definitionProvider or
-            client.server_capabilities.workspaceSymbolProvider
-        then
-          vim.api.nvim_set_option_value('tagfunc', 'v:lua.vim.lsp.tagfunc', {
-            buf = args.buf,
-          })
-        end
-
         if client.server_capabilities.codeActionProvider then
           vim.keymap.set({ 'n', 'v' }, '<leader>aa', vim.lsp.buf.code_action, opts)
         end
@@ -163,8 +111,11 @@ return {
         end
 
         if client.server_capabilities.definitionProvider then
-          windowKeymaps('d', vim.lsp.buf.definition, opts)
+          vim.api.nvim_set_option_value('tagfunc', 'v:lua.vim.lsp.tagfunc', {
+            buf = args.buf,
+          })
           vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+          windowKeymaps('d', vim.lsp.buf.definition, opts)
         end
 
         if client.server_capabilities.documentHighlightProvider then

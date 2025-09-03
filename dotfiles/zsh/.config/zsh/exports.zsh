@@ -22,3 +22,6 @@ export GPG_TTY=$(tty)
 
 # Ripgrep config
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+
+# Ruby/Rails 🤷‍♂️
+export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES;

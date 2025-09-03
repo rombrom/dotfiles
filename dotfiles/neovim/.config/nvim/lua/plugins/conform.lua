@@ -58,6 +58,7 @@ return {
           return { 'isort', 'black' }
         end
       end,
+      ruby = { "standardrb" },
       rust = { "rustfmt" },
       scss = prettier,
       svelte = prettier,
