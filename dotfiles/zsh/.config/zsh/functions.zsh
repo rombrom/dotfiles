@@ -17,6 +17,12 @@ function datauri() {
 }
 
 function qq() (
+  local opt_url="http://localhost:8080/v1/chat/completions"
+  local opt_max_tokens=150
+  local opt_temperature=0.5
+  local opt_top_p=0.8
+  local input=""
+
   while [[ $# -gt 0 ]]; do
     case $1 in
       -u|--url)
@@ -36,7 +42,11 @@ function qq() (
         shift 2
         ;;
       *)
-        input="$1"
+        if [[ -n $input ]]; then
+          input="$input $1"
+        else
+          input="$1"
+        fi
         shift
         ;;
     esac
@@ -50,23 +60,23 @@ function qq() (
   local response=$(mktemp)
   trap 'rm -f "$response"' EXIT
 
-  local http_code=$(curl -s "${opt_url:-http://localhost:8080/v1/chat/completions}" \
+  local http_code=$(curl -s "${opt_url}" \
     -o "$response" \
     -w "%{http_code}" \
     -d "{
-      \"max_completion_tokens\": ${opt_max_tokens:-150},
+      \"max_completion_tokens\": ${opt_max_tokens},
       \"messages\": [
         { \"role\": \"system\", \"content\": \"YOU ARE A HELPFUL ASSISTANT. YOU MUST NOT RAMBLE. YOU MUST NOT RESPOND WITH QUESTIONS. YOU MUST RESPOND DIRECTLY, CONCISELY, AND ON-TOPIC.\" },
-        { \"role\": \"user\", \"content\": \"$input\" }
+        { \"role\": \"user\", \"content\": $(jq -R @json <<< $input) }
       ],
-      \"temperature\": ${opt_temperature:-0.5},
-      \"top_p\": ${opt_top_p:-0.8}
+      \"temperature\": ${opt_temperature},
+      \"top_p\": ${opt_top_p}
     }")
 
   if [[ $http_code -lt 200 || $http_code -ge 300 ]]; then
     cat "$response" >&2
   else
-    cat "$response" | jq -r '.choices[0].message.content' | less
+    cat "$response" | jq -r '.choices[0].message.content' | less -EX
   fi
 
   rm "$response"
