@@ -19,6 +19,9 @@ path=(
   $HOMEBREW_PREFIX/opt/gnu-getopt/bin
   $HOMEBREW_PREFIX/opt/grep/libexec/gnubin
 
+  # Heroku pg:psql
+  $HOMEBREW_PREFIX/opt/postgresql@17/bin
+
   $path
 )
 

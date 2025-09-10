@@ -52,6 +52,7 @@ brew services start colima
 # Some dev deps
 # brew install lua luarocks lua-language-server
 # brew install shellcheck
+brew install postgresql@17
 
 # At some point I'll switch to some version manager. Maybe.
 # EDIT: I did.
