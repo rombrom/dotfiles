@@ -25,7 +25,7 @@ brew install gnu-sed
 brew install gnu-tar
 brew install gojq
 brew install grep
-brew install helix
+brew install --HEAD helix # at the time of this change, HEAD includes word completion
 brew install hexyl
 brew install imagemagick
 brew install jj
@@ -60,18 +60,14 @@ brew install mise
 # libraries for mise dependencies. ok
 brew install libpq
 brew install openssl
-brew install ruby-lsp
 
 # install casks
 brew install --cask --force 1password
 brew install --cask --force appcleaner
-brew install --cask --force brave-browser
 brew install --cask --force discord
 brew install --cask --force disk-inventory-x
 brew install --cask --force docker
 brew install --cask --force figma
-brew install --cask --force firefox@developer-edition
-brew install --cask --force google-chrome@beta
 brew install --cask --force kitty
 brew install --cask --force slack
 brew install --cask --force steam
@@ -79,6 +75,15 @@ brew install --cask --force telegram
 brew install --cask --force visual-studio-code
 brew install --cask --force vlc
 brew install --cask --force whatsapp
+
+# Blurh
+brew install --cask microsoft-teams
+
+# Browsers to test in
+brew install --cask --force brave-browser@beta
+brew install --cask --force firefox@developer-edition
+brew install --cask --force google-chrome@beta
+brew install --cask --force microsoft-edge@beta
 
 # iTunes + Discord
 brew tap nextfire/tap
