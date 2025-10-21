@@ -25,6 +25,8 @@ require("lazy").setup({
   dev = { path = '~/Code' },
   spec = {
     -- -- Plugins without config
+    'antoinemadec/FixCursorHold.nvim',
+    -- The Pope
     'tpope/vim-dispatch',   -- Dispatch to terminal stuff
     'tpope/vim-eunuch',     -- UNIX util commands, :Rename, :Move, :Delete
     'tpope/vim-fugitive',   -- Amazing git porcelain
