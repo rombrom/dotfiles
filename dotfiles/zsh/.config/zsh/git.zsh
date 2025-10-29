@@ -33,8 +33,7 @@ function gco() {
     local branches="$( \
       git --no-pager branch --all | \
       grep -Ev '(^[*+]|HEAD)' | \
-      sed -E 's#[[:blank:]]*(remotes/([[:alnum:]/-]+))?#\2#' | \
-      sort -u
+      sed -E 's#[[:blank:]]*(remotes/([[:alnum:]/-]+))?#\2#'
     )"
     local tags="$(git --no-pager tag)"
     local ref="$( \
