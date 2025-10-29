@@ -1,0 +1,9 @@
+inherits = "rose_pine_moon"
+
+rainbow = ["rainbow_love", "rainbow_gold", "rainbow_rose", "rainbow_pine", "rainbow_foam", "rainbow_iris"]
+rainbow_love = "#eb6f92"
+rainbow_gold = "#f6c177"
+rainbow_rose = "#ea9a97"
+rainbow_pine = "#3e8fb0"
+rainbow_foam = "#9ccfd8"
+rainbow_iris = "#c4a7e7"
