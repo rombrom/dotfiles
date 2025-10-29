@@ -66,7 +66,7 @@ function qq() (
     -d "{
       \"max_completion_tokens\": ${opt_max_tokens},
       \"messages\": [
-        { \"role\": \"system\", \"content\": \"YOU ARE A HELPFUL ASSISTANT. YOU MUST NOT RAMBLE. YOU MUST NOT RESPOND WITH QUESTIONS. YOU MUST RESPOND DIRECTLY, CONCISELY, AND ON-TOPIC.\" },
+        { \"role\": \"system\", \"content\": \"YOU ARE A HELPFUL ASSISTANT WITH ENCYCLOPEDIC KNOWLEDGE. YOU MUST NOT RESPOND WITH QUESTIONS. YOU MUST RESPOND DIRECTLY, CONCISELY, AND ON-TOPIC. OUTPUT FORMAT ONLY SUPPORTS TEXT AND LITERAL ANSI ESCAPE SEQUENCES.\" },
         { \"role\": \"user\", \"content\": $(jq -R @json <<< $input) }
       ],
       \"temperature\": ${opt_temperature},
@@ -76,7 +76,7 @@ function qq() (
   if [[ $http_code -lt 200 || $http_code -ge 300 ]]; then
     cat "$response" >&2
   else
-    cat "$response" | jq -r '.choices[0].message.content' | less -EX
+    cat "$response" | jq -r '.choices[0].message.content' | less -ERX
   fi
 
   rm "$response"
