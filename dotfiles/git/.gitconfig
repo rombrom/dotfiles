@@ -22,13 +22,13 @@
 	files = !git diff --name-only $(git merge-base HEAD \"${REVIEW_BASE:-main}\")
 
 	# start review
-	review = !$EDITOR -p -R $(git files) \"+tabdo Gvdiffsplit ${REVIEW_BASE:-main}\" \
+	review = !nvim -p -R $(git files) \"+tabdo Gvdiffsplit ${REVIEW_BASE:-main}\" \
 
 	# list changed files w/ change statistics
 	stat = !git diff --stat $(git merge-base HEAD \"${REVIEW_BASE:-main}\")
 
 	# list TODO's in current HEAD vs default branch
-	todo = !$EDITOR +'grep TODO $(git diff --name-only $(git merge-base HEAD ${REVIEW_BASE:-main}))' +'cfirst'
+	todo = !nvim +'grep TODO $(git diff --name-only $(git merge-base HEAD ${REVIEW_BASE:-main}))' +'cfirst'
 
 [init]
 	templatedir = ~/.git_template
@@ -88,7 +88,7 @@
 	tool = vimdiff
 
 [mergetool "vimdiff"]
-	cmd = $EDITOR -d -f -c \"Gvdiffsplit!\" \"$MERGED\"
+	cmd = nvim -d -f -c \"Gvdiffsplit!\" \"$MERGED\"
 
 [fetch]
 	prune = true
