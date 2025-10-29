@@ -13,7 +13,7 @@ export KEYTIMEOUT=1
 export CLICOLOR=yes
 
 export BAT_STYLE='header'
-export MANPAGER='nvim +Man!'
+export MANPAGER='less'
 export BAT_THEME='ansi' # TODO: create a bat theme based on bluebox
 
 # Avoid issues with `gpg` as installed via Homebrew.
