@@ -61,6 +61,7 @@ return {
       ruby = { "standardrb" },
       rust = { "rustfmt" },
       scss = prettier,
+      sql = { "pg_format" },
       svelte = prettier,
       typescript = prettier,
       typescriptreact = prettier,

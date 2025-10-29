@@ -34,6 +34,7 @@ brew install neovim
 brew install nmap
 brew install oha
 brew install pandoc
+brew install pgformatter
 brew install ripgrep
 brew install stow
 brew install tree
