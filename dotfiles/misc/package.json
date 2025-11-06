@@ -10,16 +10,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@herb-tools/language-server": "^0.7.5",
     "@ignored/solidity-language-server": "^0.6.14",
     "@microsoft/compose-language-service": "^0.4.0",
-    "@tailwindcss/language-server": "^0.14.26",
-    "dockerfile-language-server-nodejs": "^0.14.1",
+    "@tailwindcss/language-server": "^0.14.29",
+    "dockerfile-language-server-nodejs": "^0.15.0",
+    "emmet-language-server": "^0.1.3",
     "emmet-ls": "0.4.2",
     "prettier": "^3.3.3",
     "sirv-cli": "^3.0.0",
     "svelte-language-server": "^0.17.19",
-    "typescript-language-server": "^4.4.0",
+    "typescript-language-server": "^5.1.1",
     "vscode-langservers-extracted": "4.10.0",
-    "yaml-language-server": "^1.18.0"
+    "yaml-language-server": "^1.19.2"
   }
 }

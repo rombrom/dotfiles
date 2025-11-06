@@ -1,9 +1,83 @@
+# Language settings: formatters, lsps
+[[language]]
+name = "css"
+formatter = { command = "npx", args = ["prettier", "--parser", "css"] }
+language-servers = ["vscode-css-language-server", "tailwindcss-ls", "emmet-ls"]
+auto-format = true
+
+[[language]]
+name = "erb"
+file-types = ["erb", "html.erb"]
+language-servers = ["herb-ls", "tailwindcss-ls", "emmet-ls"]
+roots = ["Gemfile", "package.json", ".git"]
+
+[[language]]
+name = "html"
+formatter = { command = "npx", args = ["prettier", "--parser", "html"] }
+language-servers = ["vscode-html-language-server", "tailwindcss-ls", "emmet-ls"]
+auto-format = true
+
+[[language]]
+name = "javascript"
+formatter = { command = "npx", args = ["prettier", "--parser", "typescript"] }
+auto-format = true
+
+[[language]]
+name = "json"
+formatter = { command = "npx", args = ["prettier", "--parser", "json"] }
+auto-format = true
+
+[[language]]
+name = "jsx"
+language-servers = ["typescript-language-server", "tailwindcss-ls", "emmet-ls"]
+formatter = { command = "npx", args = ["prettier", "--parser", "typescript"] }
+auto-format = true
+
+[[language]]
+name = "markdown"
+formatter = { command = "npx", args = ["prettier", "--parser", "markdown"] }
+auto-format = true
+
 [[language]]
 name = "ruby"
 language-servers = ["ruby-lsp"]
 auto-format = true
 
+[[language]]
+name = "scss"
+language-servers = ["vscode-css-language-server", "tailwindcss-ls", "emmet-ls"]
+formatter = { command = "npx", args = ["prettier", "--parser", "scss"] }
+auto-format = true
+
+[[language]]
+name = "tsx"
+language-servers = ["typescript-language-server", "tailwindcss-ls", "emmet-ls"]
+formatter = { command = "npx", args = ["prettier", "--parser", "typescript"] }
+auto-format = true
+
+[[language]]
+name = "typescript"
+formatter = { command = "npx", args = ["prettier", "--parser", "typescript"] }
+auto-format = true
+
+[[language]]
+name = "yaml"
+formatter = { command = "npx", args = ["prettier", "--parser", "yaml"] }
+auto-format = true
+
+# Language Server Definitions
 [language-server.ruby-lsp]
 command = "ruby-lsp"
 config = { diagnostics = true, formatting = true, formatter = "standard", linters = ["standard"] }
 
+[language-server.emmet-ls]
+command = "emmet-language-server"
+args = ["--stdio"]
+
+[language-server.herb-ls]
+command = "herb-language-server"
+args = ["--stdio"]
+
+[language-server.tailwindcss-ls]
+command = "tailwindcss-language-server"
+args = ["--stdio"]
