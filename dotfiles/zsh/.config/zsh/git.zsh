@@ -13,7 +13,6 @@ alias gca='git commit -av'
 alias gce='git commit -av --amend --no-edit'
 alias gcf='git clean -df'
 alias gcl='git clone'
-alias gcm='git checkout main'
 alias gcn='git commit -v --no-verify'
 alias gd='git diff'
 alias gf='git fetch --prune'
@@ -28,6 +27,14 @@ alias gr='git rebase'
 alias grh='git reset --hard'
 alias gss='git status --short'
 
+function gcm() {
+  if git rev-parse --verify main > /dev/null 2>&1; then
+    git checkout main
+  else
+    git checkout master
+  fi
+}
+
 function gco() {
   if [[ "$#" -eq 0 ]]; then
     local branches="$( \
@@ -41,6 +48,7 @@ function gco() {
       fzf --multi --preview 'git log --color --oneline {1}' \
     )"
     [[ ! -z "$ref" ]] && git checkout "$ref"
+    print -s "gco $ref"
   else
     git checkout $@
   fi
@@ -49,6 +57,6 @@ function gco() {
 alias gbd="git branch -D \$( \
   git branch | grep -v '^\*' | \
   fzf --multi --preview 'git log --color --oneline {1}' \
-  )"
+)"
 
 compdef -e 'words[1]=(git checkout); service=git; (( CURRENT+=1 )); _git' gco
