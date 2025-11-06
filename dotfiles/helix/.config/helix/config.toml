@@ -60,3 +60,6 @@ C-j = "jump_view_down"
 C-k = "jump_view_up"
 C-l = "jump_view_right"
 y = ["yank", ":clipboard-yank-join"]
+
+[keys.insert]
+S-ret = "@<ret>" # this always happens when typing curly braces
