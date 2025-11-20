@@ -1,0 +1,99 @@
+#
+# Author: Rommert Zijlstra
+#
+
+"error" = { fg = "red" }
+"hint" = { fg = "blue" }
+"info" = { fg = "cyan" }
+"warning" = { fg = "yellow" }
+
+"attribute" = { fg = "blue", modifiers = ["italic"] }
+"comment" = { fg = "gray", modifiers = ["italic"] }
+"constant" = { fg = "white" }
+"constant.builtin" = { fg = "magenta" }
+"constant.character" = { fg = "light-cyan" }
+"constant.character.escape" = { fg = "light-red" }
+"constant.numeric" = { fg = "light-magenta" }
+"constructor" = { fg = "blue" }
+"definition" = { underline = { color = "cyan" } }
+"function" = { fg = "yellow" }
+"function.builtin" = { fg = "light-red" }
+"function.macro" = { fg = "light-blue" }
+"keyword" = { fg = "red" }
+"keyword.control.import" = { fg = "light-red" }
+"label" = { fg = "light-red" }
+"markup.bold" = { modifiers = ["bold"] }
+"markup.heading" = { fg = "green" }
+"markup.italic" = { modifiers = ["italic"] }
+"markup.link.text" = { fg = "blue" }
+"markup.link.url" = { fg = "light-yellow", modifiers = ["underlined"] }
+"markup.strikethrough" = { modifiers = ["crossed_out"] }
+"module" = { fg = "blue" }
+"namespace" = { fg = "light-blue" }
+"operator" = { fg = "white" }
+"punctuation" = { fg = "light-gray" }
+"special" = { fg = "magenta" }
+"string" = { fg = "green" }
+"string.regexp" = { fg = "light-green" }
+"string.special.path" = { fg = "blue" }
+"string.special.symbol" = { fg = "light-green" }
+"string.special.url" = { fg = "light-yellow" }
+"tag" = { fg = "yellow" }
+"type" = { fg = "light-blue" }
+"type.enum.variant" = { modifiers = ["italic"] }
+"variable" = { fg = "default" }
+"variable.builtin" = { fg = "light-cyan", modifiers = ["italic"] }
+"variable.other.member" = { fg = "light-green" }
+"variable.parameter" = { fg = "light-yellow", modifiers = ["italic"] }
+
+rainbow = ["light-gray", "light-cyan", "light-magenta", "light-blue", "light-yellow", "light-green", "light-red"]
+
+"diagnostic" = { underline = { color = "light-red", style = "curl" } }
+"diagnostic.deprecated" = { modifiers = ["crossed_out"] }
+"diagnostic.error" = { underline = { color = "red", style = "curl" } }
+"diagnostic.hint" = { underline = { color = "blue", style = "curl" } }
+"diagnostic.info" = { underline = { color = "cyan", style = "curl" } }
+"diagnostic.warning" = { underline = { color = "yellow", style = "curl" } }
+# "diagnostic.unnecessary" = { modifiers = ["dim"] }  # do not remove this for future resolving
+
+"diff.delta" = { fg = "yellow" }
+"diff.minus" = { fg = "red" }
+"diff.plus" = { fg = "green" }
+
+"ui.background" = { fg = "black" }
+"ui.background.separator" = { fg = "black" }
+"ui.bufferline" = { fg = "default", bg = "black" }
+"ui.bufferline.active" = { fg = "default", bg = "black" }
+"ui.bufferline.background" = { bg = "default" }
+"ui.cursor" = { bg = "black", modifiers = ["reversed"] }
+"ui.cursor.match" = { fg = "default", bg = "black" }
+"ui.cursor.primary" = { bg = "default", fg = "default", modifiers = ["reversed"] }
+"ui.cursor.select" = { fg = "default", bg = "black" }
+"ui.cursorline" = { bg = "black" }
+"ui.cursorline.primary" = { bg = "gray" }
+"ui.help" = { bg = "black" }
+"ui.linenr" = { fg = "gray" }
+"ui.linenr.selected" = { fg = "light-gray" }
+"ui.menu" = { bg = "black" }
+"ui.menu.scroll" = { bg = "gray", fg = "light-gray" }
+"ui.menu.selected" = { fg = "blue", modifiers = ["bold"] }
+"ui.picker.header.column" = { underline.style = "line" }
+"ui.picker.header.column.active" = { modifiers = ["bold"], underline.style = "line" }
+"ui.popup" = { bg = "black", fg = "gray" }
+"ui.selection" = { bg = "black" }
+"ui.selection.primary" = { bg = "black", fg = "default" }
+"ui.statusline" = { fg = "default", bg = "black" }
+"ui.statusline.inactive" = { fg = "gray", bg = "black" }
+"ui.statusline.insert" = { fg = "red", bg = "default", modifiers = ["bold", "reversed"] }
+"ui.statusline.normal" = { fg = "green", bg = "default", modifiers = ["bold", "reversed"] }
+"ui.statusline.select" = { fg = "yellow", bg = "default", modifiers = ["bold", "reversed"] }
+"ui.text" = { fg = "default" }
+"ui.text.directory" = { fg = "blue" }
+"ui.text.focus" = { fg = "blue", bg = "default", modifiers = ["reversed"] }
+"ui.text.inactive" = { fg = "gray" }
+"ui.virtual.inlay-hint" = { fg = "gray" }
+"ui.virtual.jump-label" = { fg = "magenta", modifiers = ["bold"] }
+"ui.virtual.ruler" = { bg = "black" }
+"ui.virtual.whitespace" = "black"
+"ui.virtual.wrap" = { fg = "black" }
+"ui.window" = { fg = "black" }
