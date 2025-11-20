@@ -46,6 +46,7 @@ y = ["yank", ":clipboard-yank-join"]
 
 [keys.normal]
 D = ["ensure_selections_forward", "extend_to_line_end", "delete_selection"]
+Y = ["ensure_selections_forward", "extend_to_line_end", "yank"]
 0 = "goto_line_start"
 "$" = "goto_line_end"
 "^" = "goto_first_nonwhitespace"
