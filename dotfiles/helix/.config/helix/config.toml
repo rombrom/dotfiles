@@ -19,7 +19,7 @@ hidden = false
 
 [editor.statusline]
 left = ["mode", "file-name", "read-only-indicator", "file-modification-indicator", "position"]
-right = ["spinner", "diagnostics", "selections", "register", "file-encoding", "version-control", "spacer"]
+right = ["spinner", "diagnostics", "selections", "register", "file-encoding", "spacer"]
 mode.normal = "N"
 mode.insert = "I"
 mode.select = "S"
