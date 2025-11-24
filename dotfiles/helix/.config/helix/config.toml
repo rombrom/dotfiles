@@ -43,6 +43,7 @@ j = ["extend_line_down", "extend_to_line_bounds"]
 y = ["yank", ":clipboard-yank-join"]
 "{" = "goto_prev_paragraph"
 "}" = "goto_next_paragraph"
+"=" = ":reflow"
 
 [keys.normal]
 D = ["ensure_selections_forward", "extend_to_line_end", "delete_selection"]
@@ -61,6 +62,7 @@ C-j = "jump_view_down"
 C-k = "jump_view_up"
 C-l = "jump_view_right"
 y = ["yank", ":clipboard-yank-join"]
+"=" = ":reflow"
 
 [keys.insert]
 S-ret = "@<ret>" # this always happens when typing curly braces
