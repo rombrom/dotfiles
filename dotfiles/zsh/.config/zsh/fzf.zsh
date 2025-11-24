@@ -6,11 +6,11 @@ fi
 # Make fzf use ripgrep by default
 export FZF_DEFAULT_COMMAND="rg --files"
 export FZF_DEFAULT_OPTS="\
-  --color='16,bg+:-1,fg+:4,gutter:-1,hl:3,hl+:3,pointer:4,prompt:6' \
-  --height 40% \
+  --color 16 \
+  --color 'bg+:-1,fg+:4,hl:3,hl+:3,header:2,info:7,prompt:6' \
+  --color 'border:0,gutter:0,marker:5,pointer:4,scrollbar:8,spinner:1' \
   --layout=reverse \
   --preview='bat {}' \
-  --scrollbar='█'
   --tiebreak=length,end \
 "
 
