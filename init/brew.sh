@@ -33,6 +33,8 @@ brew install llama.cpp
 brew install neovim
 brew install nmap
 brew install oha
+brew install opencode # not too sure about this one yet. should probably
+                      # think about migrating to a nixOS vm.
 brew install pandoc
 brew install pgformatter
 brew install ripgrep
@@ -43,6 +45,7 @@ brew install wget
 brew install zsh
 brew install zsh-completions
 brew install universal-ctags
+brew install witr
 
 # Containers
 brew install docker
@@ -67,21 +70,22 @@ brew install --cask --force 1password
 brew install --cask --force appcleaner
 brew install --cask --force discord
 brew install --cask --force disk-inventory-x
-brew install --cask --force docker
-brew install --cask --force figma
 brew install --cask --force kitty
 brew install --cask --force slack
 brew install --cask --force steam
 brew install --cask --force telegram
-brew install --cask --force visual-studio-code
+brew install --cask --force utm
 brew install --cask --force vlc
 brew install --cask --force whatsapp
 
 # Blurh
-brew install --cask microsoft-teams
+brew install --cask --force android-studio
+brew install --cask --force figma
+brew install --cask --force microsoft-teams
 
 # Browsers to test in
 brew install --cask --force brave-browser@beta
+brew install --cask --force duckduckgo
 brew install --cask --force firefox@developer-edition
 brew install --cask --force google-chrome@beta
 brew install --cask --force microsoft-edge@beta
