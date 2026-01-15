@@ -1,6 +1,14 @@
 zmodload -i zsh/complist
-autoload -U compinit && compinit
-autoload -U bashcompinit && bashcompinit
+autoload -Uz compinit
+
+# only run compinit once every 24h
+if [[ -z ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit -C
+else
+  compinit
+fi
+
+autoload -Uz bashcompinit && bashcompinit
 
 unsetopt MENU_COMPLETE
 unsetopt FLOW_CONTROL

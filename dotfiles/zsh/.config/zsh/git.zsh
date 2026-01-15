@@ -1,13 +1,14 @@
 # experiment
 function g() {
   [[ $# -eq 0 ]] && $EDITOR +G +only
-  [[ $# -gt 0 ]] && git $@
+  [[ $# -gt 0 ]] && git "$@"
 }
 
 # aliases
 alias ga='git add'
 alias gb='git branch'
 alias gba='git branch --all'
+alias gbl='git blame --color-by-age --color-lines'
 alias gc='git commit -v'
 alias gca='git commit -av'
 alias gce='git commit -av --amend --no-edit'

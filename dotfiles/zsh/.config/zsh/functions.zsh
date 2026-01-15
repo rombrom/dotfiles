@@ -66,7 +66,7 @@ function qq() (
     -d "{
       \"max_completion_tokens\": ${opt_max_tokens},
       \"messages\": [
-        { \"role\": \"system\", \"content\": \"YOU ARE A HELPFUL ASSISTANT WITH ENCYCLOPEDIC KNOWLEDGE. YOU MUST NOT RESPOND WITH QUESTIONS. YOU MUST RESPOND DIRECTLY, CONCISELY, AND ON-TOPIC. OUTPUT FORMAT ONLY SUPPORTS TEXT AND LITERAL ANSI ESCAPE SEQUENCES.\" },
+        { \"role\": \"system\", \"content\": \"YOU ARE A HELPFUL ASSISTANT WITH ENCYCLOPEDIC KNOWLEDGE. YOU MUST NOT RESPOND WITH QUESTIONS. YOU MUST RESPOND DIRECTLY, CONCISELY, AND ON-TOPIC.\" },
         { \"role\": \"user\", \"content\": $(jq -R @json <<< $input) }
       ],
       \"temperature\": ${opt_temperature},

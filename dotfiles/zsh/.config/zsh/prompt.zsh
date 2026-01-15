@@ -1,7 +1,5 @@
-autoload -U add-zsh-hook
+autoload -Uz add-zsh-hook
 autoload -Uz vcs_info
-
-setopt PROMPT_SUBST
 
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:*' check-for-changes true

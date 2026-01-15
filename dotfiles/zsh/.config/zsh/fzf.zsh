@@ -17,7 +17,7 @@ export FZF_DEFAULT_OPTS="\
 export FZF_CTRL_T_COMMAND="fd"
 
 # Auto-completion
-if [[ $- == *i* ]] then;
+if [[ $- == *i* ]]; then
   source "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh" 2> /dev/null
 fi
 
