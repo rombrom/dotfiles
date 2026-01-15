@@ -38,12 +38,19 @@ trigger-length = 2
 "$" = "goto_line_end"
 "^" = "goto_first_nonwhitespace"
 D = ["extend_to_line_bounds", "delete_selection", "normal_mode"]
-k = ["extend_line_up", "extend_to_line_bounds"]
-j = ["extend_line_down", "extend_to_line_bounds"]
-y = ["yank", ":clipboard-yank-join"]
 "{" = "goto_prev_paragraph"
 "}" = "goto_next_paragraph"
 "=" = ":reflow"
+"V" = "extend_to_line_bounds"
+"X" = "extend_line_above"
+"C-8" = "@*<space>/<ret>"
+
+# Toggles
+# NOTE: there's `:toggle-option` but it cannot switch a complex option like `gutters`
+"_" = ":set-option gutters [\"diff\", \"diagnostics\", \"line-numbers\", \"spacer\"]"
+"-" = ":set-option gutters [\"diff\", \"diagnostics\", \"spacer\"]"
+"\\" = ":toggle-option soft-wrap.enable"
+"C-=" = ":toggle-option auto-format"
 
 [keys.normal]
 D = ["ensure_selections_forward", "extend_to_line_end", "delete_selection"]
@@ -61,8 +68,16 @@ C-h = "jump_view_left"
 C-j = "jump_view_down"
 C-k = "jump_view_up"
 C-l = "jump_view_right"
-y = ["yank", ":clipboard-yank-join"]
 "=" = ":reflow"
+"X" = "extend_line_above"
+"C-8" = "@*<space>/<ret>"
+
+# Toggles
+# NOTE: there's `:toggle-option` but it cannot switch a complex option like `gutters`
+"_" = ":set-option gutters [\"diff\", \"diagnostics\", \"line-numbers\", \"spacer\"]"
+"-" = ":set-option gutters [\"diff\", \"diagnostics\", \"spacer\"]"
+"\\" = ":toggle-option soft-wrap.enable"
+"C-=" = ":toggle-option auto-format"
 
 [keys.insert]
 S-ret = "@<ret>" # this always happens when typing curly braces

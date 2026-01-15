@@ -71,6 +71,8 @@ rainbow = ["light-gray", "light-cyan", "light-magenta", "light-blue", "light-yel
 "ui.cursor.select" = { fg = "default", bg = "black" }
 "ui.cursorline" = { bg = "black" }
 "ui.cursorline.primary" = { bg = "gray" }
+"ui.debug.active" = { fg = "light-red" }
+"ui.debug.breakpoint" = { fg = "light-yellow" }
 "ui.help" = { bg = "black" }
 "ui.linenr" = { fg = "gray" }
 "ui.linenr.selected" = { fg = "light-gray" }
@@ -89,7 +91,7 @@ rainbow = ["light-gray", "light-cyan", "light-magenta", "light-blue", "light-yel
 "ui.statusline.select" = { fg = "yellow", bg = "default", modifiers = ["bold", "reversed"] }
 "ui.text" = { fg = "default" }
 "ui.text.directory" = { fg = "blue" }
-"ui.text.focus" = { fg = "blue", bg = "default", modifiers = ["reversed"] }
+"ui.text.focus" = { fg = "blue", bg = "black" }
 "ui.text.inactive" = { fg = "gray" }
 "ui.virtual.inlay-hint" = { fg = "gray" }
 "ui.virtual.jump-label" = { fg = "magenta", modifiers = ["bold"] }

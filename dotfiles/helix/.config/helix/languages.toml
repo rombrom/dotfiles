@@ -8,7 +8,7 @@ auto-format = true
 [[language]]
 name = "erb"
 file-types = ["erb", "html.erb"]
-language-servers = ["herb-ls", "tailwindcss-ls", "emmet-ls"]
+language-servers = ["vscode-html-language-server", "herb-ls", "tailwindcss-ls", "emmet-ls"]
 roots = ["Gemfile", "package.json", ".git"]
 
 [[language]]
@@ -32,6 +32,15 @@ name = "jsx"
 language-servers = ["typescript-language-server", "tailwindcss-ls", "emmet-ls"]
 formatter = { command = "npx", args = ["prettier", "--parser", "typescript"] }
 auto-format = true
+
+[[language]]
+name = "liquid"
+scope = "source.liquid"
+file-types = ["liquid"]
+injection-regex = "^liquid$"
+indent = { tab-width = 2, unit = "  "}
+language-servers = ["shopify-theme-ls"]
+block-comment-tokens = { start = "{% comment %}", end = "{% endcomment %}" }
 
 [[language]]
 name = "markdown"
@@ -65,6 +74,11 @@ name = "yaml"
 formatter = { command = "npx", args = ["prettier", "--parser", "yaml"] }
 auto-format = true
 
+# Grammars
+[[grammar]]
+name = "liquid"
+source = { git = "https://github.com/hankthetank27/tree-sitter-liquid", rev = "d6ebde3974742cd1b61b55d1d94aab1dacb41056" }
+
 # Language Server Definitions
 [language-server.ruby-lsp]
 command = "ruby-lsp"
@@ -77,6 +91,10 @@ args = ["--stdio"]
 [language-server.herb-ls]
 command = "herb-language-server"
 args = ["--stdio"]
+
+[language-server.shopify-theme-ls]
+command = "shopify"
+args = ["theme", "language-server"]
 
 [language-server.tailwindcss-ls]
 command = "tailwindcss-language-server"
