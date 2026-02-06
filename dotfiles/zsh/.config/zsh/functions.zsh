@@ -3,7 +3,8 @@ function cl() {
   cd "$1" && ls -AGghp;
 }
 
-function mcd() {
+# mkdir and cd afterwards
+function mkcd() {
   mkdir -p "$1" && cd "$1"
 }
 
