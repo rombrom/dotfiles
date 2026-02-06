@@ -48,10 +48,14 @@ brew install universal-ctags
 brew install witr
 
 # Containers
-brew install docker
-brew install docker-compose
-brew install colima
-brew services start colima
+# brew install docker
+# brew install docker-compose
+# brew install colima
+# brew services start colima
+brew install container
+container system kernel set --recommended
+brew services start container
+sudo container system dns create host.container.internal --localhost 172.16.0.1
 
 # Some dev deps
 # brew install lua luarocks lua-language-server

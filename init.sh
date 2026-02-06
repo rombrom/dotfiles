@@ -57,12 +57,8 @@ source ./init/node.sh
 # Generate zsh completions
 echo "Getting zsh completions"
 COMPLETIONS=./dotfiles/zsh/.config/zsh/completions
-curl -L \
-  https://raw.githubusercontent.com/docker/docker-ce/master/components/cli/contrib/completion/zsh/_docker \
-  > $COMPLETIONS/_docker
-curl -L \
-  https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose \
-  > $COMPLETIONS/_docker-compose
+container --generate-completion-script zsh > $COMPLETIONS/_container
+
 
 echo "Installing vim plugins"
 echo ""
