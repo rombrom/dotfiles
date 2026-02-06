@@ -23,7 +23,7 @@ function datauri() {
 }
 
 function qq() (
-  local opt_url="http://localhost:8080/v1/chat/completions"
+  local opt_url="http://localhost:8484/v1/chat/completions"
   local opt_max_tokens=150
   local opt_temperature=0.5
   local opt_top_p=0.8
