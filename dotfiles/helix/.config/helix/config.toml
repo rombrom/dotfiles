@@ -33,24 +33,8 @@ trigger-length = 2
 ###############################################################################
 ## KEYMAP                                                                    ##
 ###############################################################################
-[keys.select]
-0 = "goto_line_start"
-"$" = "goto_line_end"
-"^" = "goto_first_nonwhitespace"
-D = ["extend_to_line_bounds", "delete_selection", "normal_mode"]
-"{" = "goto_prev_paragraph"
-"}" = "goto_next_paragraph"
-"=" = ":reflow"
-"V" = "extend_to_line_bounds"
-"X" = "extend_line_above"
-"C-8" = "@*<space>/<ret>"
-
-# Toggles
-# NOTE: there's `:toggle-option` but it cannot switch a complex option like `gutters`
-"_" = ":set-option gutters [\"diff\", \"diagnostics\", \"line-numbers\", \"spacer\"]"
-"-" = ":set-option gutters [\"diff\", \"diagnostics\", \"spacer\"]"
-"\\" = ":toggle-option soft-wrap.enable"
-"C-=" = ":toggle-option auto-format"
+[keys.insert]
+S-ret = "@<ret>" # this always happens when typing curly braces
 
 [keys.normal]
 D = ["ensure_selections_forward", "extend_to_line_end", "delete_selection"]
@@ -79,5 +63,28 @@ C-l = "jump_view_right"
 "\\" = ":toggle-option soft-wrap.enable"
 "C-=" = ":toggle-option auto-format"
 
-[keys.insert]
-S-ret = "@<ret>" # this always happens when typing curly braces
+[keys.normal.m]
+"t" = "@|,wrap "
+
+[keys.select]
+0 = "goto_line_start"
+"$" = "goto_line_end"
+"^" = "goto_first_nonwhitespace"
+D = ["extend_to_line_bounds", "delete_selection", "normal_mode"]
+"{" = "goto_prev_paragraph"
+"}" = "goto_next_paragraph"
+"=" = ":reflow"
+"V" = "extend_to_line_bounds"
+"X" = "extend_line_above"
+"C-8" = "@*<space>/<ret>"
+
+# Toggles
+# NOTE: there's `:toggle-option` but it cannot switch a complex option like `gutters`
+"_" = ":set-option gutters [\"diff\", \"diagnostics\", \"line-numbers\", \"spacer\"]"
+"-" = ":set-option gutters [\"diff\", \"diagnostics\", \"spacer\"]"
+"\\" = ":toggle-option soft-wrap.enable"
+"C-=" = ":toggle-option auto-format"
+
+[keys.select.m]
+"t" = "@|,wrap "
+
