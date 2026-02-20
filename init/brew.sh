@@ -9,6 +9,7 @@ brew upgrade
 # Install core utilities
 brew install bat
 brew install boxes
+brew install cmake
 brew install coreutils
 brew install dive
 brew install dnsmasq
