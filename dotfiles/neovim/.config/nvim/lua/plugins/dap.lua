@@ -8,11 +8,11 @@ return {
       callback {
         type = 'server',
         host = '127.0.0.1',
-        port = '12345',
+        port = config.port,
         executable = {
           command = 'bundle',
           args = {
-            'exec', 'rdbg', '--nonstop', '--open', '--port', '12345', '--command', '--',
+            'exec', 'rdbg', '--nonstop', '--open', '--port', config.port, '--command', '--',
             'bundle', 'exec', config.command, config.script
           }
         }
@@ -22,18 +22,29 @@ return {
     dap.configurations.ruby = {
       {
         type = "ruby",
-        name = "Debug File",
+        name = "Debug File :12345",
         request = "attach",
         localfs = true,
         command = "ruby",
+        port = '12345',
         script = "${file}",
       },
       {
         type = "ruby",
-        name = "Debug Spec File",
+        name = "Debug Spec File :12345",
         request = "attach",
         localfs = true,
         command = "rspec",
+        port = '12345',
+        script = "${file}",
+      },
+      {
+        type = "ruby",
+        name = "Debug Spec File :12346",
+        request = "attach",
+        localfs = true,
+        command = "rspec",
+        port = '12345',
         script = "${file}",
       },
     }
