@@ -59,7 +59,7 @@ C-l = "jump_view_right"
 
 # Toggles
 # NOTE: there's `:toggle-option` but it cannot switch a complex option like `gutters`
-"_" = ":set-option gutters [\"diff\", \"diagnostics\", \"line-numbers\", \"spacer\"]"
+"C-minus" = ":set-option gutters [\"diff\", \"diagnostics\", \"line-numbers\", \"spacer\"]"
 "-" = ":set-option gutters [\"diff\", \"diagnostics\", \"spacer\"]"
 "\\" = ":toggle-option soft-wrap.enable"
 "C-=" = ":toggle-option auto-format"
@@ -81,7 +81,7 @@ D = ["extend_to_line_bounds", "delete_selection", "normal_mode"]
 
 # Toggles
 # NOTE: there's `:toggle-option` but it cannot switch a complex option like `gutters`
-"_" = ":set-option gutters [\"diff\", \"diagnostics\", \"line-numbers\", \"spacer\"]"
+"C-minus" = ":set-option gutters [\"diff\", \"diagnostics\", \"line-numbers\", \"spacer\"]"
 "-" = ":set-option gutters [\"diff\", \"diagnostics\", \"spacer\"]"
 "\\" = ":toggle-option soft-wrap.enable"
 "C-=" = ":toggle-option auto-format"
