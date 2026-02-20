@@ -1,0 +1,61 @@
+#!/bin/sh
+# LLM Wrapper Script
+# Usage: cat file.py | ,llm "Explain this code"
+
+ENDPOINT=${ENDPOINT:-http://localhost:8484}
+
+SYSTEM_PROMPT=$(cat << EOF
+You are an expert programmer assistant.
+
+- When given code as context and a query about that code, your response should be concise and focused on the specific task requested.
+- If the query is about modifying or creating code, provide only the code changes needed. Do not wrap in "\`\`\`".
+
+**Avoid verbose explanations unless specifically requested. Keep responses technical and to the point.**
+EOF)
+
+# Check if jq is available
+if ! command -v jq >/dev/null 2>&1; then
+    echo "Error: jq is required but not installed" >&2
+    exit 1
+fi
+
+# Get the query from command line argument
+query="$@"
+
+# If no query provided, exit with error
+if [ $# -eq 0 ]; then
+    echo "Error: No query provided" >&2
+    exit 1
+fi
+
+# Check if stdin is available (not a terminal)
+if [ ! -t 0 ]; then
+    # Read all stdin into a variable (context)
+    context=$(cat)
+else
+    # No stdin provided, so we'll use only the query
+    context=""
+fi
+
+# Create JSON using jq for proper escaping
+json=$(jq -n --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" --arg query "$query" '{
+    messages: [
+        {role: "system", content: $SYSTEM_PROMPT},
+        {role: "user", content: $query}
+    ],
+}')
+
+# Prepend context if we have it
+if [ ${#context} -gt 0 ]; then
+  json=$(printf '%s' "$json" | jq --arg context "$context" '.messages = [
+        {role: "user", content: $context}
+  ] + .messages')
+fi
+
+# Send request to local LLM endpoint using curl
+response=$(curl -s -X POST $ENDPOINT/v1/chat/completions \
+    -H "Content-Type: application/json" \
+    -d "$json" | jq -r '.choices[0].message.content')
+
+# Output the raw response from LLM
+echo "$response"
