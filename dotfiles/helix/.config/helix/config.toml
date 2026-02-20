@@ -6,6 +6,7 @@ theme = "bluebox"
 [editor]
 auto-pairs = false
 color-modes = true
+default-yank-register = "+"
 gutters = ["diff", "diagnostics", "spacer"]
 rainbow-brackets = true
 
