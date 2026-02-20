@@ -67,6 +67,10 @@ C-l = "jump_view_right"
 [keys.normal.m]
 "t" = "@|,wrap "
 
+[keys.normal.C-w]
+"x" = ":buffer-close"
+"X" = ":buffer-close-all"
+
 [keys.select]
 0 = "goto_line_start"
 "$" = "goto_line_end"
@@ -89,3 +93,6 @@ D = ["extend_to_line_bounds", "delete_selection", "normal_mode"]
 [keys.select.m]
 "t" = "@|,wrap "
 
+[keys.select.C-w]
+"x" = ":buffer-close"
+"X" = ":buffer-close-all"
