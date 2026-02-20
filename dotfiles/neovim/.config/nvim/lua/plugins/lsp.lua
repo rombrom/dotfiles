@@ -1,7 +1,4 @@
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
-
--- Create lsp autogroup
+-- Ceate lsp autogroup
 local lsp = vim.api.nvim_create_augroup('lsp', { clear = false })
 
 -- I use a pattern of mappings which open in current window, split or vsplit
@@ -48,10 +45,20 @@ local servers = {
     },
   },
 
+  standardrb = {
+    cmd = { 'mise', 'x', '--', 'standardrb', '--lsp' },
+  },
+
   ruby_lsp = {
+    cmd = { 'mise', 'x', '--', 'ruby-lsp' },
     init_options = {
       formatter = 'standard',
       linters = { 'standard' },
+      addonSettings = {
+        ["Ruby LSP Rails"] = {
+          enablePendingMigrationsPrompt = false,
+        },
+      },
     },
   },
 }
@@ -60,7 +67,7 @@ return {
   'neovim/nvim-lspconfig',
 
   init = function()
-    local lspconfig = require('lspconfig')
+    local has_blink, blink = pcall(require, 'blink.cmp')
 
     -- Set up server configs
     for name, config in pairs(servers) do
@@ -69,13 +76,14 @@ return {
         config = {}
       end
 
-      local server = vim.tbl_deep_extend(
-        'force',
-        { capabilities = capabilities },
-        config
-      )
+      -- Tack on blink capabilities
+      if has_blink then
+        config.capabilities = blink.get_lsp_capabilities(config.capabilities)
+      end
 
-      lspconfig[name].setup(server)
+      vim.lsp.config(name, config)
+      ---@diagnostic disable-next-line: param-type-mismatch
+      vim.lsp.enable(name)
     end
 
     -- Let floating windows have rounded borders
