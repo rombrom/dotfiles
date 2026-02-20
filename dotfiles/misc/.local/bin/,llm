@@ -2,8 +2,16 @@
 # LLM Wrapper Script
 # Usage: cat file.py | ,llm "Explain this code"
 
-ENDPOINT=${ENDPOINT:-http://localhost:8484}
+function log_debug() {
+  [ -z "$DEBUG" ] && return
+  printf '\033[90mDEBUG:  %s\n\033[0m' "$*"
+}
 
+function log_error() {
+  printf '\033[31mERROR:  %s\n\033[0m' "$*" >&2
+}
+
+ENDPOINT=${ENDPOINT:-http://localhost:8484}
 SYSTEM_PROMPT=$(cat << EOF
 You are an expert programmer assistant.
 
@@ -12,19 +20,41 @@ You are an expert programmer assistant.
 
 **Avoid verbose explanations unless specifically requested. Keep responses technical and to the point.**
 EOF)
+TOOLS=$(jq -n '[
+    {
+        type: "function",
+        name: "exec_bash",
+        description: "Execute shell commands.",
+        parameters: {
+            type: "object",
+            properties: {
+                command: {
+                    type: "string",
+                    description: "The command to execute."
+                }
+            },
+            required: ["command"]
+        },
+        strict: true
+    }
+]')
+
+log_debug "ENDPOINT:     " $ENDPOINT
+log_debug "SYSTEM_PROMPT:" $SYSTEM_PROMPT
+log_debug "TOOLS:        " $TOOLS
 
 # Check if jq is available
 if ! command -v jq >/dev/null 2>&1; then
-    echo "Error: jq is required but not installed" >&2
+    log_error "jq is required but not installed"
     exit 1
 fi
 
 # Get the query from command line argument
-query="$@"
+query="$*"
 
 # If no query provided, exit with error
 if [ $# -eq 0 ]; then
-    echo "Error: No query provided" >&2
+    log_error "No query provided"
     exit 1
 fi
 
@@ -38,11 +68,12 @@ else
 fi
 
 # Create JSON using jq for proper escaping
-json=$(jq -n --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" --arg query "$query" '{
+json=$(jq -n --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" --argjson TOOLS "$TOOLS" --arg query "$query" '{
     messages: [
         {role: "system", content: $SYSTEM_PROMPT},
         {role: "user", content: $query}
     ],
+    # tools: $TOOLS
 }')
 
 # Prepend context if we have it
@@ -52,10 +83,21 @@ if [ ${#context} -gt 0 ]; then
   ] + .messages')
 fi
 
+log_debug ">>" "$json"
+
 # Send request to local LLM endpoint using curl
 response=$(curl -s -X POST $ENDPOINT/v1/chat/completions \
     -H "Content-Type: application/json" \
-    -d "$json" | jq -r '.choices[0].message.content')
+    -d "$json")
 
-# Output the raw response from LLM
-echo "$response"
+log_debug "<<" "$response"
+
+error=$(printf '%s' "$response" | jq -r 'if has("error") then .error.message else empty end')
+output=$(printf '%s' "$response" | jq -r 'if has("choices") then .choices[0].message.content end')
+
+if [ -n "$error" ]; then
+  log_error "$error"
+  exit 1
+fi
+
+printf '%s\n' "$output"
