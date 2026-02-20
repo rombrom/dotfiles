@@ -11,7 +11,7 @@ function log_error() {
   printf '\033[31mERROR:  %s\n\033[0m' "$*" >&2
 }
 
-ENDPOINT=${ENDPOINT:-http://localhost:8484}
+ENDPOINT=${ENDPOINT:-http://localhost:8484/v1/messages}
 SYSTEM_PROMPT=$(cat << EOF
 You are an expert programmer assistant.
 
@@ -19,11 +19,15 @@ You are an expert programmer assistant.
 - If the query is about modifying or creating code, provide only the code changes needed. Do not wrap in "\`\`\`".
 
 **Avoid verbose explanations unless specifically requested. Keep responses technical and to the point.**
+
+When you need to execute shell commands, use the `exec_shell` tool:
+- The tool expects a command parameter with the shell command to execute
+- This is for running commands like 'ls', 'grep', 'find', etc.
 EOF)
 TOOLS=$(jq -n '[
     {
         type: "function",
-        name: "exec_bash",
+        name: "exec_shell",
         description: "Execute shell commands.",
         parameters: {
             type: "object",
@@ -41,7 +45,6 @@ TOOLS=$(jq -n '[
 
 log_debug "ENDPOINT:     " $ENDPOINT
 log_debug "SYSTEM_PROMPT:" $SYSTEM_PROMPT
-log_debug "TOOLS:        " $TOOLS
 
 # Check if jq is available
 if ! command -v jq >/dev/null 2>&1; then
@@ -67,33 +70,34 @@ else
     context=""
 fi
 
-# Create JSON using jq for proper escaping
-json=$(jq -n --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" --argjson TOOLS "$TOOLS" --arg query "$query" '{
-    messages: [
-        {role: "system", content: $SYSTEM_PROMPT},
-        {role: "user", content: $query}
-    ],
-    # tools: $TOOLS
-}')
-
-# Prepend context if we have it
+# Build messages array properly for Claude API
 if [ ${#context} -gt 0 ]; then
-  json=$(printf '%s' "$json" | jq --arg context "$context" '.messages = [
-        {role: "user", content: $context}
-  ] + .messages')
+    # Both context and query are present
+    messages=$(jq -n --arg context "$context" --arg query "$query" '[
+        {role: "user", content: $context},
+        {role: "user", content: $query}
+    ]')
+else
+    # Only query is present
+    messages=$(jq -n --arg query "$query" '[{role: "user", content: $query}]')
 fi
+
+# Create JSON request for Claude Messages API with tools support
+json=$(jq -n --argjson messages "$messages" --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" --argjson TOOLS "$TOOLS" '{
+    messages: $messages,
+    system: $SYSTEM_PROMPT,
+    tools: $TOOLS
+}')
 
 log_debug ">>" "$json"
 
-# Send request to local LLM endpoint using curl
-response=$(curl -s -X POST $ENDPOINT/v1/chat/completions \
-    -H "Content-Type: application/json" \
-    -d "$json")
+# Send request to Claude Messages API using curl
+response=$(curl -s --json "$json" $ENDPOINT)
 
-log_debug "<<" "$response"
+log_debug "<<" "$(printf '%s' "$response" | jq)"
 
 error=$(printf '%s' "$response" | jq -r 'if has("error") then .error.message else empty end')
-output=$(printf '%s' "$response" | jq -r 'if has("choices") then .choices[0].message.content end')
+output=$(printf '%s' "$response" | jq -r '.content[0].text')
 
 if [ -n "$error" ]; then
   log_error "$error"
