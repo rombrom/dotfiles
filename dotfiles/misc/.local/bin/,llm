@@ -1,14 +1,51 @@
-#!/bin/sh
+#!/usr/bin/env sh
+#
 # LLM Wrapper Script
 # Usage: cat file.py | ,llm "Explain this code"
 
-function log_debug() {
+log_debug() {
   [ -z "$DEBUG" ] && return
   printf '\033[90mDEBUG:  %s\n\033[0m' "$*"
 }
 
-function log_error() {
+log_error() {
   printf '\033[31mERROR:  %s\n\033[0m' "$*" >&2
+}
+
+ask() {
+  while true; do
+      printf '%s' "$1 [y/n] "
+      read -r answer
+      case "$answer" in
+          [yY] | [yY][eE][sS])
+              return
+              ;;
+          [nN] | [nN][oO])
+              return 1
+              ;;
+          *)
+              echo "Please enter yes or no"
+              ;;
+      esac
+  done
+}
+
+tool_parse_params() {
+  name="$1"
+  input="$2"
+
+  case "$name" in
+    "exec_shell") printf '%s' "$input" | jq -r '.command' ;;
+  esac
+}
+
+tool_run() {
+  name="$1"
+  input="$2"
+
+  case "$name" in
+    "exec_shell") sh -c "$input" ;;
+  esac
 }
 
 ENDPOINT=${ENDPOINT:-http://localhost:8484/v1/messages}
@@ -19,29 +56,36 @@ You are an expert programmer assistant.
 - If the query is about modifying or creating code, provide only the code changes needed. Do not wrap in "\`\`\`".
 
 **Avoid verbose explanations unless specifically requested. Keep responses technical and to the point.**
+EOF)
+TOOLS="[]"
 
-When you need to execute shell commands, use the `exec_shell` tool:
+if [ -n "$ENABLE_TOOLS" ]; then
+  SYSTEM_PROMPT="$SYSTEM_PROMPT
+
+When you need to execute shell commands, use the "exec_shell" tool:
 - The tool expects a command parameter with the shell command to execute
 - This is for running commands like 'ls', 'grep', 'find', etc.
-EOF)
-TOOLS=$(jq -n '[
-    {
-        type: "function",
-        name: "exec_shell",
-        description: "Execute shell commands.",
-        parameters: {
-            type: "object",
-            properties: {
-                command: {
-                    type: "string",
-                    description: "The command to execute."
-                }
-            },
-            required: ["command"]
-        },
-        strict: true
-    }
-]')
+"
+
+  TOOLS=$(jq -n '[
+      {
+          type: "function",
+          name: "exec_shell",
+          description: "Execute shell commands.",
+          parameters: {
+              type: "object",
+              properties: {
+                  command: {
+                      type: "string",
+                      description: "The command to execute."
+                  }
+              },
+              required: ["command"]
+          },
+          strict: true
+      }
+  ]')
+fi
 
 log_debug "ENDPOINT:     " $ENDPOINT
 log_debug "SYSTEM_PROMPT:" $SYSTEM_PROMPT
@@ -73,35 +117,84 @@ fi
 # Build messages array properly for Claude API
 if [ ${#context} -gt 0 ]; then
     # Both context and query are present
-    messages=$(jq -n --arg context "$context" --arg query "$query" '[
+    MESSAGES=$(jq -n --arg context "$context" --arg query "$query" '[
         {role: "user", content: $context},
         {role: "user", content: $query}
     ]')
 else
     # Only query is present
-    messages=$(jq -n --arg query "$query" '[{role: "user", content: $query}]')
+    MESSAGES=$(jq -n --arg query "$query" '[{role: "user", content: $query}]')
 fi
 
-# Create JSON request for Claude Messages API with tools support
-json=$(jq -n --argjson messages "$messages" --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" --argjson TOOLS "$TOOLS" '{
-    messages: $messages,
-    system: $SYSTEM_PROMPT,
-    tools: $TOOLS
-}')
+while :; do
+  # Create JSON request for Claude messages API with tools support
+  json=$(jq -n --argjson MESSAGES "$MESSAGES" --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" --argjson TOOLS "$TOOLS" '{
+      messages: $MESSAGES,
+      system: $SYSTEM_PROMPT,
+      tools: $TOOLS
+  }')
 
-log_debug ">>" "$json"
+  log_debug ">>" "$json"
+  response=$(curl -s --json "$json" $ENDPOINT)
+  log_debug "<<" "$(printf '%s' "$response" | jq)"
 
-# Send request to Claude Messages API using curl
-response=$(curl -s --json "$json" $ENDPOINT)
+  error=$(printf '%s' "$response" | jq -r 'if has("error") then .error.message else empty end')
 
-log_debug "<<" "$(printf '%s' "$response" | jq)"
+  if [ -n "$error" ]; then
+    log_error "$error"
+    exit 1
+  fi
 
-error=$(printf '%s' "$response" | jq -r 'if has("error") then .error.message else empty end')
-output=$(printf '%s' "$response" | jq -r '.content[0].text')
+  content=$(printf '%s' "$response" | jq -c '.content')
+  MESSAGES=$(printf '%s' "$MESSAGES" | jq --argjson content "$content" '
+    . + [{ role: "assistant", content: $content }]
+  ')
 
-if [ -n "$error" ]; then
-  log_error "$error"
-  exit 1
-fi
+  tool_uses=$(printf '%s' "$response" | jq -c '
+    .content[]?
+    | select(.type == "tool_use")
+  ')
+
+  if [ -z "$tool_uses" ]; then
+    output=$(printf '%s' "$response" | jq -r '
+      .content[]?
+      | select(.type == "text")
+      | .text
+    ')
+    break
+  fi
+
+  log_debug "Tools:" "$tool_uses"
+
+  tool_results="[]"
+  while IFS= read -r tool <&3; do
+    id=$(printf '%s' "$tool" | jq -r '.id')
+    name=$(printf '%s' "$tool" | jq -r '.name')
+    input=$(printf '%s' "$tool" | jq -c '.input')
+
+    log_debug "Tool >>" "$name" "$input"
+    input=$(tool_parse_params "$name" "$input")
+    if [ -n "$YOLO_MODE" ] || ask "Run $name with $input"; then
+      result=$(tool_run "$name" "$input")
+    else
+      result="No permission to execute $name."
+    fi
+    log_debug "Tool <<" "$result"
+
+    tool_results=$(printf '%s' "$tool_results" | jq --arg id "$id" --arg content "$result" '. + [{
+      type: "tool_result",
+      tool_use_id: $id,
+      content: $content
+    }]')
+  done 3<< EOF
+$tool_uses
+EOF
+
+  log_debug "$tool_results"
+
+  MESSAGES=$(printf '%s' "$MESSAGES" | jq --argjson tool_results "$tool_results" '
+    . + [{ role: "user", content: $tool_results }]
+  ')
+done
 
 printf '%s\n' "$output"
