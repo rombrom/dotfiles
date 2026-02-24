@@ -17,6 +17,7 @@
 	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
 
 [alias]
+  default = !git symbolic-ref refs/remotes/origin/HEAD --short | sed 's.^origin/..'
 	# Some of these are from/inspired by https://blog.jez.io/cli-code-review/
 	# list changed files
 	files = !git diff --name-only $(git merge-base HEAD \"${REVIEW_BASE:-main}\")
@@ -26,6 +27,20 @@
 
 	# list changed files w/ change statistics
 	stat = !git diff --stat $(git merge-base HEAD \"${REVIEW_BASE:-main}\")
+
+  tidy = !git branch --merged "$(git default)" \
+    | grep -Fv "$(git default)" \
+    | grep -vF '*' \
+    | grep -vF '+' \
+    | xargs git branch -d \
+    && git fetch \
+    && git remote prune origin \
+    && git branch -v \
+    | grep -F '[gone]' \
+    | grep -vF '*' \
+    | grep -vF '+' \
+    | awk '{print $1}' \
+    | xargs git branch -D
 
 	# list TODO's in current HEAD vs default branch
 	todo = !rg --column --line-number --no-heading TODO $(git diff --name-only $(git merge-base HEAD ${REVIEW_BASE:-main}))
