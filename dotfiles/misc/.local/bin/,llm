@@ -3,6 +3,10 @@
 # LLM Wrapper Script
 # Usage: cat file.py | ,llm "Explain this code"
 
+#
+# Functions
+#
+
 log_debug() {
   [ -z "$DEBUG" ] && return
   printf '\033[90mDEBUG:  %s\n\033[0m' "$*"
@@ -14,8 +18,7 @@ log_error() {
 
 ask() {
   while true; do
-      printf '%s' "$1 [y/n] "
-      read -r answer
+      read -p "$1 [yn]? " -r answer
       case "$answer" in
           [yY] | [yY][eE][sS])
               return
@@ -48,24 +51,51 @@ tool_run() {
   esac
 }
 
+#
+# Defaults
+#
+
+default_system_prompt() {
+  printf '%s\n' \
+    "You are an expert programmer assistant. Provide concise, technical responses focused on the specific task." \
+    "" \
+    "**Code modifications:**" \
+    "- If asked to modify or create code, provide ONLY the changed lines" \
+    "- Surround non-code with single-line '# ' comments" \
+    "- No code fences or backticks around your output" \
+    "" \
+    "**When to explain:**" \
+    "- Provide explanations only when specifically requested" \
+    "- Keep explanations brief and to the point" \
+    "- Prioritize actionable code over prose" \
+    "" \
+    "**Handling edge cases:**" \
+    "- If code has bugs or doesn't make sense, point them out concisely" \
+    "- If context is incomplete or malformed, ask for clarification" \
+    "- If no changes are needed, state that explicitly" \
+    "" \
+    "**Output format:**" \
+    "- Code only what changed or needs adding" \
+    "- Comments above code lines they describe" \
+    "- No additional context or conversational filler" \
+    ""
+}
+
+default_tool_prompt() {
+  printf '%s\n' "" \
+    "**Tools:**" \
+    "- You have 'exec_shell' for running shell commands" \
+    "- Use tools when you need to verify information or execute commands" \
+    "- Don't use tools unnecessarily" \
+    ""
+}
+
 ENDPOINT=${ENDPOINT:-http://localhost:8484/v1/messages}
-SYSTEM_PROMPT=$(cat << EOF
-You are an expert programmer assistant.
-
-- When given code as context and a query about that code, your response should be concise and focused on the specific task requested.
-- If the query is about modifying or creating code, provide only the code changes needed. Do not wrap in "\`\`\`".
-
-**Avoid verbose explanations unless specifically requested. Keep responses technical and to the point.**
-EOF)
+SYSTEM_PROMPT="${SYSTEM_PROMPT:-$(default_system_prompt)}"
 TOOLS="[]"
 
 if [ -n "$ENABLE_TOOLS" ]; then
-  SYSTEM_PROMPT="$SYSTEM_PROMPT
-
-When you need to execute shell commands, use the "exec_shell" tool:
-- The tool expects a command parameter with the shell command to execute
-- This is for running commands like 'ls', 'grep', 'find', etc.
-"
+  SYSTEM_PROMPT="$SYSTEM_PROMPT${TOOL_PROMPT:-$(default_tool_prompt)}"
 
   TOOLS=$(jq -n '[
       {
@@ -114,16 +144,11 @@ else
     context=""
 fi
 
+MESSAGES=$(jq -n --arg query "$query" '[{role: "user", content: $query}]')
+
 # Build messages array properly for Claude API
 if [ ${#context} -gt 0 ]; then
-    # Both context and query are present
-    MESSAGES=$(jq -n --arg context "$context" --arg query "$query" '[
-        {role: "user", content: $context},
-        {role: "user", content: $query}
-    ]')
-else
-    # Only query is present
-    MESSAGES=$(jq -n --arg query "$query" '[{role: "user", content: $query}]')
+    MESSAGES=$(printf '%s' "$MESSAGES" | jq -n --arg context "$context" '[{role: "user", content: $context}] + .')
 fi
 
 while :; do
@@ -150,17 +175,10 @@ while :; do
     . + [{ role: "assistant", content: $content }]
   ')
 
-  tool_uses=$(printf '%s' "$response" | jq -c '
-    .content[]?
-    | select(.type == "tool_use")
-  ')
+  tool_uses=$(printf '%s' "$response" | jq -c '.content[]? | select(.type == "tool_use")')
 
   if [ -z "$tool_uses" ]; then
-    output=$(printf '%s' "$response" | jq -r '
-      .content[]?
-      | select(.type == "text")
-      | .text
-    ')
+    output=$(printf '%s' "$response" | jq -r '.content[]? | select(.type == "text") | .text')
     break
   fi
 
@@ -174,7 +192,7 @@ while :; do
 
     log_debug "Tool >>" "$name" "$input"
     input=$(tool_parse_params "$name" "$input")
-    if [ -n "$YOLO_MODE" ] || ask "Run $name with $input"; then
+    if [ -n "$YOLO_MODE" ] || ask "'$name' with '$input'"; then
       result=$(tool_run "$name" "$input")
     else
       result="No permission to execute $name."
