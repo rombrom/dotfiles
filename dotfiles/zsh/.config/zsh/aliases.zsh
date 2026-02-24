@@ -22,6 +22,9 @@ alias cp='cp -R'
 alias mkdir='mkdir -p'
 alias nom='npm'
 
+# quick question
+alias qq=',llm'
+
 # Always enable colored `grep` output
 alias grep='grep --color'
 
