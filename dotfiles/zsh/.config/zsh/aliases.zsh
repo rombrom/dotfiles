@@ -90,7 +90,7 @@ alias llm-qwen35='llama-server \
   --ubatch-size 1024 \
   --jinja \
   --min-p 0.00 \
-  --presence-penalty 0.0 \
+  --presence-penalty 1.25 \
   --repeat-penalty 1.0 \
   --temp 0.6 \
   --top-k 20 \
