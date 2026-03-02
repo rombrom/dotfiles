@@ -123,10 +123,6 @@ for arg in "$@"; do
       TOOLS_ENABLED=true
       YOLO_ENABLED=true
       ;;
-    -*)
-      log_error "Unknown option: $arg"
-      exit 1
-      ;;
     *)
       if [ -z "$QUERY" ]; then
         QUERY="$arg"
