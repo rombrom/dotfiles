@@ -94,11 +94,39 @@ default_tool_prompt() {
     ""
 }
 
+#
+# Main
+#
+
+# Opts
 ENDPOINT=${ENDPOINT:-http://localhost:8484/v1/messages}
+QUERY=""
 SYSTEM_PROMPT="${SYSTEM_PROMPT:-$(default_system_prompt)}"
 TOOLS="[]"
+TOOLS_ENABLED=false
 
-if [ -n "$ENABLE_TOOLS" ]; then
+for arg in "$@"; do
+  log_debug "Parsing arg" "$arg"
+  case "$arg" in
+    -t|--tools)
+      TOOLS_ENABLED=true
+      ;;
+    -*)
+      log_error "Unknown option: $arg"
+      exit 1
+      ;;
+    *)
+      if [ -z "$QUERY" ]; then
+        QUERY="$arg"
+      else
+        QUERY="$QUERY $arg"
+      fi
+      ;;
+  esac
+done
+
+
+if [ "$TOOLS_ENABLED" = true ]; then
   SYSTEM_PROMPT="$SYSTEM_PROMPT${TOOL_PROMPT:-$(default_tool_prompt)}"
 
   TOOLS=$(jq -n '[
@@ -130,11 +158,8 @@ if ! command -v jq >/dev/null 2>&1; then
     exit 1
 fi
 
-# Get the query from command line argument
-query="$*"
-
 # If no query provided, exit with error
-if [ $# -eq 0 ]; then
+if [ -z "$QUERY" ]; then
     log_error "No query provided"
     exit 1
 fi
@@ -148,7 +173,10 @@ else
     context=""
 fi
 
-MESSAGES=$(jq -n --arg query "$query" '[{role: "user", content: $query}]')
+MESSAGES=$(jq -n --arg QUERY "$QUERY" '[{role: "user", content: $QUERY}]')
+
+log_debug "TOOLS_ENABLED:" $TOOLS_ENABLED
+log_debug "QUERY:" "$QUERY"
 
 # Build messages array properly for Claude API
 if [ ${#context} -gt 0 ]; then
