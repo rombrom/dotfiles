@@ -16,7 +16,7 @@ log_error() {
   printf '\033[31mERROR:  %s\n\033[0m' "$*" >&2
 }
 
-ask() {
+ask_permission() {
   while true; do
       read -p "$1 [yn]? " -r answer
       case "$answer" in
@@ -116,6 +116,7 @@ for arg in "$@"; do
       TOOLS_ENABLED=true
       ;;
     -y|--yolo)
+      TOOLS_ENABLED=true
       YOLO_ENABLED=true
       ;;
     -*)
@@ -252,7 +253,7 @@ while :; do
 
     log_debug "Tool >>" "$name" "$input"
     input=$(tool_parse_params "$name" "$input")
-    if [ "$YOLO_ENABLED" = true ] || ask "'$name' with '$input'"; then
+    if [ "$YOLO_ENABLED" = true ] || ask_permission "'$name' with '$input'"; then
       result=$(tool_run "$name" "$input")
     else
       result="No permission to execute $name."
