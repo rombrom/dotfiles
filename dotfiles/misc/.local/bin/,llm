@@ -107,12 +107,16 @@ QUERY=""
 SYSTEM_PROMPT="${SYSTEM_PROMPT:-$(default_system_prompt)}"
 TOOLS="[]"
 TOOLS_ENABLED=false
+YOLO_ENABLED=false
 
 for arg in "$@"; do
   log_debug "Parsing arg" "$arg"
   case "$arg" in
     -t|--tools)
       TOOLS_ENABLED=true
+      ;;
+    -y|--yolo)
+      YOLO_ENABLED=true
       ;;
     -*)
       log_error "Unknown option: $arg"
@@ -248,7 +252,7 @@ while :; do
 
     log_debug "Tool >>" "$name" "$input"
     input=$(tool_parse_params "$name" "$input")
-    if [ -n "$YOLO_MODE" ] || ask "'$name' with '$input'"; then
+    if [ "$YOLO_ENABLED" = true ] || ask "'$name' with '$input'"; then
       result=$(tool_run "$name" "$input")
     else
       result="No permission to execute $name."
