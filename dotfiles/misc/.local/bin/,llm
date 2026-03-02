@@ -105,6 +105,7 @@ default_tool_prompt() {
 ENDPOINT=${ENDPOINT:-http://localhost:8484/v1/messages}
 QUERY=""
 SYSTEM_PROMPT="${SYSTEM_PROMPT:-$(default_system_prompt)}"
+STREAM_ENABLED=false
 TOOLS="[]"
 TOOLS_ENABLED=false
 YOLO_ENABLED=false
@@ -112,6 +113,9 @@ YOLO_ENABLED=false
 for arg in "$@"; do
   log_debug "Parsing arg" "$arg"
   case "$arg" in
+    -s|--stream)
+      STREAM_ENABLED=true
+      ;;
     -t|--tools)
       TOOLS_ENABLED=true
       ;;
@@ -207,6 +211,75 @@ if [ ${#context} -gt 0 ]; then
     MESSAGES=$(printf '%s' "$MESSAGES" | jq -n --arg context "$context" '[{role: "user", content: $context}] + .')
 fi
 
+if [ "$STREAM_ENABLED" = true ]; then
+  # Streaming mode: use SSE and output text deltas as they arrive
+  # Create JSON request for Claude messages API with tools support
+  json=$(jq -n \
+    --argjson MESSAGES "$MESSAGES" \
+    --arg MODEL "$(default_model)" \
+    --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" \
+    --argjson TOOLS "$TOOLS" '{
+      messages: $MESSAGES,
+      model: $MODEL,
+      system: $SYSTEM_PROMPT,
+      tools: $TOOLS,
+      stream: true,
+  }')
+
+  log_debug ">>" "$json"
+
+  # Stream response and parse SSE events
+  curl -sN --json "$json" "$ENDPOINT" | while IFS= read -r line; do
+    log_debug ">>" "$line"
+    # Skip empty lines and non-data lines
+    case "$line" in
+      data:*)
+        data="${line#data: }"
+        type=$(printf '%s' "$data" | jq -r '.type')
+
+        log_debug "type: $type"
+
+        case "$type" in
+          content_block_start)
+            type="$(printf '%s' "$data" | jq -r '.content_block.type')"
+
+            case "$type" in
+              thinking)
+                printf '\n\033[90m'
+              ;;
+              text)
+                printf '\n\033[0m'
+              ;;
+            esac
+          ;;
+          content_block_delta)
+            type="$(printf '%s' "$data" | jq -r '.delta.type')"
+
+            case "$type" in
+              text_delta)
+                output="$(printf '%s' "$data" | jq -r '.delta.text // empty')"
+                [ -n "$output" ] && printf '%s' "$output"
+              ;;
+              thinking_delta)
+                output="$(printf '%s' "$data" | jq -r '.delta.thinking // empty')"
+                [ -n "$output" ] && printf '%s' "$output"
+              ;;
+            esac
+          ;;
+          message_stop)
+            printf '\n'
+          ;;
+        esac
+    esac
+  done
+
+  # If tools were used in streaming mode, we need to handle them
+  # For now, streaming doesn't support tool use interaction
+  # You would need to implement a more complex loop here if needed
+  exit 0
+fi
+
+# Non-streaming mode (original behavior)
 while :; do
   # Create JSON request for Claude messages API with tools support
   json=$(jq -n \
