@@ -38,6 +38,7 @@ tool_parse_params() {
   input="$2"
 
   case "$name" in
+    "exec_ask") printf '%s' "$input" | jq -r '.question' ;;
     "exec_shell") printf '%s' "$input" | jq -r '.command' ;;
   esac
 }
@@ -47,6 +48,7 @@ tool_run() {
   input="$2"
 
   case "$name" in
+    "exec_ask") read -p "$input " answer; printf '%s' "$answer" ;;
     "exec_shell") sh -c "$input" ;;
   esac
 }
@@ -88,8 +90,9 @@ default_system_prompt() {
 default_tool_prompt() {
   printf '%s\n' "" \
     "**Tools:**" \
+    "- You have 'exec_ask' for asking the user questions" \
     "- You have 'exec_shell' for running shell commands" \
-    "- Use tools when you need to verify information or execute commands" \
+    "- Use tools when you need to verify information, execute commands, or get user input" \
     "- Don't use tools unnecessarily" \
     ""
 }
@@ -143,6 +146,22 @@ if [ "$TOOLS_ENABLED" = true ]; then
                   }
               },
               required: ["command"]
+          },
+          strict: true
+      },
+      {
+          type: "function",
+          name: "exec_ask",
+          description: "Ask the user a question and get their answer.",
+          parameters: {
+              type: "object",
+              properties: {
+                  question: {
+                      type: "string",
+                      description: "The question to ask the user."
+                  }
+              },
+              required: ["question"]
           },
           strict: true
       }
