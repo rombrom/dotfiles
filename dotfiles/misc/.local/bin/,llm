@@ -55,6 +55,10 @@ tool_run() {
 # Defaults
 #
 
+default_model() {
+  printf '%s' "AesSedai/Qwen3.5-35B-A3B-GGUF:Q4_K_M"
+}
+
 default_system_prompt() {
   printf '%s\n' \
     "You are an expert programmer assistant. Provide concise, technical responses focused on the specific task." \
@@ -153,10 +157,15 @@ fi
 
 while :; do
   # Create JSON request for Claude messages API with tools support
-  json=$(jq -n --argjson MESSAGES "$MESSAGES" --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" --argjson TOOLS "$TOOLS" '{
+  json=$(jq -n \
+    --argjson MESSAGES "$MESSAGES" \
+    --arg MODEL "$(default_model)" \
+    --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" \
+    --argjson TOOLS "$TOOLS" '{
       messages: $MESSAGES,
+      model: $MODEL,
       system: $SYSTEM_PROMPT,
-      tools: $TOOLS
+      tools: $TOOLS,
   }')
 
   log_debug ">>" "$json"

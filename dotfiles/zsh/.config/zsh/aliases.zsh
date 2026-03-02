@@ -83,7 +83,7 @@ alias llm-glm='llama-server \
   --repeat-penalty 1.0 \
   --ctx-size 131071'
 alias llm-qwen35='llama-server \
-  -hf unsloth/Qwen3.5-35B-A3B-GGUF:MXFP4_MOE \
+  -hf AesSedai/Qwen3.5-35B-A3B-GGUF:Q4_K_M \
   --host 0.0.0.0 \
   --port 8484 \
   --batch-size 1024 \
