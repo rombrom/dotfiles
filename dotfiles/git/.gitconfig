@@ -93,12 +93,12 @@
 
 [diff]
 	algorithm = histogram
-	colorMoved = true
+	colorMoved = default
+	mnemonicPrefix = true
 	tool = vimdiff
 
 [difftool]
-	# leave this on, because it can be hard to C-c a
-	# difftool sesh
+	# leave this on, because it can be hard to C-c a difftool sesh
 	prompt = true
 
 [merge]
