@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 #
-# LLM Wrapper Script
+# POSIX shell compliant LLM Wrapper Script
 # Usage: cat file.py | ,llm "Explain this code"
 
 #
@@ -16,9 +16,18 @@ log_error() {
   printf '\033[31mERROR:  %s\n\033[0m' "$*" >&2
 }
 
+assert_bin() {
+  # Check if curl is available
+  if ! command -v "$1" >/dev/null 2>&1; then
+      log_error "$1 is required but not installed"
+      exit 1
+  fi
+}
+
 ask_permission() {
   while true; do
-      read -p "$1 [yn]? " -r answer
+      printf '%s [yn]? ' "$1"
+      read -r answer
       case "$answer" in
           [yY] | [yY][eE][sS])
               return
@@ -31,6 +40,69 @@ ask_permission() {
               ;;
       esac
   done
+}
+
+#
+# Initialization
+#
+
+assert_bin curl
+assert_bin jq
+
+# Opts
+ENDPOINT=${ENDPOINT:-http://localhost:8484/v1/messages}
+QUERY=""
+STREAM_ENABLED=false
+TOOLS_ENABLED=false
+YOLO_ENABLED=false
+
+for arg in "$@"; do
+  log_debug "Parsing arg" "$arg"
+  case "$arg" in
+    -s|--stream)
+      STREAM_ENABLED=true
+      ;;
+    -t|--tools)
+      TOOLS_ENABLED=true
+      ;;
+    -y|--yolo)
+      TOOLS_ENABLED=true
+      YOLO_ENABLED=true
+      ;;
+    *)
+      if [ -z "$QUERY" ]; then
+        QUERY="$arg"
+      else
+        QUERY="$QUERY $arg"
+      fi
+      ;;
+  esac
+done
+
+
+#
+# Request Helpers
+#
+
+build_request_json() {
+  jq -n --argjson MESSAGES "$MESSAGES" \
+        --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" \
+        --argjson TOOLS "$TOOLS" \
+        --arg STREAM_ENABLED "$STREAM_ENABLED" \
+        '{
+          messages: $MESSAGES,
+          system: $SYSTEM_PROMPT,
+          tools: $TOOLS,
+          stream: ($STREAM_ENABLED == "true")
+        }'
+}
+
+call_llm() {
+  if [ "$STREAM_ENABLED" = true ]; then
+    curl -sN --json "$@" "$ENDPOINT"
+  else
+    curl -s --json "$@" "$ENDPOINT"
+  fi
 }
 
 tool_parse_params() {
@@ -47,15 +119,161 @@ tool_run() {
   name="$1"
   input="$2"
 
-  if [ "$input" = "null" ]; then
-    printf 'No `input` parameters.'
-    return
-  fi
-
   case "$name" in
-    "exec_ask") read -p "$input " answer; printf '%s' "$answer" ;;
-    "exec_shell") sh -c "$input" 2>&1 ;;
+    "exec_ask")
+      if [ "$input" = "null" ]; then
+        printf '`exec_ask`: "question" parameter required in input'
+        return
+      fi
+
+      printf '%s ' "$input"
+      read -r answer
+      printf '%s' "$answer"
+    ;;
+    "exec_shell")
+      if [ "$input" = "null" ]; then
+        printf '`exec_shell`: "command" parameter required in input'
+        return
+      fi
+
+      sh -c "$input" 2>&1
+    ;;
   esac
+}
+
+#
+# Response Handlers
+#
+
+# Handles streaming mode response parsing and output
+stream_response() {
+  json="$(build_request_json)"
+  log_debug ">>" "$json"
+
+  prev_type=""
+
+  call_llm "$json" | while IFS= read -r line; do
+    log_debug ">>" "$line"
+    # Skip empty lines and non-data lines
+    case "$line" in
+      data:*)
+        data="${line#data: }"
+        type=$(printf '%s' "$data" | jq -r '.type')
+
+        case "$type" in
+          content_block_start)
+            type="$(printf '%s' "$data" | jq -r '.content_block.type')"
+
+            [ -n "$prev_type" ] && [ "$type" != "$prev_type" ] && printf '\n'
+
+            case "$type" in
+              thinking) printf '\n\033[90m' ;;
+              text) printf '\n\033[0m' ;;
+            esac
+
+            prev_type="$type"
+          ;;
+          content_block_delta)
+            type="$(printf '%s' "$data" | jq -r '.delta.type')"
+
+            case "$type" in
+              text_delta)
+                output="$(printf '%s' "$data" | jq -r '.delta.text // empty')"
+                [ -n "$output" ] && printf '%s' "$output"
+              ;;
+              thinking_delta)
+                output="$(printf '%s' "$data" | jq -r '.delta.thinking // empty')"
+                [ -n "$output" ] && printf '%s' "$output"
+              ;;
+            esac
+          ;;
+          message_stop)
+            printf '\n'
+          ;;
+        esac
+      ;;
+    esac
+  done
+}
+
+# Handles non-streaming mode response parsing and tool execution loop
+non_stream_response() {
+  output=""
+  tool_count=0
+  max_tools=10
+
+  while :; do
+    [ "$tool_count" -ge "$max_tools" ] && {
+      log_error "Max tool calls reached"
+      return 1;
+    }
+
+    json="$(build_request_json)"
+    log_debug ">>" "$json"
+
+    response=$(call_llm "$json")
+    log_debug "<<" "$(printf '%s' "$response" | jq)"
+
+    error=$(printf '%s' "$response" | jq -r 'if has("error") then .error.message else empty end')
+
+    if [ -n "$error" ]; then
+      log_error "$error"
+      exit 1
+    fi
+
+    content=$(printf '%s' "$response" | jq -c '.content')
+    MESSAGES=$(printf '%s' "$MESSAGES" | jq --argjson content "$content" '
+      . + [{ role: "assistant", content: $content }]
+    ')
+
+    tool_uses=$(printf '%s' "$response" | jq -c '.content[]? | select(.type == "tool_use")')
+
+    if [ -z "$tool_uses" ]; then
+      output=$(printf '%s' "$response" | jq -r '.content[]? | select(.type == "text") | .text')
+      break
+    fi
+
+    log_debug "Tools:" "$tool_uses"
+
+    tool_results="[]"
+    while IFS= read -r tool <&3; do
+      id=$(printf '%s' "$tool" | jq -r '.id')
+      name=$(printf '%s' "$tool" | jq -r '.name')
+      input=$(printf '%s' "$tool" | jq -c '.input')
+
+      log_debug "Tool >>" "$name" "$input"
+
+      input="$(tool_parse_params "$name" "$input")"
+
+      log_debug "Tool params:" "$input"
+
+      if [ "$YOLO_ENABLED" = true ] || ask_permission "'$name' with '$input'"; then
+        result=$(tool_run "$name" "$input")
+      else
+        result="No permission to execute $name."
+      fi
+
+      log_debug "Tool <<" "$result"
+
+      tool_results=$(printf '%s' "$tool_results" | jq --arg id "$id" --arg content "$result" '. + [{
+        type: "tool_result",
+        tool_use_id: $id,
+        content: $content
+      }]')
+    done 3<< EOF
+$tool_uses
+EOF
+
+    log_debug "Tool results:" "$tool_results"
+
+    MESSAGES=$(printf '%s' "$MESSAGES" | jq --argjson tool_results "$tool_results" '
+      . + [{ role: "user", content: $tool_results }]
+    ')
+
+    tool_count=$((tool_count + 1))
+  done
+
+  printf '%s\n' "$output"
 }
 
 #
@@ -107,42 +325,11 @@ default_tool_prompt() {
 # Main
 #
 
-# Opts
-ENDPOINT=${ENDPOINT:-http://localhost:8484/v1/messages}
-QUERY=""
 SYSTEM_PROMPT="${SYSTEM_PROMPT:-$(default_system_prompt)}"
-STREAM_ENABLED=false
 TOOLS="[]"
-TOOLS_ENABLED=false
-YOLO_ENABLED=false
-
-for arg in "$@"; do
-  log_debug "Parsing arg" "$arg"
-  case "$arg" in
-    -s|--stream)
-      STREAM_ENABLED=true
-      ;;
-    -t|--tools)
-      TOOLS_ENABLED=true
-      ;;
-    -y|--yolo)
-      TOOLS_ENABLED=true
-      YOLO_ENABLED=true
-      ;;
-    *)
-      if [ -z "$QUERY" ]; then
-        QUERY="$arg"
-      else
-        QUERY="$QUERY $arg"
-      fi
-      ;;
-  esac
-done
-
 
 if [ "$TOOLS_ENABLED" = true ]; then
   SYSTEM_PROMPT="$SYSTEM_PROMPT${TOOL_PROMPT:-$(default_tool_prompt)}"
-
   TOOLS=$(jq -n '[
       {
           type: "function",
@@ -182,12 +369,6 @@ fi
 log_debug "ENDPOINT:     " $ENDPOINT
 log_debug "SYSTEM_PROMPT:" $SYSTEM_PROMPT
 
-# Check if jq is available
-if ! command -v jq >/dev/null 2>&1; then
-    log_error "jq is required but not installed"
-    exit 1
-fi
-
 # If no query provided, exit with error
 if [ -z "$QUERY" ]; then
     log_error "No query provided"
@@ -209,146 +390,14 @@ log_debug "TOOLS_ENABLED:" $TOOLS_ENABLED
 log_debug "QUERY:" "$QUERY"
 
 # Build messages array properly for Claude API
-if [ ${#context} -gt 0 ]; then
+if [ -n "$context" ]; then
     MESSAGES=$(printf '%s' "$MESSAGES" | jq -n --arg context "$context" '[{role: "user", content: $context}] + .')
 fi
 
 if [ "$STREAM_ENABLED" = true ]; then
-  # Streaming mode: use SSE and output text deltas as they arrive
-  # Create JSON request for Claude messages API with tools support
-  json=$(jq -n \
-    --argjson MESSAGES "$MESSAGES" \
-    --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" \
-    --argjson TOOLS "$TOOLS" '{
-      messages: $MESSAGES,
-      system: $SYSTEM_PROMPT,
-      tools: $TOOLS,
-      stream: true,
-  }')
-
-  log_debug ">>" "$json"
-
-  # Stream response and parse SSE events
-  curl -sN --json "$json" "$ENDPOINT" | while IFS= read -r line; do
-    log_debug ">>" "$line"
-    # Skip empty lines and non-data lines
-    case "$line" in
-      data:*)
-        data="${line#data: }"
-        type=$(printf '%s' "$data" | jq -r '.type')
-
-        log_debug "type: $type"
-
-        case "$type" in
-          content_block_start)
-            type="$(printf '%s' "$data" | jq -r '.content_block.type')"
-
-            case "$type" in
-              thinking)
-                printf '\n\033[90m'
-              ;;
-              text)
-                printf '\n\033[0m'
-              ;;
-            esac
-          ;;
-          content_block_delta)
-            type="$(printf '%s' "$data" | jq -r '.delta.type')"
-
-            case "$type" in
-              text_delta)
-                output="$(printf '%s' "$data" | jq -r '.delta.text // empty')"
-                [ -n "$output" ] && printf '%s' "$output"
-              ;;
-              thinking_delta)
-                output="$(printf '%s' "$data" | jq -r '.delta.thinking // empty')"
-                [ -n "$output" ] && printf '%s' "$output"
-              ;;
-            esac
-          ;;
-          message_stop)
-            printf '\n'
-          ;;
-        esac
-    esac
-  done
-
-  # If tools were used in streaming mode, we need to handle them
-  # For now, streaming doesn't support tool use interaction
-  # You would need to implement a more complex loop here if needed
-  exit 0
+  stream_response
+else
+  non_stream_response
 fi
 
-# Non-streaming mode (original behavior)
-while :; do
-  # Create JSON request for Claude messages API with tools support
-  json=$(jq -n \
-    --argjson MESSAGES "$MESSAGES" \
-    --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" \
-    --argjson TOOLS "$TOOLS" '{
-      messages: $MESSAGES,
-      system: $SYSTEM_PROMPT,
-      tools: $TOOLS,
-  }')
-
-  log_debug ">>" "$json"
-  response=$(curl -s --json "$json" $ENDPOINT)
-  log_debug "<<" "$(printf '%s' "$response" | jq)"
-
-  error=$(printf '%s' "$response" | jq -r 'if has("error") then .error.message else empty end')
-
-  if [ -n "$error" ]; then
-    log_error "$error"
-    exit 1
-  fi
-
-  content=$(printf '%s' "$response" | jq -c '.content')
-  MESSAGES=$(printf '%s' "$MESSAGES" | jq --argjson content "$content" '
-    . + [{ role: "assistant", content: $content }]
-  ')
-
-  tool_uses=$(printf '%s' "$response" | jq -c '.content[]? | select(.type == "tool_use")')
-
-  if [ -z "$tool_uses" ]; then
-    output=$(printf '%s' "$response" | jq -r '.content[]? | select(.type == "text") | .text')
-    break
-  fi
-
-  log_debug "Tools:" "$tool_uses"
-
-  tool_results="[]"
-  while IFS= read -r tool <&3; do
-    id=$(printf '%s' "$tool" | jq -r '.id')
-    name=$(printf '%s' "$tool" | jq -r '.name')
-    input=$(printf '%s' "$tool" | jq -c '.input')
-
-    log_debug "Tool >>" "$name" "$input"
-
-    input=$(tool_parse_params "$name" "$input")
-
-    log_debug "Tool params:" "$input"
-
-    if [ "$YOLO_ENABLED" = true ] || ask_permission "'$name' with '$input'"; then
-      result=$(tool_run "$name" "$input")
-    else
-      result="No permission to execute $name."
-    fi
-    log_debug "Tool <<" "$result"
-
-    tool_results=$(printf '%s' "$tool_results" | jq --arg id "$id" --arg content "$result" '. + [{
-      type: "tool_result",
-      tool_use_id: $id,
-      content: $content
-    }]')
-  done 3<< EOF
-$tool_uses
-EOF
-
-  log_debug "$tool_results"
-
-  MESSAGES=$(printf '%s' "$MESSAGES" | jq --argjson tool_results "$tool_results" '
-    . + [{ role: "user", content: $tool_results }]
-  ')
-done
-
-printf '%s\n' "$output"
+exit 0
