@@ -54,14 +54,133 @@ const ANS_THINKING_START = "\n\x1b[90m"; // Gray color for thinking blocks
 const ANS_THINKING_END = ANS_RESET;
 const ANS_ERROR = "\x1b[31m"; // Red color for errors
 const ANS_MALFORMED = "\n\x1b[90m"; // Gray for malformed events
+const ANS_HINT = "\x1b[36m"; // Cyan for usage hints
+
+// ============================================================================
+// Argument Parsing
+// ============================================================================
+
+/**
+ * Parse command-line arguments.
+ *
+ * Supports:
+ *   -v, --verbose     Enable debug mode
+ *   -q, --quiet       Suppress thinking output
+ *   -u, --url <URL>   Set endpoint URL
+ *   -p, --prompt <TXT>  Set system prompt
+ *   -h, --help        Show usage information
+ *
+ * All positional arguments (after flags) are joined as the query string.
+ *
+ * @param {string[]} args - Raw argv slice (excluding script name)
+ * @returns {{verbose: boolean, quiet: boolean, url: string|null, prompt: string|null, help: boolean, query: string}}
+ */
+function parseArgs(args) {
+  const options = {
+    verbose: false,
+    quiet: false,
+    url: null,
+    prompt: null,
+    help: false,
+  };
+
+  const positionalArgs = [];
+
+  while (args.length > 0) {
+    const arg = args.shift();
+
+    switch (arg) {
+      case "-v":
+      case "--verbose":
+        options.verbose = true;
+        break;
+      case "-q":
+      case "--quiet":
+        options.quiet = true;
+        break;
+      case "-u":
+      case "--url":
+        options.url = args.shift();
+        break;
+      case "-p":
+      case "--prompt":
+        options.prompt = args.shift();
+        break;
+      case "-h":
+      case "--help":
+        options.help = true;
+        break;
+      default:
+        positionalArgs.push(arg);
+    }
+  }
+
+  // Join all positional arguments as the query
+  if (positionalArgs.length > 0) {
+    options.query = positionalArgs.join(" ");
+  }
+
+  return options;
+}
+
+/**
+ * Display usage information to stderr.
+ * Shows available flags and examples of common usage patterns.
+ */
+function showUsage() {
+  const usage = `
+${ANS_HINT}@,llm - LLM CLI Assistant${ANS_RESET}
+
+Usage:
+  @,llm [OPTIONS] "query"
+  echo "context" | @,llm "query"
+  echo "full request" | @,llm
+
+Options:
+  -v, --verbose      Enable debug mode (same as LLM_DEBUG env var)
+  -q, --quiet        Suppress thinking/output blocks
+  -u, --url <URL>    Set endpoint URL (overrides LLM_ENDPOINT)
+  -p, --prompt <TXT> Set system prompt (overrides LLM_SYSTEM_PROMPT)
+  -h, --help         Show this help message
+
+Environment Variables:
+  LLM_ENDPOINT       HTTP URL for the LLM API (default: http://localhost:8484/v1/messages)
+  LLM_SYSTEM_PROMPT  Custom system prompt
+  LLM_DEBUG          Enable verbose debug logging
+
+Examples:
+  @,llm "What is JavaScript?"
+  echo "Context about my project" | @,llm "How do I implement this?"
+  @,llm -v --url http://example.com/api "Run tests"
+  @,llm -q -p "Be concise" "Quick answer needed"
+
+Exit Codes:
+  0  Success
+  1  General error (network, timeout, invalid response)
+ 127 Configuration error (malformed data, invalid JSON)
+`;
+  process.stderr.write(usage.trim() + "\n");
+}
 
 // ============================================================================
 // Configuration and Global State
 // ============================================================================
 
-// API endpoint - configurable via LLM_ENDPOINT environment variable
+// Parse command-line arguments
+const args = process.argv.slice(2);
+const options = parseArgs(args);
+
+// Show help if requested
+if (options.help) {
+  showUsage();
+  process.exit(EXIT_SUCCESS);
+}
+
+// API endpoint - priority: CLI arg > env var > default
 const ENDPOINT =
-  process.env.LLM_ENDPOINT ?? "http://localhost:8484/v1/messages";
+  options.url ??
+  process.env.LLM_ENDPOINT ??
+  "http://localhost:8484/v1/messages";
 
 /**
  * Default system prompt for the CLI assistant.
@@ -74,6 +193,7 @@ const ENDPOINT =
  *   - Context awareness only when requested
  */
 const SYSTEM_PROMPT =
+  options.prompt ??
   process.env.LLM_SYSTEM_PROMPT ??
   `You are a concise CLI assistant. When given two successive messages: first message is context, second is query. Direct answers only; no preamble. Code: plain text snippets (no \`\`\`) + steps (in comments). Non-code: brief. Do not over-analyze context unless requested.`;
 
@@ -85,20 +205,13 @@ const tools = [];
 // Determine if output should be streamed (TTY vs redirect)
 const stream = process.stdout.isTTY;
 
-// ============================================================================
-// Debug Mode
-// ============================================================================
-
-// Enable debug logging when LLM_DEBUG environment variable is set (truthy)
-const DEBUG_ENABLED = !!process.env.LLM_DEBUG;
-
 /**
  * Log debug message to stderr if debug mode is enabled.
  * Messages are prefixed with "DEBUG: " for easy filtering.
  * @param {...any} args - Arguments passed to stderr.write
  */
 function debug(...args) {
-  if (!DEBUG_ENABLED) return;
+  if (!options.verbose || !!process.env.LLM_DEBUG) return;
   process.stderr.write(`DEBUG: ${args.join(" ")}\n`);
 }
 
@@ -129,13 +242,21 @@ function fail(message, code = EXIT_ERROR) {
 class MessageChannel {
   // Track the last content type to manage ANSI formatting transitions
   #lastType = undefined;
+  #options = {};
+
+  /**
+   * Create a new MessageChannel.
+   */
+  constructor(options) {
+    this.#options = options;
+  }
 
   /**
    * Handle content block start event
    *
    * When a new content block starts, we may need to reset ANSI colors
    * if the type changed from the previous block. For "thinking" blocks,
-   * we apply gray formatting when in TTY mode.
+   * we apply gray formatting when in TTY mode (unless quiet mode is enabled).
    * @param {object} data - Event data with content_block property
    */
   #handleContentBlockStart(data) {
@@ -143,13 +264,13 @@ class MessageChannel {
 
     // Reset ANSI colors when switching between different content types
     if (this.#lastType && this.#lastType !== data.content_block.type) {
-      process.stderr.write(ANS_RESET);
+      process.stderr.write(`\n${ANS_RESET}`);
     }
 
     switch (data.content_block.type) {
       case "thinking":
-        // Apply gray formatting for thinking blocks in TTY terminals
-        if (process.stderr.isTTY) {
+        // Apply gray formatting for thinking blocks in TTY terminals (skip if quiet)
+        if (process.stderr.isTTY && !this.#options.quiet) {
           process.stderr.write(ANS_THINKING_START);
         }
         break;
@@ -164,6 +285,7 @@ class MessageChannel {
    * Processes incremental updates. Thinking deltas go to stderr (gray),
    * text deltas go to stdout (normal output). This separation allows
    * thinking blocks to be visible but not interfere with main output.
+   * In quiet mode, thinking deltas are suppressed.
    * @param {object} data - Event data with delta property
    */
   #handleContentBlockDelta(data) {
@@ -171,8 +293,12 @@ class MessageChannel {
 
     switch (data.delta.type) {
       case "thinking_delta":
-        // Write thinking to stderr with TTY-aware formatting
-        if (process.stderr.isTTY && data.delta.thinking) {
+        // Write thinking to stderr with TTY-aware formatting (skip if quiet)
+        if (
+          process.stderr.isTTY &&
+          !this.#options.quiet &&
+          data.delta.thinking
+        ) {
           process.stderr.write(data.delta.thinking);
         }
         break;
@@ -283,18 +409,17 @@ class MessageChannel {
       );
     }
 
+    debug(`  → ${JSON.stringify(data)}`);
+
     // Route to appropriate handler based on event type
     switch (type) {
       case "content_block_start":
-        debug(`  → content_block_start: ${data?.content_block?.type}`);
         this.#handleContentBlockStart(data);
         break;
       case "content_block_delta":
-        debug(`  → content_block_delta: ${data?.delta?.type}`);
         this.#handleContentBlockDelta(data);
         break;
       case "message_stop":
-        debug(`  → message_stop`);
         this.#handleMessageStop();
         break;
     }
@@ -333,7 +458,7 @@ const resetTimeout = () => {
 //
 // This section collects input from two sources:
 //   1. stdin (piped context or full request)
-//   2. command-line arguments (query string)
+//   2. command-line arguments (query string, already parsed above)
 //
 // The tool supports three usage patterns:
 //   - @,llm "query"                    # Query only
@@ -360,12 +485,9 @@ const context = await (async () => {
   return result;
 })();
 
-// Extract query from command-line arguments (everything after script name)
-const query = process.argv.slice(2).join(" ").trim();
-
 // Add collected inputs to messages queue with appropriate roles
 if (context) messages.push({ content: context, role: "user" });
-if (query) messages.push({ content: query, role: "user" });
+if (options.query) messages.push({ content: options.query, role: "user" });
 
 // Validate that at least one message was provided
 if (messages.length === 0) {
@@ -431,7 +553,7 @@ if (controller.signal.aborted) {
 if (res.headers.get("content-type")?.includes("text/event-stream")) {
   const decoder = new TextDecoder();
   const reader = res.body.getReader();
-  const llm = new MessageChannel();
+  const llm = new MessageChannel(options);
 
   // Buffer accumulates partial SSE events across multiple reads
   let buffer = "";
@@ -502,12 +624,9 @@ if (res.headers.get("content-type")?.includes("text/event-stream")) {
   try {
     resetTimeout();
     data = await res.json();
-    if (DEBUG_ENABLED) {
-      const preview = JSON.stringify(data).slice(0, 500);
-      debug(
-        `JSON response preview: ${preview}${JSON.stringify(data).length > 500 ? "..." : ""}`,
-      );
-    }
+    debug(
+      `JSON response preview: ${JSON.stringify(data).slice(0, 500)}${JSON.stringify(data).length > 500 ? "..." : ""}`,
+    );
   } catch (err) {
     clearTimeout(timeoutId);
     fail(`Failed to parse response JSON: ${err.message}`, EXIT_CONFIG);
@@ -530,8 +649,8 @@ if (res.headers.get("content-type")?.includes("text/event-stream")) {
     return out;
   }, {});
 
-  // Write thinking blocks to stderr with gray formatting (TTY only)
-  if (thinking && process.stderr.isTTY) {
+  // Write thinking blocks to stderr with gray formatting (TTY only, unless quiet)
+  if (thinking && process.stderr.isTTY && !options.quiet) {
     debug(`Writing ${thinking.length} bytes of thinking to stderr`);
     process.stderr.write(
       `${ANS_THINKING_START}${thinking}${ANS_THINKING_END}\n`,
