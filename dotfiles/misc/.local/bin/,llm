@@ -72,6 +72,8 @@ class MessageChannel {
 const ENDPOINT =
   process.env.LLM_ENDPOINT ?? "http://localhost:8484/v1/messages";
 
+const TIMEOUT_MS = parseInt(process.env.LLM_TIMEOUT_MS, 10) || 30000; // Default 30s
+
 const system =
   process.env.LLM_SYSTEM_PROMPT ??
   `You are a concise CLI assistant. When given two successive messages: first message is context, second is query. Direct answers only; no preamble. Code: plain text snippets (no \`\`\`) + steps (in comments). Non-code: brief. Do not over-analyze context unless requested.`;
@@ -79,6 +81,16 @@ const system =
 const messages = [];
 const tools = [];
 const stream = process.stdout.isTTY;
+
+// Setup AbortController for timeout and cancellation
+const controller = new AbortController();
+let timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+// Reset timeout on activity (sliding window)
+const resetTimeout = () => {
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+};
 
 const context = await (async () => {
   if (process.stdin.isTTY) return;
@@ -101,9 +113,20 @@ const res = await fetch(ENDPOINT, {
     stream,
   }),
   method: "POST",
+  signal: controller.signal,
 });
 
-if (!res.ok) throw new Error(`Response not OK: ${res.status}`);
+if (!res.ok) {
+  clearTimeout(timeoutId);
+  throw new Error(`Response not OK: ${res.status} ${res.statusText}`);
+}
+
+// Handle abort/timeout
+if (controller.signal.aborted) {
+  clearTimeout(timeoutId);
+  process.stderr.write("\n\x1b[31mRequest aborted (timeout or cancelled)\x1b[0m\n");
+  process.exit(1);
+}
 
 if (res.headers.get("content-type")?.includes("text/event-stream")) {
   const decoder = new TextDecoder();
@@ -114,6 +137,8 @@ if (res.headers.get("content-type")?.includes("text/event-stream")) {
 
   try {
     while (true) {
+      resetTimeout(); // Extend timeout on every read activity
+
       const { done, value } = await reader.read();
 
       if (done) break;
@@ -124,18 +149,25 @@ if (res.headers.get("content-type")?.includes("text/event-stream")) {
       while (buffer.includes("\n\n")) {
         const [event, ...rest] = buffer.split("\n\n");
         buffer = rest.join("\n\n");
+        resetTimeout(); // Extend timeout on every event received
         llm.handle(event);
       }
     }
 
-    if (buffer.trim()) llm.handle(buffer);
+    if (buffer.trim()) {
+      resetTimeout(); // Extend timeout on last partial event
+      llm.handle(buffer);
+    }
   } finally {
+    clearTimeout(timeoutId);
     reader.cancel();
   }
 }
 
 if (res.headers.get("content-type")?.includes("application/json")) {
+  resetTimeout(); // Ensure timeout won't fire during JSON parsing
   const data = await res.json();
+  clearTimeout(timeoutId);
 
   const { text, thinking } = data.content.reduce((out, row) => {
     out[row.type] = out[row.type]
