@@ -1,24 +1,111 @@
 #!/usr/bin/env node
 
+/**
+ * @file @,llm
+ * @description CLI tool for streaming LLM responses via SSE or JSON
+ *
+ * This tool connects to an LLM endpoint and streams responses in real-time.
+ * It supports two response formats:
+ *   1. Server-Sent Events (SSE) - streamed chunk-by-chunk
+ *   2. JSON - single complete response
+ *
+ * Environment variables:
+ *   - LLM_ENDPOINT: HTTP URL for the LLM API (default: http://localhost:8484/v1/messages)
+ *   - LLM_SYSTEM_PROMPT: Custom system prompt to override defaults
+ *   - LLM_DEBUG: Enable verbose debug logging (set to any truthy value)
+ *
+ * Usage:
+ *   @,llm "query"                    # Pass query as command-line argument
+ *   echo "context" | @,llm "query"   # Pipe context via stdin, query as arg
+ *   echo "full request" | @,llm      # Pipe full request via stdin
+ *
+ * Exit codes:
+ *   0 - Success
+ *   1 - General error (network failure, timeout, invalid response)
+ *   127 - Configuration error (malformed data, invalid JSON)
+ */
+
 // Exit codes
 const EXIT_SUCCESS = 0;
 const EXIT_ERROR = 1; // General error (network, timeout, invalid response)
 const EXIT_CONFIG = 127; // Configuration/malformed data error
 
-// Constants
+// ============================================================================
+// Constants Configuration
+// ============================================================================
+
+// Default timeout for requests - reset on every activity (sliding window)
 const DEFAULT_TIMEOUT_MS = 30_000;
+
+// Maximum characters to show in malformed event preview (prevents log spam)
 const MAX_EVENT_PREVIEW_CHARS = 50;
+
+// Maximum buffer size before throwing error - prevents memory exhaustion
+// from malformed SSE streams or excessively long events
+const MAX_BUFFER_SIZE_BYTES = 10_485_760; // 10MB
+
+// SSE protocol markers per RFC 4462
 const SSE_EVENT_MARKER = "event:";
 const SSE_DATA_MARKER = "data:";
+
+// ANSI escape codes for terminal output
 const ANS_RESET = "\x1b[0m";
-const ANS_THINKING_START = "\n\x1b[90m";
+const ANS_THINKING_START = "\n\x1b[90m"; // Gray color for thinking blocks
 const ANS_THINKING_END = ANS_RESET;
-const ANS_ERROR = "\x1b[31m";
-const ANS_MALFORMED = "\n\x1b[90m";
+const ANS_ERROR = "\x1b[31m"; // Red color for errors
+const ANS_MALFORMED = "\n\x1b[90m"; // Gray for malformed events
+
+// ============================================================================
+// Configuration and Global State
+// ============================================================================
+
+// API endpoint - configurable via LLM_ENDPOINT environment variable
+const ENDPOINT =
+  process.env.LLM_ENDPOINT ?? "http://localhost:8484/v1/messages";
 
 /**
- * Print error message to stderr and exit with code
- * @param {string} message - Error message
+ * Default system prompt for the CLI assistant.
+ *
+ * Design philosophy:
+ *   - Concise responses (no verbosity)
+ *   - Direct answers (no preamble)
+ *   - Code formatting: plain text snippets + numbered steps in comments
+ *   - Non-code: brief explanations
+ *   - Context awareness only when requested
+ */
+const SYSTEM_PROMPT =
+  process.env.LLM_SYSTEM_PROMPT ??
+  `You are a concise CLI assistant. When given two successive messages: first message is context, second is query. Direct answers only; no preamble. Code: plain text snippets (no \`\`\`) + steps (in comments). Non-code: brief. Do not over-analyze context unless requested.`;
+
+// Message queue and tool definitions
+const messages = []; // User messages for the LLM
+// Note: tools array reserved for future function calling support
+const tools = [];
+
+// Determine if output should be streamed (TTY vs redirect)
+const stream = process.stdout.isTTY;
+
+// ============================================================================
+// Debug Mode
+// ============================================================================
+
+// Enable debug logging when LLM_DEBUG environment variable is set (truthy)
+const DEBUG_ENABLED = !!process.env.LLM_DEBUG;
+
+/**
+ * Log debug message to stderr if debug mode is enabled.
+ * Messages are prefixed with "DEBUG: " for easy filtering.
+ * @param {...any} args - Arguments passed to stderr.write
+ */
+function debug(...args) {
+  if (!DEBUG_ENABLED) return;
+  process.stderr.write(`DEBUG: ${args.join(" ")}\n`);
+}
+
+/**
+ * Print error message to stderr and exit with specified code.
+ * Error messages are colored red for visibility in TTY terminals.
+ * @param {string} message - Error message to display
  * @param {number} code - Exit code (default: EXIT_ERROR)
  */
 function fail(message, code = EXIT_ERROR) {
@@ -26,22 +113,42 @@ function fail(message, code = EXIT_ERROR) {
   process.exit(code);
 }
 
+// ============================================================================
+// MessageChannel - SSE Event Parser and Handler
+// ============================================================================
+//
+// This class parses Server-Sent Events (SSE) from the LLM endpoint and
+// routes them to appropriate handlers based on event type. It manages
+// terminal formatting (ANSI codes) for different content types.
+//
+// Supported SSE events:
+//   - content_block_start: New content block begins (thinking, text, etc.)
+//   - content_block_delta: Incremental content update
+//   - message_stop: Finalization event
+
 class MessageChannel {
+  // Track the last content type to manage ANSI formatting transitions
   #lastType = undefined;
 
   /**
    * Handle content block start event
+   *
+   * When a new content block starts, we may need to reset ANSI colors
+   * if the type changed from the previous block. For "thinking" blocks,
+   * we apply gray formatting when in TTY mode.
    * @param {object} data - Event data with content_block property
    */
   #handleContentBlockStart(data) {
     if (!data?.content_block) return;
 
+    // Reset ANSI colors when switching between different content types
     if (this.#lastType && this.#lastType !== data.content_block.type) {
       process.stderr.write(ANS_RESET);
     }
 
     switch (data.content_block.type) {
       case "thinking":
+        // Apply gray formatting for thinking blocks in TTY terminals
         if (process.stderr.isTTY) {
           process.stderr.write(ANS_THINKING_START);
         }
@@ -53,6 +160,10 @@ class MessageChannel {
 
   /**
    * Handle content block delta event
+   *
+   * Processes incremental updates. Thinking deltas go to stderr (gray),
+   * text deltas go to stdout (normal output). This separation allows
+   * thinking blocks to be visible but not interfere with main output.
    * @param {object} data - Event data with delta property
    */
   #handleContentBlockDelta(data) {
@@ -60,11 +171,13 @@ class MessageChannel {
 
     switch (data.delta.type) {
       case "thinking_delta":
+        // Write thinking to stderr with TTY-aware formatting
         if (process.stderr.isTTY && data.delta.thinking) {
           process.stderr.write(data.delta.thinking);
         }
         break;
       case "text_delta":
+        // Write text content to stdout for normal output
         if (data.delta.text) {
           process.stdout.write(data.delta.text);
         }
@@ -74,6 +187,8 @@ class MessageChannel {
 
   /**
    * Handle message stop event
+   *
+   * Ensures the output ends with a newline for clean terminal formatting.
    */
   #handleMessageStop() {
     process.stdout.write("\n");
@@ -81,13 +196,21 @@ class MessageChannel {
 
   /**
    * Parse SSE event string into structured data
-   * @param {string} event - Raw SSE event string
+   *
+   * SSE format consists of lines prefixed with markers:
+   *   - "event:" - Event type (e.g., "content_block_start")
+   *   - "data:" - JSON payload
+   *   - ":" - Comment line (ignored)
+   *   - blank line - Event delimiter
+   *
+   * @param {string} event - Raw SSE event string (everything between \n\n)
    * @returns {{data: object|null, raw: string, type: string|undefined}}
    */
   #parseEvent(event) {
     let raw = [];
     let type;
 
+    // Empty or whitespace-only events are invalid
     if (!event || !event.trim()) {
       return { data: null, raw: "", type: undefined };
     }
@@ -95,13 +218,16 @@ class MessageChannel {
     for (const line of event.split("\n")) {
       const trimmed = line.trim();
 
+      // Skip empty lines and comment lines (start with ":")
       if (!trimmed || trimmed.startsWith(":")) continue;
 
+      // Extract event type
       if (trimmed.startsWith(SSE_EVENT_MARKER)) {
         type = trimmed.slice(SSE_EVENT_MARKER.length).trim();
         continue;
       }
 
+      // Collect data payload lines
       if (trimmed.startsWith(SSE_DATA_MARKER)) {
         raw.push(trimmed.slice(SSE_DATA_MARKER.length));
         continue;
@@ -113,16 +239,22 @@ class MessageChannel {
 
   /**
    * Safely parse JSON string, returning null on failure
+   *
+   * The SSE parser may pass either a single string or an array of strings
+   * (if multiple "data:" lines exist). This handles both cases.
+   *
    * @param {string|string[]} str - String or array to parse/join
-   * @returns {object|null} Parsed object or null
+   * @returns {object|null} Parsed object or null on failure
    */
   #safeJSON(str) {
     const combined = Array.isArray(str) ? str.join("\n") : str;
 
+    // Reject non-string inputs
     if (!combined || typeof combined !== "string") return null;
 
     try {
       const parsed = JSON.parse(combined);
+      // Ensure we got a valid object (not array, primitive, or null)
       if (typeof parsed !== "object" || parsed === null) return null;
       return parsed;
     } catch {
@@ -132,71 +264,140 @@ class MessageChannel {
 
   /**
    * Handle incoming SSE event
+   *
+   * Main entry point for processing SSE events. Routes to appropriate
+   * handler based on event type after parsing.
+   *
    * @param {string} event - Raw SSE event string
    */
   handle(event) {
     const { data, type } = this.#parseEvent(event);
 
+    // Skip events without a recognized type
     if (!type) return;
 
+    // Log malformed events (data is null but type exists)
     if (data === null && process.stderr.isTTY) {
       process.stderr.write(
         `${ANS_MALFORMED}[MALFORMED EVENT: ${event.slice(0, MAX_EVENT_PREVIEW_CHARS)}...]\x1b[0m\n`,
       );
     }
 
+    // Route to appropriate handler based on event type
     switch (type) {
       case "content_block_start":
+        debug(`  → content_block_start: ${data?.content_block?.type}`);
         this.#handleContentBlockStart(data);
         break;
       case "content_block_delta":
+        debug(`  → content_block_delta: ${data?.delta?.type}`);
         this.#handleContentBlockDelta(data);
         break;
       case "message_stop":
+        debug(`  → message_stop`);
         this.#handleMessageStop();
         break;
     }
   }
 }
 
-const ENDPOINT =
-  process.env.LLM_ENDPOINT ?? "http://localhost:8484/v1/messages";
+// ============================================================================
+// Timeout Management - Sliding Window Pattern
+// ============================================================================
+//
+// Uses AbortController to enforce request timeouts. The timeout resets on
+// every activity (read, write, network response), preventing premature
+// cancellation during long-running but active operations.
+//
+// This "sliding window" approach is essential for streaming responses where
+// the connection may be open for extended periods while data flows continuously.
 
-const SYSTEM_PROMPT_DEFAULT = `You are a concise CLI assistant. When given two successive messages: first message is context, second is query. Direct answers only; no preamble. Code: plain text snippets (no \`\`\`) + steps (in comments). Non-code: brief. Do not over-analyze context unless requested.`;
-
-const messages = [];
-const tools = [];
-const stream = process.stdout.isTTY;
-
-// Setup AbortController for timeout and cancellation
 const controller = new AbortController();
 let timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
 
-// Reset timeout on activity (sliding window)
+/**
+ * Reset the activity timeout to prevent premature abort.
+ *
+ * Called after every successful network operation or data read to extend
+ * the deadline. This implements a sliding window timeout pattern.
+ */
 const resetTimeout = () => {
   clearTimeout(timeoutId);
   timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
+  debug(`Timeout reset: ${DEFAULT_TIMEOUT_MS / 1000}s`);
 };
 
-const context = await (async () => {
-  if (process.stdin.isTTY) return;
+// ============================================================================
+// Input Collection - Context and Query
+// ============================================================================
+//
+// This section collects input from two sources:
+//   1. stdin (piped context or full request)
+//   2. command-line arguments (query string)
+//
+// The tool supports three usage patterns:
+//   - @,llm "query"                    # Query only
+//   - echo "context" | @,llm "query"   # Context + query
+//   - echo "full request" | @,llm      # Full request via stdin
 
+const context = await (async () => {
+  // If stdin is a TTY, no piped input exists
+  if (process.stdin.isTTY) {
+    debug("stdin is TTY, no context from stdin");
+    return;
+  }
+
+  // Read all chunks from stdin using async iterator
   const chunks = [];
   for await (const chunk of process.stdin) chunks.push(chunk);
-  return chunks.join("");
+  const result = chunks.join("");
+
+  debug(`Read ${result.length} bytes from stdin`);
+  debug(
+    `  Context preview: ${result.slice(0, 200)}${result.length > 200 ? "..." : ""}`,
+  );
+
+  return result;
 })();
 
+// Extract query from command-line arguments (everything after script name)
 const query = process.argv.slice(2).join(" ").trim();
 
+// Add collected inputs to messages queue with appropriate roles
 if (context) messages.push({ content: context, role: "user" });
 if (query) messages.push({ content: query, role: "user" });
 
+// Validate that at least one message was provided
+if (messages.length === 0) {
+  fail(
+    'No input provided. Use @,llm "query" or pipe context via stdin.',
+    EXIT_CONFIG,
+  );
+}
+
+debug(`Preparing request with ${messages.length} message(s)`);
+debug(
+  `  Messages preview: ${JSON.stringify(messages).slice(0, 500)}${JSON.stringify(messages).length > 500 ? "..." : ""}`,
+);
+
+// ============================================================================
+// HTTP Request Execution
+// ============================================================================
+//
+// Sends a POST request to the LLM endpoint with messages and configuration.
+// The response may be either:
+//   - SSE stream (text/event-stream) for real-time token streaming
+//   - JSON (application/json) for complete response in one payload
+//
+// AbortController signal enables timeout-based cancellation.
+
 let res;
 try {
+  debug(`Fetching from ${ENDPOINT}`);
   res = await fetch(ENDPOINT, {
     body: JSON.stringify({
       messages,
-      system: process.env.LLM_SYSTEM_PROMPT ?? SYSTEM_PROMPT_DEFAULT,
+      system: SYSTEM_PROMPT,
       tools,
       stream,
     }),
@@ -205,41 +406,69 @@ try {
   });
 } catch (err) {
   clearTimeout(timeoutId);
+  debug(`Fetch failed: ${err.message}`);
   if (err.name === "AbortError") {
     fail("Request aborted (timeout or cancelled)", EXIT_ERROR);
   }
   fail(`Network error: ${err.message}`, EXIT_ERROR);
 }
 
+// Check for HTTP errors (4xx, 5xx)
 if (!res.ok) {
   clearTimeout(timeoutId);
   fail(`Request failed with status ${res.status}`, EXIT_ERROR);
 }
 
-// Handle abort/timeout after successful response
+// Handle abort/timeout that occurred during the fetch
+// This can happen if timeout fired while request was pending
 if (controller.signal.aborted) {
   clearTimeout(timeoutId);
+  debug("Request aborted after fetch (timeout or cancelled)");
   fail("Request aborted (timeout or cancelled)", EXIT_ERROR);
 }
 
+// Call appropriate handler based on response content type
 if (res.headers.get("content-type")?.includes("text/event-stream")) {
   const decoder = new TextDecoder();
   const reader = res.body.getReader();
   const llm = new MessageChannel();
 
+  // Buffer accumulates partial SSE events across multiple reads
   let buffer = "";
 
   try {
+    debug(`Starting SSE stream read loop`);
     while (true) {
-      resetTimeout(); // Extend timeout on every read activity
+      // Check for abort before each read operation
+      if (controller.signal.aborted) {
+        debug("Aborting SSE read loop due to timeout/cancellation");
+        break;
+      }
+
+      resetTimeout();
 
       const { done, value } = await reader.read();
 
-      if (done) break;
+      if (done) {
+        debug("SSE stream completed normally");
+        break;
+      }
       if (!value) continue;
 
-      buffer += decoder.decode(value);
+      const decoded = decoder.decode(value);
+      debug(`Received ${decoded.length} bytes from SSE stream`);
 
+      // Memory leak protection - prevent buffer from growing unbounded
+      if (buffer.length + decoded.length > MAX_BUFFER_SIZE_BYTES) {
+        throw new Error(
+          `Buffer exceeded maximum size of ${MAX_BUFFER_SIZE_BYTES / 1_048_576}MB. ` +
+            "Possible malformed SSE stream or excessively long event.",
+        );
+      }
+
+      buffer += decoded;
+
+      // Process complete events (delimited by \n\n)
       let newlineIndex = -1;
       while ((newlineIndex = buffer.indexOf("\n\n")) !== -1) {
         const event = buffer.slice(0, newlineIndex);
@@ -250,32 +479,50 @@ if (res.headers.get("content-type")?.includes("text/event-stream")) {
       }
     }
 
+    // Process any remaining data in buffer (incomplete final event)
     if (buffer.trim()) {
+      debug(`Processing remaining ${buffer.length} bytes in buffer`);
       resetTimeout();
       llm.handle(buffer);
     }
-  } finally {
+  } catch (err) {
     clearTimeout(timeoutId);
     reader.cancel();
+    fail(`Stream processing error: ${err.message}`, EXIT_ERROR);
+  } finally {
+    // Cleanup: always clear timeout and cancel reader on exit
+    clearTimeout(timeoutId);
+    try {
+      await reader.cancel();
+    } catch {}
   }
-}
-
-if (res.headers.get("content-type")?.includes("application/json")) {
-  resetTimeout(); // Ensure timeout won't fire during JSON parsing
+} else if (res.headers.get("content-type")?.includes("application/json")) {
+  debug(`Received JSON response from ${ENDPOINT}`);
   let data;
   try {
+    resetTimeout();
     data = await res.json();
+    if (DEBUG_ENABLED) {
+      const preview = JSON.stringify(data).slice(0, 500);
+      debug(
+        `JSON response preview: ${preview}${JSON.stringify(data).length > 500 ? "..." : ""}`,
+      );
+    }
   } catch (err) {
     clearTimeout(timeoutId);
     fail(`Failed to parse response JSON: ${err.message}`, EXIT_CONFIG);
+  } finally {
+    clearTimeout(timeoutId);
   }
-  clearTimeout(timeoutId);
 
-  // Validate response structure
+  // Validate response structure - must have content array
   if (!data?.content || !Array.isArray(data.content)) {
     fail("Invalid response format: missing or invalid content", EXIT_CONFIG);
   }
 
+  debug(`Processing ${data.content.length} content items`);
+
+  // Aggregate content by type (thinking and text)
   const { text, thinking } = data.content.reduce((out, row) => {
     out[row.type] = out[row.type]
       ? `${out[row.type]}\n${row[row.type]}`
@@ -283,11 +530,22 @@ if (res.headers.get("content-type")?.includes("application/json")) {
     return out;
   }, {});
 
+  // Write thinking blocks to stderr with gray formatting (TTY only)
   if (thinking && process.stderr.isTTY) {
+    debug(`Writing ${thinking.length} bytes of thinking to stderr`);
     process.stderr.write(
       `${ANS_THINKING_START}${thinking}${ANS_THINKING_END}\n`,
     );
   }
 
-  if (text) process.stdout.write(`${text}\n`);
+  // Write text content to stdout
+  if (text) {
+    debug(`Writing ${text.length} bytes of text to stdout`);
+    process.stdout.write(`${text}\n`);
+  }
+} else {
+  fail(
+    `Unsupported response content type: ${res.headers.get("content-type")}`,
+    EXIT_CONFIG,
+  );
 }
