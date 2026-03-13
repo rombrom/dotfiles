@@ -1,96 +1,160 @@
 #!/usr/bin/env node
 
+// Exit codes
+const EXIT_SUCCESS = 0;
+const EXIT_ERROR = 1; // General error (network, timeout, invalid response)
+const EXIT_CONFIG = 127; // Configuration/malformed data error
+
+// Constants
+const DEFAULT_TIMEOUT_MS = 30_000;
+const MAX_EVENT_PREVIEW_CHARS = 50;
+const SSE_EVENT_MARKER = "event:";
+const SSE_DATA_MARKER = "data:";
+const ANS_RESET = "\x1b[0m";
+const ANS_THINKING_START = "\n\x1b[90m";
+const ANS_THINKING_END = ANS_RESET;
+const ANS_ERROR = "\x1b[31m";
+const ANS_MALFORMED = "\n\x1b[90m";
+
+/**
+ * Print error message to stderr and exit with code
+ * @param {string} message - Error message
+ * @param {number} code - Exit code (default: EXIT_ERROR)
+ */
+function fail(message, code = EXIT_ERROR) {
+  process.stderr.write(`${ANS_ERROR}${message}\x1b[0m\n`);
+  process.exit(code);
+}
+
 class MessageChannel {
-  #handler = class Messages {
-    static #last_type = undefined;
+  #lastType = undefined;
 
-    static content_block_start(data) {
-      if (!data?.content_block) return;
+  /**
+   * Handle content block start event
+   * @param {object} data - Event data with content_block property
+   */
+  #handleContentBlockStart(data) {
+    if (!data?.content_block) return;
 
-      if (this.#last_type && this.#last_type !== data.content_block.type) {
-        process.stderr.write("\n\x1b[0m");
-      }
-
-      switch (data.content_block.type) {
-        case "thinking":
-          if (process.stderr.isTTY) process.stderr.write("\n\x1b[90m");
-          break;
-      }
-
-      this.#last_type = data.content_block.type;
+    if (this.#lastType && this.#lastType !== data.content_block.type) {
+      process.stderr.write(ANS_RESET);
     }
 
-    static content_block_delta(data) {
-      if (!data?.delta) return;
-
-      switch (data.delta.type) {
-        case "thinking_delta":
-          if (process.stderr.isTTY && data.delta.thinking) {
-            process.stderr.write(data.delta.thinking);
-          }
-          break;
-        case "text_delta":
-          if (data.delta.text) {
-            process.stdout.write(data.delta.text);
-          }
-          break;
-      }
+    switch (data.content_block.type) {
+      case "thinking":
+        if (process.stderr.isTTY) {
+          process.stderr.write(ANS_THINKING_START);
+        }
+        break;
     }
 
-    static message_stop() {
-      process.stdout.write("\n");
+    this.#lastType = data.content_block.type;
+  }
+
+  /**
+   * Handle content block delta event
+   * @param {object} data - Event data with delta property
+   */
+  #handleContentBlockDelta(data) {
+    if (!data?.delta) return;
+
+    switch (data.delta.type) {
+      case "thinking_delta":
+        if (process.stderr.isTTY && data.delta.thinking) {
+          process.stderr.write(data.delta.thinking);
+        }
+        break;
+      case "text_delta":
+        if (data.delta.text) {
+          process.stdout.write(data.delta.text);
+        }
+        break;
     }
-  };
+  }
 
-  event(event) {
-    let raw = [],
-      type;
+  /**
+   * Handle message stop event
+   */
+  #handleMessageStop() {
+    process.stdout.write("\n");
+  }
 
-    if (!event || !event.trim())
+  /**
+   * Parse SSE event string into structured data
+   * @param {string} event - Raw SSE event string
+   * @returns {{data: object|null, raw: string, type: string|undefined}}
+   */
+  #parseEvent(event) {
+    let raw = [];
+    let type;
+
+    if (!event || !event.trim()) {
       return { data: null, raw: "", type: undefined };
+    }
 
     for (const line of event.split("\n")) {
       const trimmed = line.trim();
 
       if (!trimmed || trimmed.startsWith(":")) continue;
 
-      if (trimmed.startsWith("event:")) {
-        type = trimmed.slice(6).trim();
+      if (trimmed.startsWith(SSE_EVENT_MARKER)) {
+        type = trimmed.slice(SSE_EVENT_MARKER.length).trim();
         continue;
       }
 
-      if (trimmed.startsWith("data:")) {
-        raw.push(trimmed.slice(5));
+      if (trimmed.startsWith(SSE_DATA_MARKER)) {
+        raw.push(trimmed.slice(SSE_DATA_MARKER.length));
         continue;
       }
     }
 
-    return { data: this.safeJSON(raw), raw, type };
+    return { data: this.#safeJSON(raw), raw, type };
   }
 
+  /**
+   * Safely parse JSON string, returning null on failure
+   * @param {string|string[]} str - String or array to parse/join
+   * @returns {object|null} Parsed object or null
+   */
+  #safeJSON(str) {
+    const combined = Array.isArray(str) ? str.join("\n") : str;
+
+    if (!combined || typeof combined !== "string") return null;
+
+    try {
+      const parsed = JSON.parse(combined);
+      if (typeof parsed !== "object" || parsed === null) return null;
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Handle incoming SSE event
+   * @param {string} event - Raw SSE event string
+   */
   handle(event) {
-    const { data, type } = this.event(event);
+    const { data, type } = this.#parseEvent(event);
 
     if (!type) return;
 
     if (data === null && process.stderr.isTTY) {
       process.stderr.write(
-        `\n\x1b[90m[MALFORMED EVENT: ${event.slice(0, 50)}...]\x1b[0m\n`,
+        `${ANS_MALFORMED}[MALFORMED EVENT: ${event.slice(0, MAX_EVENT_PREVIEW_CHARS)}...]\x1b[0m\n`,
       );
     }
 
-    this.#handler[type]?.(data);
-  }
-
-  safeJSON(str) {
-    if (!str || typeof str !== "string") return null;
-
-    try {
-      const parsed = JSON.parse(str);
-      if (typeof parsed !== "object" || parsed === null) return null;
-      return parsed;
-    } catch {
-      return null;
+    switch (type) {
+      case "content_block_start":
+        this.#handleContentBlockStart(data);
+        break;
+      case "content_block_delta":
+        this.#handleContentBlockDelta(data);
+        break;
+      case "message_stop":
+        this.#handleMessageStop();
+        break;
     }
   }
 }
@@ -98,11 +162,7 @@ class MessageChannel {
 const ENDPOINT =
   process.env.LLM_ENDPOINT ?? "http://localhost:8484/v1/messages";
 
-const TIMEOUT_MS = parseInt(process.env.LLM_TIMEOUT_MS, 10) || 30000; // Default 30s
-
-const system =
-  process.env.LLM_SYSTEM_PROMPT ??
-  `You are a concise CLI assistant. When given two successive messages: first message is context, second is query. Direct answers only; no preamble. Code: plain text snippets (no \`\`\`) + steps (in comments). Non-code: brief. Do not over-analyze context unless requested.`;
+const SYSTEM_PROMPT_DEFAULT = `You are a concise CLI assistant. When given two successive messages: first message is context, second is query. Direct answers only; no preamble. Code: plain text snippets (no \`\`\`) + steps (in comments). Non-code: brief. Do not over-analyze context unless requested.`;
 
 const messages = [];
 const tools = [];
@@ -110,12 +170,12 @@ const stream = process.stdout.isTTY;
 
 // Setup AbortController for timeout and cancellation
 const controller = new AbortController();
-let timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+let timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
 
 // Reset timeout on activity (sliding window)
 const resetTimeout = () => {
   clearTimeout(timeoutId);
-  timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
 };
 
 const context = await (async () => {
@@ -131,29 +191,35 @@ const query = process.argv.slice(2).join(" ").trim();
 if (context) messages.push({ content: context, role: "user" });
 if (query) messages.push({ content: query, role: "user" });
 
-const res = await fetch(ENDPOINT, {
-  body: JSON.stringify({
-    messages,
-    system,
-    tools,
-    stream,
-  }),
-  method: "POST",
-  signal: controller.signal,
-});
+let res;
+try {
+  res = await fetch(ENDPOINT, {
+    body: JSON.stringify({
+      messages,
+      system: process.env.LLM_SYSTEM_PROMPT ?? SYSTEM_PROMPT_DEFAULT,
+      tools,
+      stream,
+    }),
+    method: "POST",
+    signal: controller.signal,
+  });
+} catch (err) {
+  clearTimeout(timeoutId);
+  if (err.name === "AbortError") {
+    fail("Request aborted (timeout or cancelled)", EXIT_ERROR);
+  }
+  fail(`Network error: ${err.message}`, EXIT_ERROR);
+}
 
 if (!res.ok) {
   clearTimeout(timeoutId);
-  throw new Error(`Response not OK: ${res.status} ${res.statusText}`);
+  fail(`Request failed with status ${res.status}`, EXIT_ERROR);
 }
 
-// Handle abort/timeout
+// Handle abort/timeout after successful response
 if (controller.signal.aborted) {
   clearTimeout(timeoutId);
-  process.stderr.write(
-    "\n\x1b[31mRequest aborted (timeout or cancelled)\x1b[0m\n",
-  );
-  process.exit(1);
+  fail("Request aborted (timeout or cancelled)", EXIT_ERROR);
 }
 
 if (res.headers.get("content-type")?.includes("text/event-stream")) {
@@ -174,7 +240,7 @@ if (res.headers.get("content-type")?.includes("text/event-stream")) {
 
       buffer += decoder.decode(value);
 
-      let newlineIndex;
+      let newlineIndex = -1;
       while ((newlineIndex = buffer.indexOf("\n\n")) !== -1) {
         const event = buffer.slice(0, newlineIndex);
         buffer = buffer.slice(newlineIndex + 2); // Skip past \n\n
@@ -196,8 +262,19 @@ if (res.headers.get("content-type")?.includes("text/event-stream")) {
 
 if (res.headers.get("content-type")?.includes("application/json")) {
   resetTimeout(); // Ensure timeout won't fire during JSON parsing
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch (err) {
+    clearTimeout(timeoutId);
+    fail(`Failed to parse response JSON: ${err.message}`, EXIT_CONFIG);
+  }
   clearTimeout(timeoutId);
+
+  // Validate response structure
+  if (!data?.content || !Array.isArray(data.content)) {
+    fail("Invalid response format: missing or invalid content", EXIT_CONFIG);
+  }
 
   const { text, thinking } = data.content.reduce((out, row) => {
     out[row.type] = out[row.type]
@@ -206,8 +283,11 @@ if (res.headers.get("content-type")?.includes("application/json")) {
     return out;
   }, {});
 
-  if (thinking && process.stderr.isTTY)
-    process.stderr.write(`\x1b[90m${thinking}\x1b[0m\n`);
+  if (thinking && process.stderr.isTTY) {
+    process.stderr.write(
+      `${ANS_THINKING_START}${thinking}${ANS_THINKING_END}\n`,
+    );
+  }
 
   if (text) process.stdout.write(`${text}\n`);
 }
