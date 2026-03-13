@@ -5,8 +5,11 @@ class MessageChannel {
     static #last_type = undefined;
 
     static content_block_start(data) {
-      if (this.#last_type && this.#last_type !== data.content_block.type)
+      if (!data?.content_block) return;
+
+      if (this.#last_type && this.#last_type !== data.content_block.type) {
         process.stderr.write("\n\x1b[0m");
+      }
 
       switch (data.content_block.type) {
         case "thinking":
@@ -18,12 +21,18 @@ class MessageChannel {
     }
 
     static content_block_delta(data) {
+      if (!data?.delta) return;
+
       switch (data.delta.type) {
         case "thinking_delta":
-          if (process.stderr.isTTY) process.stderr.write(data.delta.thinking);
+          if (process.stderr.isTTY && data.delta.thinking) {
+            process.stderr.write(data.delta.thinking);
+          }
           break;
         case "text_delta":
-          process.stdout.write(data.delta.text);
+          if (data.delta.text) {
+            process.stdout.write(data.delta.text);
+          }
           break;
       }
     }
@@ -37,34 +46,51 @@ class MessageChannel {
     let raw = [],
       type;
 
-    for (let line of event.split("\n")) {
-      line = line.trim();
-      switch (true) {
-        case line.startsWith("event:"):
-          type = line.slice(6).trim();
-          break;
-        case line.startsWith("data:"):
-          raw.push(line.slice(5).trim());
-          break;
+    if (!event || !event.trim())
+      return { data: null, raw: "", type: undefined };
+
+    for (const line of event.split("\n")) {
+      const trimmed = line.trim();
+
+      if (!trimmed || trimmed.startsWith(":")) continue;
+
+      if (trimmed.startsWith("event:")) {
+        type = trimmed.slice(6).trim();
+        continue;
+      }
+
+      if (trimmed.startsWith("data:")) {
+        raw.push(trimmed.slice(5));
+        continue;
       }
     }
-
-    raw = raw.join("\n");
 
     return { data: this.safeJSON(raw), raw, type };
   }
 
   handle(event) {
     const { data, type } = this.event(event);
+
+    if (!type) return;
+
+    if (data === null && process.stderr.isTTY) {
+      process.stderr.write(
+        `\n\x1b[90m[MALFORMED EVENT: ${event.slice(0, 50)}...]\x1b[0m\n`,
+      );
+    }
+
     this.#handler[type]?.(data);
   }
 
   safeJSON(str) {
+    if (!str || typeof str !== "string") return null;
+
     try {
-      return JSON.parse(str);
+      const parsed = JSON.parse(str);
+      if (typeof parsed !== "object" || parsed === null) return null;
+      return parsed;
     } catch {
-      console.error("Unable to parse JSON");
-      return str;
+      return null;
     }
   }
 }
@@ -124,7 +150,9 @@ if (!res.ok) {
 // Handle abort/timeout
 if (controller.signal.aborted) {
   clearTimeout(timeoutId);
-  process.stderr.write("\n\x1b[31mRequest aborted (timeout or cancelled)\x1b[0m\n");
+  process.stderr.write(
+    "\n\x1b[31mRequest aborted (timeout or cancelled)\x1b[0m\n",
+  );
   process.exit(1);
 }
 
@@ -146,16 +174,18 @@ if (res.headers.get("content-type")?.includes("text/event-stream")) {
 
       buffer += decoder.decode(value);
 
-      while (buffer.includes("\n\n")) {
-        const [event, ...rest] = buffer.split("\n\n");
-        buffer = rest.join("\n\n");
-        resetTimeout(); // Extend timeout on every event received
+      let newlineIndex;
+      while ((newlineIndex = buffer.indexOf("\n\n")) !== -1) {
+        const event = buffer.slice(0, newlineIndex);
+        buffer = buffer.slice(newlineIndex + 2); // Skip past \n\n
+
+        resetTimeout();
         llm.handle(event);
       }
     }
 
     if (buffer.trim()) {
-      resetTimeout(); // Extend timeout on last partial event
+      resetTimeout();
       llm.handle(buffer);
     }
   } finally {
