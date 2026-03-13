@@ -1,403 +1,151 @@
-#!/usr/bin/env sh
-#
-# POSIX shell compliant LLM Wrapper Script
-# Usage: cat file.py | ,llm "Explain this code"
+#!/usr/bin/env node
 
-#
-# Functions
-#
+class MessageChannel {
+  #handler = class Messages {
+    static #last_type = undefined;
 
-log_debug() {
-  [ -z "$DEBUG" ] && return
-  printf '\033[90mDEBUG:  %s\n\033[0m' "$*"
-}
+    static content_block_start(data) {
+      if (this.#last_type && this.#last_type !== data.content_block.type)
+        process.stderr.write("\n\x1b[0m");
 
-log_error() {
-  printf '\033[31mERROR:  %s\n\033[0m' "$*" >&2
-}
+      switch (data.content_block.type) {
+        case "thinking":
+          if (process.stderr.isTTY) process.stderr.write("\n\x1b[90m");
+          break;
+      }
 
-assert_bin() {
-  # Check if curl is available
-  if ! command -v "$1" >/dev/null 2>&1; then
-      log_error "$1 is required but not installed"
-      exit 1
-  fi
-}
-
-ask_permission() {
-  while true; do
-      printf '%s [yn]? ' "$1"
-      read -r answer
-      case "$answer" in
-          [yY] | [yY][eE][sS])
-              return
-              ;;
-          [nN] | [nN][oO])
-              return 1
-              ;;
-          *)
-              echo "Please enter yes or no"
-              ;;
-      esac
-  done
-}
-
-#
-# Initialization
-#
-
-assert_bin curl
-assert_bin jq
-
-# Opts
-ENDPOINT=${ENDPOINT:-http://localhost:8484/v1/messages}
-QUERY=""
-STREAM_ENABLED=false
-TOOLS_ENABLED=false
-YOLO_ENABLED=false
-
-for arg in "$@"; do
-  log_debug "Parsing arg" "$arg"
-  case "$arg" in
-    -s|--stream)
-      STREAM_ENABLED=true
-      ;;
-    -t|--tools)
-      TOOLS_ENABLED=true
-      ;;
-    -y|--yolo)
-      TOOLS_ENABLED=true
-      YOLO_ENABLED=true
-      ;;
-    *)
-      if [ -z "$QUERY" ]; then
-        QUERY="$arg"
-      else
-        QUERY="$QUERY $arg"
-      fi
-      ;;
-  esac
-done
-
-
-#
-# Request Helpers
-#
-
-build_request_json() {
-  jq -n --argjson MESSAGES "$MESSAGES" \
-        --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" \
-        --argjson TOOLS "$TOOLS" \
-        --arg STREAM_ENABLED "$STREAM_ENABLED" \
-        '{
-          messages: $MESSAGES,
-          system: $SYSTEM_PROMPT,
-          tools: $TOOLS,
-          stream: ($STREAM_ENABLED == "true")
-        }'
-}
-
-call_llm() {
-  if [ "$STREAM_ENABLED" = true ]; then
-    curl -sN --json "$@" "$ENDPOINT"
-  else
-    curl -s --json "$@" "$ENDPOINT"
-  fi
-}
-
-tool_parse_params() {
-  name="$1"
-  input="$2"
-
-  case "$name" in
-    "exec_ask") printf '%s' "$input" | jq -r '.question' ;;
-    "exec_shell") printf '%s' "$input" | jq -r '.command' ;;
-  esac
-}
-
-tool_run() {
-  name="$1"
-  input="$2"
-
-  case "$name" in
-    "exec_ask")
-      if [ "$input" = "null" ]; then
-        printf '`exec_ask`: "question" parameter required in input'
-        return
-      fi
-
-      printf '%s ' "$input"
-      read -r answer
-      printf '%s' "$answer"
-    ;;
-    "exec_shell")
-      if [ "$input" = "null" ]; then
-        printf '`exec_shell`: "command" parameter required in input'
-        return
-      fi
-
-      sh -c "$input" 2>&1
-    ;;
-  esac
-}
-
-#
-# Response Handlers
-#
-
-# Handles streaming mode response parsing and output
-stream_response() {
-  json="$(build_request_json)"
-  log_debug ">>" "$json"
-
-  prev_type=""
-
-  call_llm "$json" | while IFS= read -r line; do
-    log_debug ">>" "$line"
-    # Skip empty lines and non-data lines
-    case "$line" in
-      data:*)
-        data="${line#data: }"
-        type=$(printf '%s' "$data" | jq -r '.type')
-
-        case "$type" in
-          content_block_start)
-            type="$(printf '%s' "$data" | jq -r '.content_block.type')"
-
-            [ -n "$prev_type" ] && [ "$type" != "$prev_type" ] && printf '\n'
-
-            case "$type" in
-              thinking) printf '\n\033[90m' ;;
-              text) printf '\n\033[0m' ;;
-            esac
-
-            prev_type="$type"
-          ;;
-          content_block_delta)
-            type="$(printf '%s' "$data" | jq -r '.delta.type')"
-
-            case "$type" in
-              text_delta)
-                output="$(printf '%s' "$data" | jq -r '.delta.text // empty')"
-                [ -n "$output" ] && printf '%s' "$output"
-              ;;
-              thinking_delta)
-                output="$(printf '%s' "$data" | jq -r '.delta.thinking // empty')"
-                [ -n "$output" ] && printf '%s' "$output"
-              ;;
-            esac
-          ;;
-          message_stop)
-            printf '\n'
-          ;;
-        esac
-      ;;
-    esac
-  done
-}
-
-# Handles non-streaming mode response parsing and tool execution loop
-non_stream_response() {
-  output=""
-  tool_count=0
-  max_tools=10
-
-  while :; do
-    [ "$tool_count" -ge "$max_tools" ] && {
-      log_error "Max tool calls reached"
-      return 1;
+      this.#last_type = data.content_block.type;
     }
 
-    json="$(build_request_json)"
-    log_debug ">>" "$json"
-
-    response=$(call_llm "$json")
-    log_debug "<<" "$(printf '%s' "$response" | jq)"
-
-    error=$(printf '%s' "$response" | jq -r 'if has("error") then .error.message else empty end')
-
-    if [ -n "$error" ]; then
-      log_error "$error"
-      exit 1
-    fi
-
-    content=$(printf '%s' "$response" | jq -c '.content')
-    MESSAGES=$(printf '%s' "$MESSAGES" | jq --argjson content "$content" '
-      . + [{ role: "assistant", content: $content }]
-    ')
-
-    tool_uses=$(printf '%s' "$response" | jq -c '.content[]? | select(.type == "tool_use")')
-
-    if [ -z "$tool_uses" ]; then
-      output=$(printf '%s' "$response" | jq -r '.content[]? | select(.type == "text") | .text')
-      break
-    fi
-
-    log_debug "Tools:" "$tool_uses"
-
-    tool_results="[]"
-    while IFS= read -r tool <&3; do
-      id=$(printf '%s' "$tool" | jq -r '.id')
-      name=$(printf '%s' "$tool" | jq -r '.name')
-      input=$(printf '%s' "$tool" | jq -c '.input')
-
-      log_debug "Tool >>" "$name" "$input"
-
-      input="$(tool_parse_params "$name" "$input")"
-
-      log_debug "Tool params:" "$input"
-
-      if [ "$YOLO_ENABLED" = true ] || ask_permission "'$name' with '$input'"; then
-        result=$(tool_run "$name" "$input")
-      else
-        result="No permission to execute $name."
-      fi
-
-      log_debug "Tool <<" "$result"
-
-      tool_results=$(printf '%s' "$tool_results" | jq --arg id "$id" --arg content "$result" '. + [{
-        type: "tool_result",
-        tool_use_id: $id,
-        content: $content
-      }]')
-    done 3<< EOF
-$tool_uses
-EOF
-
-    log_debug "Tool results:" "$tool_results"
-
-    MESSAGES=$(printf '%s' "$MESSAGES" | jq --argjson tool_results "$tool_results" '
-      . + [{ role: "user", content: $tool_results }]
-    ')
-
-    tool_count=$((tool_count + 1))
-  done
-
-  printf '%s\n' "$output"
-}
-
-#
-# Defaults
-#
-
-default_system_prompt() {
-  printf '%s\n' \
-    'You are an expert programmer assistant. Provide concise, technical responses focused on the specific task.' \
-    '' \
-    '**Code modifications:**' \
-    '- If asked to modify or create code, provide ONLY the changed lines' \
-    '- Surround non-code with single-line comments' \
-    '- No code fences or backticks around your output' \
-    '' \
-    '**When to explain:**' \
-    '- Provide explanations only when specifically requested' \
-    '- Keep explanations brief and to the point' \
-    '- Prioritize actionable code over prose' \
-    '' \
-    '**Handling edge cases:**' \
-    '- If code has bugs or does not make sense, point them out concisely' \
-    '- If context is incomplete or malformed, ask for clarification' \
-    '- If no changes are needed, state that explicitly' \
-    '' \
-    '**Output format:**' \
-    '- Code only what changed or needs adding' \
-    '- Comments above code lines they describe' \
-    '- No additional context or conversational filler' \
-    ''
-}
-
-default_tool_prompt() {
-  printf '%s\n' "" \
-    '**Available Tools:**' \
-    '1. `exec_ask`:' \
-    '   - Description: Ask the user a question' \
-    '   - Parameters: {question: "The question to ask"}' \
-    '2. `exec_shell`:' \
-    '   - Description: Execute shell commands' \
-    '   - Parameters: {command: "The command to execute"}' \
-    '' \
-    'Use tools when you need to verify information, execute commands, or get user input' \
-    'Don not use tools unnecessarily' \
-    ''
-}
-
-#
-# Main
-#
-
-SYSTEM_PROMPT="${SYSTEM_PROMPT:-$(default_system_prompt)}"
-TOOLS="[]"
-
-if [ "$TOOLS_ENABLED" = true ]; then
-  SYSTEM_PROMPT="$SYSTEM_PROMPT${TOOL_PROMPT:-$(default_tool_prompt)}"
-  TOOLS=$(jq -n '[
-      {
-          type: "function",
-          name: "exec_shell",
-          description: "Execute shell commands.",
-          parameters: {
-              type: "object",
-              properties: {
-                  command: {
-                      type: "string",
-                      description: "The command to execute."
-                  }
-              },
-              required: ["command"]
-          },
-          strict: true
-      },
-      {
-          type: "function",
-          name: "exec_ask",
-          description: "Ask the user a question and get their answer.",
-          parameters: {
-              type: "object",
-              properties: {
-                  question: {
-                      type: "string",
-                      description: "The question to ask the user."
-                  }
-              },
-              required: ["question"]
-          },
-          strict: true
+    static content_block_delta(data) {
+      switch (data.delta.type) {
+        case "thinking_delta":
+          if (process.stderr.isTTY) process.stderr.write(data.delta.thinking);
+          break;
+        case "text_delta":
+          process.stdout.write(data.delta.text);
+          break;
       }
-  ]')
-fi
+    }
 
-log_debug "ENDPOINT:     " $ENDPOINT
-log_debug "SYSTEM_PROMPT:" $SYSTEM_PROMPT
+    static message_stop() {
+      process.stdout.write("\n");
+    }
+  };
 
-# If no query provided, exit with error
-if [ -z "$QUERY" ]; then
-    log_error "No query provided"
-    exit 1
-fi
+  event(event) {
+    let raw = [],
+      type;
 
-# Check if stdin is available (not a terminal)
-if [ ! -t 0 ]; then
-    # Read all stdin into a variable (context)
-    context=$(cat)
-else
-    # No stdin provided, so we'll use only the query
-    context=""
-fi
+    for (let line of event.split("\n")) {
+      line = line.trim();
+      switch (true) {
+        case line.startsWith("event:"):
+          type = line.slice(6).trim();
+          break;
+        case line.startsWith("data:"):
+          raw.push(line.slice(5).trim());
+          break;
+      }
+    }
 
-MESSAGES=$(jq -n --arg QUERY "$QUERY" '[{role: "user", content: $QUERY}]')
+    raw = raw.join("\n");
 
-log_debug "TOOLS_ENABLED:" $TOOLS_ENABLED
-log_debug "QUERY:" "$QUERY"
+    return { data: this.safeJSON(raw), raw, type };
+  }
 
-# Build messages array properly for Claude API
-if [ -n "$context" ]; then
-    MESSAGES=$(printf '%s' "$MESSAGES" | jq -n --arg context "$context" '[{role: "user", content: $context}] + .')
-fi
+  handle(event) {
+    const { data, type } = this.event(event);
+    this.#handler[type]?.(data);
+  }
 
-if [ "$STREAM_ENABLED" = true ]; then
-  stream_response
-else
-  non_stream_response
-fi
+  safeJSON(str) {
+    try {
+      return JSON.parse(str);
+    } catch {
+      console.error("Unable to parse JSON");
+      return str;
+    }
+  }
+}
 
-exit 0
+const ENDPOINT =
+  process.env.LLM_ENDPOINT ?? "http://localhost:8484/v1/messages";
+
+const system =
+  process.env.LLM_SYSTEM_PROMPT ??
+  `You are a concise CLI assistant. When given two successive messages: first message is context, second is query. Direct answers only; no preamble. Code: plain text snippets (no \`\`\`) + steps (in comments). Non-code: brief. Do not over-analyze context unless requested.`;
+
+const messages = [];
+const tools = [];
+const stream = process.stdout.isTTY;
+
+const context = await (async () => {
+  if (process.stdin.isTTY) return;
+
+  const chunks = [];
+  for await (const chunk of process.stdin) chunks.push(chunk);
+  return chunks.join("");
+})();
+
+const query = process.argv.slice(2).join(" ").trim();
+
+if (context) messages.push({ content: context, role: "user" });
+if (query) messages.push({ content: query, role: "user" });
+
+const res = await fetch(ENDPOINT, {
+  body: JSON.stringify({
+    messages,
+    system,
+    tools,
+    stream,
+  }),
+  method: "POST",
+});
+
+if (!res.ok) throw new Error(`Response not OK: ${res.status}`);
+
+if (res.headers.get("content-type")?.includes("text/event-stream")) {
+  const decoder = new TextDecoder();
+  const reader = res.body.getReader();
+  const llm = new MessageChannel();
+
+  let buffer = "";
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) break;
+      if (!value) continue;
+
+      buffer += decoder.decode(value);
+
+      while (buffer.includes("\n\n")) {
+        const [event, ...rest] = buffer.split("\n\n");
+        buffer = rest.join("\n\n");
+        llm.handle(event);
+      }
+    }
+
+    if (buffer.trim()) llm.handle(buffer);
+  } finally {
+    reader.cancel();
+  }
+}
+
+if (res.headers.get("content-type")?.includes("application/json")) {
+  const data = await res.json();
+
+  const { text, thinking } = data.content.reduce((out, row) => {
+    out[row.type] = out[row.type]
+      ? `${out[row.type]}\n${row[row.type]}`
+      : row[row.type];
+    return out;
+  }, {});
+
+  if (thinking && process.stderr.isTTY)
+    process.stderr.write(`\x1b[90m${thinking}\x1b[0m\n`);
+
+  if (text) process.stdout.write(`${text}\n`);
+}
