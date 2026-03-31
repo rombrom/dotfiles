@@ -55,6 +55,7 @@ C-k = "jump_view_up"
 C-l = "jump_view_right"
 "=" = ":reflow"
 "X" = "extend_line_above"
+"C-5" = ":set-register + %{buffer_name}"
 "C-8" = "@*<space>/<ret>"
 
 # Toggles
