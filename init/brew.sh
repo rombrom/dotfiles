@@ -20,6 +20,7 @@ brew install fzf
 brew install gawk
 brew install gh
 brew install git
+brew install git-delta
 brew install git-lfs
 brew install gnu-getopt
 brew install gnu-sed
