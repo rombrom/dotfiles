@@ -12,9 +12,8 @@ export KEYTIMEOUT=1
 # Make commands use colors if possible
 export CLICOLOR=yes
 
-export BAT_STYLE='header'
+# Batpager
 export MANPAGER='col -b | bat --language=man --plain'
-export BAT_THEME='ansi' # TODO: create a bat theme based on bluebox
 
 # Avoid issues with `gpg` as installed via Homebrew.
 # https://stackoverflow.com/a/42265848/96656

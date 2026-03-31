@@ -60,37 +60,43 @@ fi
 alias reload='clear && exec zsh'
 
 # llms
-alias llm-qwen3='llama-server \
-  --host 0.0.0.0 \
-  --port 8484 \
-  -hf unsloth/Qwen3-VL-30B-A3B-Instruct-GGUF:UD-Q4_K_XL \
-  --jinja \
-  --top-p 0.8 \
-  --top-k 20 \
-  --temp 0.7 \
-  --min-p 0.0 \
-  --flash-attn on \
-  --presence-penalty 1.5 \
-  --ctx-size 131071'
-alias llm-glm='llama-server \
-  --host 0.0.0.0 \
-  --port 8484 \
-  -hf unsloth/GLM-4.7-Flash-GGUF:MXFP4_MOE \
-  --jinja \
-  --top-p 0.95 \
-  --temp 1.0 \
-  --min-p 0.01 \
-  --repeat-penalty 1.0 \
-  --ctx-size 131071'
-alias llm-qwen35='llama-server \
-  -hf AesSedai/Qwen3.5-35B-A3B-GGUF:Q4_K_M \
+alias llm-qwen35-small='llama-server \
+  -hf bartowski/Qwen_Qwen3.5-9B-GGUF:Q8_0 \
   --host 0.0.0.0 \
   --port 8484 \
   --batch-size 1024 \
   --ubatch-size 1024 \
   --jinja \
   --min-p 0.00 \
-  --presence-penalty 0.0 \
+  --presence-penalty 1.25 \
+  --repeat-penalty 1.0 \
+  --temp 0.6 \
+  --top-k 20 \
+  --top-p 0.95 \
+  --ctx-size 131071'
+alias llm-qwen35-dense='llama-server \
+  -hf bartowski/Qwen_Qwen3.5-27B-GGUF:Q4_K_M \
+  --host 0.0.0.0 \
+  --port 8484 \
+  --batch-size 1024 \
+  --ubatch-size 1024 \
+  --jinja \
+  --min-p 0.00 \
+  --presence-penalty 1.25 \
+  --repeat-penalty 1.0 \
+  --temp 0.6 \
+  --top-k 20 \
+  --top-p 0.95 \
+  --ctx-size 131071'
+alias llm-qwen35-moe='llama-server \
+  -hf bartowski/Qwen_Qwen3.5-35B-A3B-GGUF:Q4_K_M \
+  --host 0.0.0.0 \
+  --port 8484 \
+  --batch-size 1024 \
+  --ubatch-size 1024 \
+  --jinja \
+  --min-p 0.00 \
+  --presence-penalty 1.25 \
   --repeat-penalty 1.0 \
   --temp 0.6 \
   --top-k 20 \

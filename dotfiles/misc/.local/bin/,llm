@@ -1,279 +1,670 @@
-#!/usr/bin/env sh
-#
-# LLM Wrapper Script
-# Usage: cat file.py | ,llm "Explain this code"
+#!/usr/bin/env node
 
-#
-# Functions
-#
+/**
+ * @file @,llm
+ * @description CLI tool for streaming LLM responses via SSE or JSON
+ *
+ * This tool connects to an LLM endpoint and streams responses in real-time.
+ * It supports two response formats:
+ *   1. Server-Sent Events (SSE) - streamed chunk-by-chunk
+ *   2. JSON - single complete response
+ *
+ * Environment variables:
+ *   - LLM_ENDPOINT: HTTP URL for the LLM API (default: http://localhost:8484/v1/messages)
+ *   - LLM_SYSTEM_PROMPT: Custom system prompt to override defaults
+ *   - LLM_DEBUG: Enable verbose debug logging (set to any truthy value)
+ *
+ * Usage:
+ *   @,llm "query"                    # Pass query as command-line argument
+ *   echo "context" | @,llm "query"   # Pipe context via stdin, query as arg
+ *   echo "full request" | @,llm      # Pipe full request via stdin
+ *
+ * Exit codes:
+ *   0 - Success
+ *   1 - General error (network failure, timeout, invalid response)
+ *   127 - Configuration error (malformed data, invalid JSON)
+ */
 
-log_debug() {
-  [ -z "$DEBUG" ] && return
-  printf '\033[90mDEBUG:  %s\n\033[0m' "$*"
+// Exit codes
+const EXIT_SUCCESS = 0;
+const EXIT_ERROR = 1; // General error (network, timeout, invalid response)
+const EXIT_CONFIG = 127; // Configuration/malformed data error
+
+// ============================================================================
+// Constants Configuration
+// ============================================================================
+
+// Default timeout for requests - reset on every activity (sliding window)
+const DEFAULT_TIMEOUT_MS = 30_000;
+
+// Maximum characters to show in malformed event preview (prevents log spam)
+const MAX_EVENT_PREVIEW_CHARS = 50;
+
+// Maximum buffer size before throwing error - prevents memory exhaustion
+// from malformed SSE streams or excessively long events
+const MAX_BUFFER_SIZE_BYTES = 10_485_760; // 10MB
+
+// SSE protocol markers per RFC 4462
+const SSE_EVENT_MARKER = "event:";
+const SSE_DATA_MARKER = "data:";
+
+// ANSI escape codes for terminal output
+const ANS_RESET = "\x1b[0m";
+const ANS_THINKING_START = "\n\x1b[90m"; // Gray color for thinking blocks
+const ANS_THINKING_END = ANS_RESET;
+const ANS_ERROR = "\x1b[31m"; // Red color for errors
+const ANS_MALFORMED = "\n\x1b[90m"; // Gray for malformed events
+const ANS_HINT = "\x1b[36m"; // Cyan for usage hints
+
+// ============================================================================
+// Argument Parsing
+// ============================================================================
+
+/**
+ * Parse command-line arguments.
+ *
+ * Supports:
+ *   -v, --verbose     Enable debug mode
+ *   -q, --quiet       Suppress thinking output
+ *   -u, --url <URL>   Set endpoint URL
+ *   -p, --prompt <TXT>  Set system prompt
+ *   -h, --help        Show usage information
+ *
+ * All positional arguments (after flags) are joined as the query string.
+ *
+ * @param {string[]} args - Raw argv slice (excluding script name)
+ * @returns {{verbose: boolean, quiet: boolean, url: string|null, prompt: string|null, help: boolean, query: string}}
+ */
+function parseArgs(args) {
+  const options = {
+    verbose: false,
+    quiet: false,
+    url: null,
+    prompt: null,
+    help: false,
+  };
+
+  const positionalArgs = [];
+
+  while (args.length > 0) {
+    const arg = args.shift();
+
+    switch (arg) {
+      case "-v":
+      case "--verbose":
+        options.verbose = true;
+        break;
+      case "-q":
+      case "--quiet":
+        options.quiet = true;
+        break;
+      case "-u":
+      case "--url":
+        options.url = args.shift();
+        break;
+      case "-p":
+      case "--prompt":
+        options.prompt = args.shift();
+        break;
+      case "-h":
+      case "--help":
+        options.help = true;
+        break;
+      default:
+        positionalArgs.push(arg);
+    }
+  }
+
+  // Join all positional arguments as the query
+  if (positionalArgs.length > 0) {
+    options.query = positionalArgs.join(" ");
+  }
+
+  return options;
 }
 
-log_error() {
-  printf '\033[31mERROR:  %s\n\033[0m' "$*" >&2
+/**
+ * Display usage information to stderr.
+ * Shows available flags and examples of common usage patterns.
+ */
+function showUsage() {
+  const usage = `
+${ANS_HINT}@,llm - LLM CLI Assistant${ANS_RESET}
+
+Usage:
+  @,llm [OPTIONS] "query"
+  echo "context" | @,llm "query"
+  echo "full request" | @,llm
+
+Options:
+  -v, --verbose      Enable debug mode (same as LLM_DEBUG env var)
+  -q, --quiet        Suppress thinking/output blocks
+  -u, --url <URL>    Set endpoint URL (overrides LLM_ENDPOINT)
+  -p, --prompt <TXT> Set system prompt (overrides LLM_SYSTEM_PROMPT)
+  -h, --help         Show this help message
+
+Environment Variables:
+  LLM_ENDPOINT       HTTP URL for the LLM API (default: http://localhost:8484/v1/messages)
+  LLM_SYSTEM_PROMPT  Custom system prompt
+  LLM_DEBUG          Enable verbose debug logging
+
+Examples:
+  @,llm "What is JavaScript?"
+  echo "Context about my project" | @,llm "How do I implement this?"
+  @,llm -v --url http://example.com/api "Run tests"
+  @,llm -q -p "Be concise" "Quick answer needed"
+
+Exit Codes:
+  0  Success
+  1  General error (network, timeout, invalid response)
+ 127 Configuration error (malformed data, invalid JSON)
+`;
+  process.stderr.write(usage.trim() + "\n");
 }
 
-ask_permission() {
-  while true; do
-      read -p "$1 [yn]? " -r answer
-      case "$answer" in
-          [yY] | [yY][eE][sS])
-              return
-              ;;
-          [nN] | [nN][oO])
-              return 1
-              ;;
-          *)
-              echo "Please enter yes or no"
-              ;;
-      esac
-  done
+// ============================================================================
+// Configuration and Global State
+// ============================================================================
+
+// Parse command-line arguments
+const args = process.argv.slice(2);
+const options = parseArgs(args);
+
+// Show help if requested
+if (options.help) {
+  showUsage();
+  process.exit(EXIT_SUCCESS);
 }
 
-tool_parse_params() {
-  name="$1"
-  input="$2"
+// API endpoint - priority: CLI arg > env var > default
+const ENDPOINT =
+  options.url ??
+  process.env.LLM_ENDPOINT ??
+  "http://localhost:8484/v1/messages";
 
-  case "$name" in
-    "exec_ask") printf '%s' "$input" | jq -r '.question' ;;
-    "exec_shell") printf '%s' "$input" | jq -r '.command' ;;
-  esac
+/**
+ * Default system prompt for the CLI assistant.
+ *
+ * Design philosophy:
+ *   - Concise responses (no verbosity)
+ *   - Direct answers (no preamble)
+ *   - Code formatting: plain text snippets + numbered steps in comments
+ *   - Non-code: brief explanations
+ *   - Context awareness only when requested
+ */
+const SYSTEM_PROMPT =
+  options.prompt ??
+  process.env.LLM_SYSTEM_PROMPT ??
+  `You are a concise CLI assistant. When given two successive messages: first message is context, second is query. Direct answers only; no preamble. Code: plain text snippets (no \`\`\`) + steps (in comments). Non-code: brief. Do not over-analyze context unless requested.`;
+
+// Message queue and tool definitions
+const messages = []; // User messages for the LLM
+// Note: tools array reserved for future function calling support
+const tools = [];
+
+// Determine if output should be streamed (TTY vs redirect)
+const stream = process.stdout.isTTY;
+
+/**
+ * Log debug message to stderr if debug mode is enabled.
+ * Messages are prefixed with "DEBUG: " for easy filtering.
+ * @param {...any} args - Arguments passed to stderr.write
+ */
+function debug(...args) {
+  if (!options.verbose || !!process.env.LLM_DEBUG) return;
+  process.stderr.write(`DEBUG: ${args.join(" ")}\n`);
 }
 
-tool_run() {
-  name="$1"
-  input="$2"
-
-  case "$name" in
-    "exec_ask") read -p "$input " answer; printf '%s' "$answer" ;;
-    "exec_shell") sh -c "$input" ;;
-  esac
+/**
+ * Print error message to stderr and exit with specified code.
+ * Error messages are colored red for visibility in TTY terminals.
+ * @param {string} message - Error message to display
+ * @param {number} code - Exit code (default: EXIT_ERROR)
+ */
+function fail(message, code = EXIT_ERROR) {
+  process.stderr.write(`${ANS_ERROR}${message}\x1b[0m\n`);
+  process.exit(code);
 }
 
-#
-# Defaults
-#
+// ============================================================================
+// MessageChannel - SSE Event Parser and Handler
+// ============================================================================
+//
+// This class parses Server-Sent Events (SSE) from the LLM endpoint and
+// routes them to appropriate handlers based on event type. It manages
+// terminal formatting (ANSI codes) for different content types.
+//
+// Supported SSE events:
+//   - content_block_start: New content block begins (thinking, text, etc.)
+//   - content_block_delta: Incremental content update
+//   - message_stop: Finalization event
 
-default_model() {
-  printf '%s' "AesSedai/Qwen3.5-35B-A3B-GGUF:Q4_K_M"
-}
+class MessageChannel {
+  // Track the last content type to manage ANSI formatting transitions
+  #lastType = undefined;
+  #options = {};
 
-default_system_prompt() {
-  printf '%s\n' \
-    "You are an expert programmer assistant. Provide concise, technical responses focused on the specific task." \
-    "" \
-    "**Code modifications:**" \
-    "- If asked to modify or create code, provide ONLY the changed lines" \
-    "- Surround non-code with single-line '# ' comments" \
-    "- No code fences or backticks around your output" \
-    "" \
-    "**When to explain:**" \
-    "- Provide explanations only when specifically requested" \
-    "- Keep explanations brief and to the point" \
-    "- Prioritize actionable code over prose" \
-    "" \
-    "**Handling edge cases:**" \
-    "- If code has bugs or doesn't make sense, point them out concisely" \
-    "- If context is incomplete or malformed, ask for clarification" \
-    "- If no changes are needed, state that explicitly" \
-    "" \
-    "**Output format:**" \
-    "- Code only what changed or needs adding" \
-    "- Comments above code lines they describe" \
-    "- No additional context or conversational filler" \
-    ""
-}
+  /**
+   * Create a new MessageChannel.
+   */
+  constructor(options) {
+    this.#options = options;
+  }
 
-default_tool_prompt() {
-  printf '%s\n' "" \
-    "**Tools:**" \
-    "- You have 'exec_ask' for asking the user questions" \
-    "- You have 'exec_shell' for running shell commands" \
-    "- Use tools when you need to verify information, execute commands, or get user input" \
-    "- Don't use tools unnecessarily" \
-    ""
-}
+  /**
+   * Handle content block start event
+   *
+   * When a new content block starts, we may need to reset ANSI colors
+   * if the type changed from the previous block. For "thinking" blocks,
+   * we apply gray formatting when in TTY mode (unless quiet mode is enabled).
+   * @param {object} data - Event data with content_block property
+   */
+  #handleContentBlockStart(data) {
+    if (!data?.content_block) return;
 
-#
-# Main
-#
+    // Reset ANSI colors when switching between different content types
+    if (this.#lastType && this.#lastType !== data.content_block.type) {
+      process.stderr.write(`\n${ANS_RESET}`);
+    }
 
-# Opts
-ENDPOINT=${ENDPOINT:-http://localhost:8484/v1/messages}
-QUERY=""
-SYSTEM_PROMPT="${SYSTEM_PROMPT:-$(default_system_prompt)}"
-TOOLS="[]"
-TOOLS_ENABLED=false
-YOLO_ENABLED=false
+    switch (data.content_block.type) {
+      case "thinking":
+        // Apply gray formatting for thinking blocks in TTY terminals (skip if quiet)
+        if (process.stderr.isTTY && !this.#options.quiet) {
+          process.stderr.write(ANS_THINKING_START);
+        }
+        break;
+    }
 
-for arg in "$@"; do
-  log_debug "Parsing arg" "$arg"
-  case "$arg" in
-    -t|--tools)
-      TOOLS_ENABLED=true
-      ;;
-    -y|--yolo)
-      TOOLS_ENABLED=true
-      YOLO_ENABLED=true
-      ;;
-    -*)
-      log_error "Unknown option: $arg"
-      exit 1
-      ;;
-    *)
-      if [ -z "$QUERY" ]; then
-        QUERY="$arg"
-      else
-        QUERY="$QUERY $arg"
-      fi
-      ;;
-  esac
-done
+    this.#lastType = data.content_block.type;
+  }
 
+  /**
+   * Handle content block delta event
+   *
+   * Processes incremental updates. Thinking deltas go to stderr (gray),
+   * text deltas go to stdout (normal output). This separation allows
+   * thinking blocks to be visible but not interfere with main output.
+   * In quiet mode, thinking deltas are suppressed.
+   * @param {object} data - Event data with delta property
+   */
+  #handleContentBlockDelta(data) {
+    if (!data?.delta) return;
 
-if [ "$TOOLS_ENABLED" = true ]; then
-  SYSTEM_PROMPT="$SYSTEM_PROMPT${TOOL_PROMPT:-$(default_tool_prompt)}"
+    switch (data.delta.type) {
+      case "thinking_delta":
+        // Write thinking to stderr with TTY-aware formatting (skip if quiet)
+        if (
+          process.stderr.isTTY &&
+          !this.#options.quiet &&
+          data.delta.thinking
+        ) {
+          process.stderr.write(data.delta.thinking);
+        }
+        break;
+      case "text_delta":
+        // Write text content to stdout for normal output
+        if (data.delta.text) {
+          process.stdout.write(data.delta.text);
+        }
+        break;
+    }
+  }
 
-  TOOLS=$(jq -n '[
-      {
-          type: "function",
-          name: "exec_shell",
-          description: "Execute shell commands.",
-          parameters: {
-              type: "object",
-              properties: {
-                  command: {
-                      type: "string",
-                      description: "The command to execute."
-                  }
-              },
-              required: ["command"]
-          },
-          strict: true
-      },
-      {
-          type: "function",
-          name: "exec_ask",
-          description: "Ask the user a question and get their answer.",
-          parameters: {
-              type: "object",
-              properties: {
-                  question: {
-                      type: "string",
-                      description: "The question to ask the user."
-                  }
-              },
-              required: ["question"]
-          },
-          strict: true
+  /**
+   * Handle message stop event
+   *
+   * Ensures the output ends with a newline for clean terminal formatting.
+   */
+  #handleMessageStop() {
+    process.stdout.write("\n");
+  }
+
+  /**
+   * Parse SSE event string into structured data
+   *
+   * SSE format consists of lines prefixed with markers:
+   *   - "event:" - Event type (e.g., "content_block_start")
+   *   - "data:" - JSON payload
+   *   - ":" - Comment line (ignored)
+   *   - blank line - Event delimiter
+   *
+   * @param {string} event - Raw SSE event string (everything between \n\n)
+   * @returns {{data: object|null, raw: string, type: string|undefined}}
+   */
+  #parseEvent(event) {
+    let raw = [];
+    let type;
+
+    // Empty or whitespace-only events are invalid
+    if (!event || !event.trim()) {
+      return { data: null, raw: "", type: undefined };
+    }
+
+    for (const line of event.split("\n")) {
+      const trimmed = line.trim();
+
+      // Skip empty lines and comment lines (start with ":")
+      if (!trimmed || trimmed.startsWith(":")) continue;
+
+      // Extract event type
+      if (trimmed.startsWith(SSE_EVENT_MARKER)) {
+        type = trimmed.slice(SSE_EVENT_MARKER.length).trim();
+        continue;
       }
-  ]')
-fi
 
-log_debug "ENDPOINT:     " $ENDPOINT
-log_debug "SYSTEM_PROMPT:" $SYSTEM_PROMPT
+      // Collect data payload lines
+      if (trimmed.startsWith(SSE_DATA_MARKER)) {
+        raw.push(trimmed.slice(SSE_DATA_MARKER.length));
+        continue;
+      }
+    }
 
-# Check if jq is available
-if ! command -v jq >/dev/null 2>&1; then
-    log_error "jq is required but not installed"
-    exit 1
-fi
+    return { data: this.#safeJSON(raw), raw, type };
+  }
 
-# If no query provided, exit with error
-if [ -z "$QUERY" ]; then
-    log_error "No query provided"
-    exit 1
-fi
+  /**
+   * Safely parse JSON string, returning null on failure
+   *
+   * The SSE parser may pass either a single string or an array of strings
+   * (if multiple "data:" lines exist). This handles both cases.
+   *
+   * @param {string|string[]} str - String or array to parse/join
+   * @returns {object|null} Parsed object or null on failure
+   */
+  #safeJSON(str) {
+    const combined = Array.isArray(str) ? str.join("\n") : str;
 
-# Check if stdin is available (not a terminal)
-if [ ! -t 0 ]; then
-    # Read all stdin into a variable (context)
-    context=$(cat)
-else
-    # No stdin provided, so we'll use only the query
-    context=""
-fi
+    // Reject non-string inputs
+    if (!combined || typeof combined !== "string") return null;
 
-MESSAGES=$(jq -n --arg QUERY "$QUERY" '[{role: "user", content: $QUERY}]')
+    try {
+      const parsed = JSON.parse(combined);
+      // Ensure we got a valid object (not array, primitive, or null)
+      if (typeof parsed !== "object" || parsed === null) return null;
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
 
-log_debug "TOOLS_ENABLED:" $TOOLS_ENABLED
-log_debug "QUERY:" "$QUERY"
+  /**
+   * Handle incoming SSE event
+   *
+   * Main entry point for processing SSE events. Routes to appropriate
+   * handler based on event type after parsing.
+   *
+   * @param {string} event - Raw SSE event string
+   */
+  handle(event) {
+    const { data, type } = this.#parseEvent(event);
 
-# Build messages array properly for Claude API
-if [ ${#context} -gt 0 ]; then
-    MESSAGES=$(printf '%s' "$MESSAGES" | jq -n --arg context "$context" '[{role: "user", content: $context}] + .')
-fi
+    // Skip events without a recognized type
+    if (!type) return;
 
-while :; do
-  # Create JSON request for Claude messages API with tools support
-  json=$(jq -n \
-    --argjson MESSAGES "$MESSAGES" \
-    --arg MODEL "$(default_model)" \
-    --arg SYSTEM_PROMPT "$SYSTEM_PROMPT" \
-    --argjson TOOLS "$TOOLS" '{
-      messages: $MESSAGES,
-      model: $MODEL,
-      system: $SYSTEM_PROMPT,
-      tools: $TOOLS,
-  }')
+    // Log malformed events (data is null but type exists)
+    if (data === null && process.stderr.isTTY) {
+      process.stderr.write(
+        `${ANS_MALFORMED}[MALFORMED EVENT: ${event.slice(0, MAX_EVENT_PREVIEW_CHARS)}...]\x1b[0m\n`,
+      );
+    }
 
-  log_debug ">>" "$json"
-  response=$(curl -s --json "$json" $ENDPOINT)
-  log_debug "<<" "$(printf '%s' "$response" | jq)"
+    debug(`  → ${JSON.stringify(data)}`);
 
-  error=$(printf '%s' "$response" | jq -r 'if has("error") then .error.message else empty end')
+    // Route to appropriate handler based on event type
+    switch (type) {
+      case "content_block_start":
+        this.#handleContentBlockStart(data);
+        break;
+      case "content_block_delta":
+        this.#handleContentBlockDelta(data);
+        break;
+      case "message_stop":
+        this.#handleMessageStop();
+        break;
+    }
+  }
+}
 
-  if [ -n "$error" ]; then
-    log_error "$error"
-    exit 1
-  fi
+// ============================================================================
+// Timeout Management - Sliding Window Pattern
+// ============================================================================
+//
+// Uses AbortController to enforce request timeouts. The timeout resets on
+// every activity (read, write, network response), preventing premature
+// cancellation during long-running but active operations.
+//
+// This "sliding window" approach is essential for streaming responses where
+// the connection may be open for extended periods while data flows continuously.
 
-  content=$(printf '%s' "$response" | jq -c '.content')
-  MESSAGES=$(printf '%s' "$MESSAGES" | jq --argjson content "$content" '
-    . + [{ role: "assistant", content: $content }]
-  ')
+const controller = new AbortController();
+let timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
 
-  tool_uses=$(printf '%s' "$response" | jq -c '.content[]? | select(.type == "tool_use")')
+/**
+ * Reset the activity timeout to prevent premature abort.
+ *
+ * Called after every successful network operation or data read to extend
+ * the deadline. This implements a sliding window timeout pattern.
+ */
+const resetTimeout = () => {
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT_MS);
+  debug(`Timeout reset: ${DEFAULT_TIMEOUT_MS / 1000}s`);
+};
 
-  if [ -z "$tool_uses" ]; then
-    output=$(printf '%s' "$response" | jq -r '.content[]? | select(.type == "text") | .text')
-    break
-  fi
+// ============================================================================
+// Input Collection - Context and Query
+// ============================================================================
+//
+// This section collects input from two sources:
+//   1. stdin (piped context or full request)
+//   2. command-line arguments (query string, already parsed above)
+//
+// The tool supports three usage patterns:
+//   - @,llm "query"                    # Query only
+//   - echo "context" | @,llm "query"   # Context + query
+//   - echo "full request" | @,llm      # Full request via stdin
 
-  log_debug "Tools:" "$tool_uses"
+const context = await (async () => {
+  // If stdin is a TTY, no piped input exists
+  if (process.stdin.isTTY) {
+    debug("stdin is TTY, no context from stdin");
+    return;
+  }
 
-  tool_results="[]"
-  while IFS= read -r tool <&3; do
-    id=$(printf '%s' "$tool" | jq -r '.id')
-    name=$(printf '%s' "$tool" | jq -r '.name')
-    input=$(printf '%s' "$tool" | jq -c '.input')
+  // Read all chunks from stdin using async iterator
+  const chunks = [];
+  for await (const chunk of process.stdin) chunks.push(chunk);
+  const result = chunks.join("");
 
-    log_debug "Tool >>" "$name" "$input"
-    input=$(tool_parse_params "$name" "$input")
-    if [ "$YOLO_ENABLED" = true ] || ask_permission "'$name' with '$input'"; then
-      result=$(tool_run "$name" "$input")
-    else
-      result="No permission to execute $name."
-    fi
-    log_debug "Tool <<" "$result"
+  debug(`Read ${result.length} bytes from stdin`);
+  debug(
+    `  Context preview: ${result.slice(0, 200)}${result.length > 200 ? "..." : ""}`,
+  );
 
-    tool_results=$(printf '%s' "$tool_results" | jq --arg id "$id" --arg content "$result" '. + [{
-      type: "tool_result",
-      tool_use_id: $id,
-      content: $content
-    }]')
-  done 3<< EOF
-$tool_uses
-EOF
+  return result;
+})();
 
-  log_debug "$tool_results"
+// Add collected inputs to messages queue with appropriate roles
+if (context) messages.push({ content: context, role: "user" });
+if (options.query) messages.push({ content: options.query, role: "user" });
 
-  MESSAGES=$(printf '%s' "$MESSAGES" | jq --argjson tool_results "$tool_results" '
-    . + [{ role: "user", content: $tool_results }]
-  ')
-done
+// Validate that at least one message was provided
+if (messages.length === 0) {
+  fail(
+    'No input provided. Use @,llm "query" or pipe context via stdin.',
+    EXIT_CONFIG,
+  );
+}
 
-printf '%s\n' "$output"
+debug(`Preparing request with ${messages.length} message(s)`);
+debug(
+  `  Messages preview: ${JSON.stringify(messages).slice(0, 500)}${JSON.stringify(messages).length > 500 ? "..." : ""}`,
+);
+
+// ============================================================================
+// HTTP Request Execution
+// ============================================================================
+//
+// Sends a POST request to the LLM endpoint with messages and configuration.
+// The response may be either:
+//   - SSE stream (text/event-stream) for real-time token streaming
+//   - JSON (application/json) for complete response in one payload
+//
+// AbortController signal enables timeout-based cancellation.
+
+let res;
+try {
+  debug(`Fetching from ${ENDPOINT}`);
+  res = await fetch(ENDPOINT, {
+    body: JSON.stringify({
+      messages,
+      system: SYSTEM_PROMPT,
+      tools,
+      stream,
+    }),
+    method: "POST",
+    signal: controller.signal,
+  });
+} catch (err) {
+  clearTimeout(timeoutId);
+  debug(`Fetch failed: ${err.message}`);
+  if (err.name === "AbortError") {
+    fail("Request aborted (timeout or cancelled)", EXIT_ERROR);
+  }
+  fail(`Network error: ${err.message}`, EXIT_ERROR);
+}
+
+// Check for HTTP errors (4xx, 5xx)
+if (!res.ok) {
+  clearTimeout(timeoutId);
+  fail(`Request failed with status ${res.status}`, EXIT_ERROR);
+}
+
+// Handle abort/timeout that occurred during the fetch
+// This can happen if timeout fired while request was pending
+if (controller.signal.aborted) {
+  clearTimeout(timeoutId);
+  debug("Request aborted after fetch (timeout or cancelled)");
+  fail("Request aborted (timeout or cancelled)", EXIT_ERROR);
+}
+
+// Call appropriate handler based on response content type
+if (res.headers.get("content-type")?.includes("text/event-stream")) {
+  const decoder = new TextDecoder();
+  const reader = res.body.getReader();
+  const llm = new MessageChannel(options);
+
+  // Buffer accumulates partial SSE events across multiple reads
+  let buffer = "";
+
+  try {
+    debug(`Starting SSE stream read loop`);
+    while (true) {
+      // Check for abort before each read operation
+      if (controller.signal.aborted) {
+        debug("Aborting SSE read loop due to timeout/cancellation");
+        break;
+      }
+
+      resetTimeout();
+
+      const { done, value } = await reader.read();
+
+      if (done) {
+        debug("SSE stream completed normally");
+        break;
+      }
+      if (!value) continue;
+
+      const decoded = decoder.decode(value);
+      debug(`Received ${decoded.length} bytes from SSE stream`);
+
+      // Memory leak protection - prevent buffer from growing unbounded
+      if (buffer.length + decoded.length > MAX_BUFFER_SIZE_BYTES) {
+        throw new Error(
+          `Buffer exceeded maximum size of ${MAX_BUFFER_SIZE_BYTES / 1_048_576}MB. ` +
+            "Possible malformed SSE stream or excessively long event.",
+        );
+      }
+
+      buffer += decoded;
+
+      // Process complete events (delimited by \n\n)
+      let newlineIndex = -1;
+      while ((newlineIndex = buffer.indexOf("\n\n")) !== -1) {
+        const event = buffer.slice(0, newlineIndex);
+        buffer = buffer.slice(newlineIndex + 2); // Skip past \n\n
+
+        resetTimeout();
+        llm.handle(event);
+      }
+    }
+
+    // Process any remaining data in buffer (incomplete final event)
+    if (buffer.trim()) {
+      debug(`Processing remaining ${buffer.length} bytes in buffer`);
+      resetTimeout();
+      llm.handle(buffer);
+    }
+  } catch (err) {
+    clearTimeout(timeoutId);
+    reader.cancel();
+    fail(`Stream processing error: ${err.message}`, EXIT_ERROR);
+  } finally {
+    // Cleanup: always clear timeout and cancel reader on exit
+    clearTimeout(timeoutId);
+    try {
+      await reader.cancel();
+    } catch {}
+  }
+} else if (res.headers.get("content-type")?.includes("application/json")) {
+  debug(`Received JSON response from ${ENDPOINT}`);
+  let data;
+  try {
+    resetTimeout();
+    data = await res.json();
+    debug(
+      `JSON response preview: ${JSON.stringify(data).slice(0, 500)}${JSON.stringify(data).length > 500 ? "..." : ""}`,
+    );
+  } catch (err) {
+    clearTimeout(timeoutId);
+    fail(`Failed to parse response JSON: ${err.message}`, EXIT_CONFIG);
+  } finally {
+    clearTimeout(timeoutId);
+  }
+
+  // Validate response structure - must have content array
+  if (!data?.content || !Array.isArray(data.content)) {
+    fail("Invalid response format: missing or invalid content", EXIT_CONFIG);
+  }
+
+  debug(`Processing ${data.content.length} content items`);
+
+  // Aggregate content by type (thinking and text)
+  const { text, thinking } = data.content.reduce((out, row) => {
+    out[row.type] = out[row.type]
+      ? `${out[row.type]}\n${row[row.type]}`
+      : row[row.type];
+    return out;
+  }, {});
+
+  // Write thinking blocks to stderr with gray formatting (TTY only, unless quiet)
+  if (thinking && process.stderr.isTTY && !options.quiet) {
+    debug(`Writing ${thinking.length} bytes of thinking to stderr`);
+    process.stderr.write(
+      `${ANS_THINKING_START}${thinking}${ANS_THINKING_END}\n`,
+    );
+  }
+
+  // Write text content to stdout
+  if (text) {
+    debug(`Writing ${text.length} bytes of text to stdout`);
+    process.stdout.write(`${text}\n`);
+  }
+} else {
+  fail(
+    `Unsupported response content type: ${res.headers.get("content-type")}`,
+    EXIT_CONFIG,
+  );
+}

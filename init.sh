@@ -34,6 +34,7 @@ mise reshim
 echo "Synchronizing dotfiles..."
 echo ""
 stow --dir=dotfiles --target="$HOME" \
+  --stow bat \
   --stow ctags \
   --stow git \
   --stow kitty \

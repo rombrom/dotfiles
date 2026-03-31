@@ -6,6 +6,7 @@ function g() {
 
 # aliases
 alias ga='git add'
+alias ga.='git add .'
 alias gb='git branch'
 alias gba='git branch --all'
 alias gbl='git blame --color-by-age --color-lines'
