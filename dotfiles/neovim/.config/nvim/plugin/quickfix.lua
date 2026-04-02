@@ -1,21 +1,19 @@
 local function toggle_list(bufname, pfx)
   -- Check if the list window is already open
-  for _, buf in ipairs(vim.fn.getbufinfo()) do
-    if buf.name:match(bufname) then
-      if vim.fn.bufwinnr(buf.bufnr) ~= -1 then
-        vim.cmd(pfx .. "close")
-        return
-      end
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.fn.getwininfo(win)[1][bufname] == 1 then
+      vim.cmd(pfx .. "close")
+      return
     end
   end
 
   -- Check if list is empty
   if pfx == "c" and #vim.fn.getqflist() == 0 then
-    vim.notify(bufname .. " is Empty.", vim.log.levels.ERROR)
+    vim.notify(bufname .. " is Empty.", vim.log.levels.WARN)
     return
   end
   if pfx == "l" and #vim.fn.getloclist(0) == 0 then
-    vim.notify(bufname .. " is Empty.", vim.log.levels.ERROR)
+    vim.notify(bufname .. " is Empty.", vim.log.levels.WARN)
     return
   end
 
@@ -27,11 +25,11 @@ local function toggle_list(bufname, pfx)
 end
 
 vim.keymap.set("n", "<leader>q", function()
-  toggle_list("Quickfix List", "c")
+  toggle_list("quickfix", "c")
 end, { silent = true })
 
 vim.keymap.set("n", "<leader>l", function()
-  toggle_list("Location List", "l")
+  toggle_list("loclist", "l")
 end, { silent = true })
 
 local qf_group = vim.api.nvim_create_augroup("quickfix", { clear = true })
