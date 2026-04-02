@@ -1,0 +1,22 @@
+[delta "bluebox"]
+    dark = true
+    syntax-theme = bluebox
+    minus-style = syntax "#492c28"
+    minus-emph-style = syntax bold "#5a312b"
+    plus-style = syntax "#3a3c28"
+    plus-emph-style = syntax bold "#45482a"
+    line-numbers = true
+    line-numbers-left-format = " {nm:>3} │"
+    line-numbers-left-style = 8
+    line-numbers-minus-style = red
+    line-numbers-plus-style = green
+    line-numbers-zero-style = 8
+    hunk-header-style = syntax bold
+    hunk-header-decoration-style = cyan box
+    file-added-label = [+]
+    file-modified-label = [*]
+    file-removed-label = [-]
+    file-renamed-label = [->]
+    file-style = blue bold
+    whitespace-error-style = reverse red
+    zero-style = syntax

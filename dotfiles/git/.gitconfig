@@ -7,8 +7,6 @@
 	attributesfile = ~/.gitattributes
 	excludesfile = ~/.gitignore
 
-	pager = delta
-
 	# Make `git rebase` safer on macOS
 	# More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
 	trustctime = false
@@ -51,9 +49,6 @@
 [init]
 	templatedir = ~/.git_template
 	defaultBranch = main
-
-[interactive]
-	diffFilter = delta --color-only
 
 [branch]
 	sort = -committerdate
@@ -102,10 +97,6 @@
 	mnemonicPrefix = true
 	tool = vimdiff
 
-[delta]
-	navigate = true
-	side-by-side = true
-
 [difftool]
 	# leave this on, because it can be hard to C-c a difftool sesh
 	prompt = true
@@ -149,6 +140,9 @@
 
 [tag]
 	sort = -version:refname
+
+[include]
+	path = ~/.config/delta/delta.gitconfig
 
 [includeIf "gitdir:~/Code/wissel/"]
   path = ~/.gitconfig.wissel
