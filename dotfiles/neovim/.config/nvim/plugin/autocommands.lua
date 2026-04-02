@@ -4,37 +4,39 @@ local vimrc = vim.api.nvim_create_augroup('vimrc', { clear = true })
 vim.api.nvim_create_autocmd('BufReadPost', {
   pattern = '*',
   group = vimrc,
-  command = [[
-    if line("'\"") > 1 && line("'\"") <= line("$") |
-      exe "normal! g'\" zz" |
-    endif
-  ]]
+  callback = function()
+    local line_num = vim.fn.line("'\"")
+    if line_num > 1 and line_num <= vim.fn.line('$') then
+      vim.cmd('normal! g\'" zz')
+    end
+  end
 })
 
 -- Create dir on save if it doesn't exist
 vim.api.nvim_create_autocmd('BufWritePre', {
   pattern = '*',
   group = vimrc,
-  -- TODO: make this lua
-  command = [[call utils#mkdirp(expand('<afile>'), +expand('<abuf>'))]]
+  callback = function()
+    local dir = vim.fn.expand('<afile>:p:h')
+    if vim.fn.isdirectory(dir) == 1 then return end
+    vim.fn.mkdir(dir, 'p')
+  end
 })
 
 -- Undo shell command errors
 vim.api.nvim_create_autocmd('ShellFilterPost', {
   pattern = '*',
   group = vimrc,
-  -- TODO: make this lua
-  command = [[
-    if v:shell_error
-      undo
-    endif
-  ]]
+  callback = function()
+    if vim.v.shell_error == 0 then return end
+    vim.cmd.undo()
+  end
 })
 
 -- Auto insert mode
 vim.api.nvim_create_autocmd('TermOpen', {
   pattern = '*',
   group = vimrc,
-  -- TODO: make this lua
-  command = [[startinsert]]
+  callback = function() vim.cmd.startinsert() end
 })
+

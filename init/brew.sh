@@ -27,12 +27,10 @@ brew install gnu-sed
 brew install gnu-tar
 brew install gojq
 brew install grep
-brew install --HEAD helix # at the time of this change, HEAD includes word completion
 brew install hexyl
 brew install imagemagick
 brew install jj
 brew install llama.cpp
-brew install neovim
 brew install nmap
 brew install oha
 brew install opencode # not too sure about this one yet. should probably
@@ -48,6 +46,11 @@ brew install zsh
 brew install zsh-completions
 brew install universal-ctags
 brew install witr
+
+# NeoVim
+brew install neovim
+brew install tree-sitter-cli
+brew install postgres-language-server
 
 # Containers
 # brew install docker

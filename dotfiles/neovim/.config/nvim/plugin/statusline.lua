@@ -25,51 +25,101 @@ local function get_diagnostics(buf)
   }
 end
 
+-- With user highlights
+-- local function get_statusline(buf)
+--   local statusline = ''
+--
+--   -- Buffer number
+--   statusline = statusline .. ' %n '
+--
+--   -- Help/Readonly indicator
+--   statusline = statusline .. '%(%h%r » %)'
+--
+--   -- Filename
+--   statusline = statusline .. '%(» %f %(%M %)%)'
+--   statusline = statusline .. '%(%{exists("w:quickfix_title") ? w:quickfix_title : ""} %)'
+--
+--   -- Line/column number
+--   statusline = statusline .. '%(:%l,%c%V %)'
+--
+--   -- Split
+--   statusline = statusline .. '%='
+--
+--   -- Character below cursor: decimal, hex
+--   statusline = statusline .. '%([%b/0x%B] %)'
+--
+--   -- Scroll indicator: % through file
+--   statusline = statusline .. '%(%P %)'
+--
+--   -- Diagnostics
+--   -- TODO: figure out why I cannot clear highlights with ``
+--   local diagnostics = get_diagnostics(buf or 0)
+--   if diagnostics.total == 0 then
+--     statusline = statusline .. '%(✓ %)'
+--   else
+--     if diagnostics.warnings > 0 then
+--       statusline = statusline .. '%(' .. diagnostics.warnings .. '! %)'
+--     end
+--
+--     if diagnostics.errors > 0 then
+--       statusline = statusline .. '%(' .. diagnostics.errors .. '‼ %)'
+--     end
+--   end
+--
+--   -- Gutentags
+--   -- statusline = statusline .. '%{gutentags#statusline("", "", "♺ ")}'
+--
+--   -- Git branch
+--   -- statusline = statusline .. '%(« %<%{FugitiveHead(8)} %)'
+--
+--   return statusline
+-- end
+
 local function get_statusline(buf)
   local statusline = ''
 
   -- Buffer number
-  statusline = statusline .. ' %7*%n%* '
+  statusline = statusline .. ' %n '
 
   -- Help/Readonly indicator
-  statusline = statusline .. '%(%h%r %4*»%* %)'
+  statusline = statusline .. '%(%h%r » %)'
 
   -- Filename
-  statusline = statusline .. '%(%4*»%* %8*%f%* %(%3*%M%* %)%)'
+  statusline = statusline .. '%(» %f %(%M %)%)'
   statusline = statusline .. '%(%{exists("w:quickfix_title") ? w:quickfix_title : ""} %)'
 
   -- Line/column number
-  statusline = statusline .. '%(%7*:%l,%c%V%* %)'
+  statusline = statusline .. '%(:%l,%c%V %)'
 
   -- Split
   statusline = statusline .. '%='
 
   -- Character below cursor: decimal, hex
-  statusline = statusline .. '%(%7*[%b/0x%B]%* %)'
+  statusline = statusline .. '%([%b/0x%B] %)'
 
   -- Scroll indicator: % through file
-  statusline = statusline .. '%(%7*%P%* %)'
+  statusline = statusline .. '%(%P %)'
 
   -- Diagnostics
-  -- TODO: figure out why I cannot clear highlights with `%*`
+  -- TODO: figure out why I cannot clear highlights with ``
   local diagnostics = get_diagnostics(buf or 0)
   if diagnostics.total == 0 then
-    statusline = statusline .. '%(%2*✓ %)'
+    statusline = statusline .. '%(✓ %)'
   else
     if diagnostics.warnings > 0 then
-      statusline = statusline .. '%(%3*' .. diagnostics.warnings .. '! %)'
+      statusline = statusline .. '%(' .. diagnostics.warnings .. '! %)'
     end
 
     if diagnostics.errors > 0 then
-      statusline = statusline .. '%(%1*' .. diagnostics.errors .. '‼ %)'
+      statusline = statusline .. '%(' .. diagnostics.errors .. '‼ %)'
     end
   end
 
   -- Gutentags
-  statusline = statusline .. '%6*%{gutentags#statusline("", "", "♺ ")}%*'
+  -- statusline = statusline .. '%{gutentags#statusline("", "", "♺ ")}'
 
   -- Git branch
-  statusline = statusline .. '%(%4*«%* %9*%<%{FugitiveHead(8)}%* %)'
+  -- statusline = statusline .. '%(« %<%{FugitiveHead(8)} %)'
 
   return statusline
 end
@@ -83,3 +133,4 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'BufLeave', 'DiagnosticChanged', 'WinE
 })
 
 vim.opt.statusline = get_statusline()
+

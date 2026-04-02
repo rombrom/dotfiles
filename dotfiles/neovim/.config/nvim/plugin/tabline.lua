@@ -1,44 +1,46 @@
--- TODO
--- local function get_tabline()
---   local tabline = ''
---
---   local active = vim.fn.tabpagenr()
---   local prev = vim.fn.tabpagenr('#')
---
---   for current = 1, vim.fn.tabpagenr('$') + 1 do
---     local buflist = vim.fn.tabpagebuflist(current)
---     local winnr = vim.fn.tabpagewinnr(current)
---     local bufnr = buflist ~= 0 and buflist[winnr - 1] or 0
---     local name = vim.fn.bufname(bufnr)
---     local modified = vim.fn.getbufvar(bufnr, '&modified')
---
---     tabline = tabline .. current == active and '%#TabLineSel#' or '%#TabLine#'
---     tabline = tabline .. '%' .. current .. 'T' .. current .. ' '
---
---     if current == active then
---       tabline = tabline .. '%% '
---     elseif current == prev then
---       tabline = tabline .. '# '
---     end
---
---     -- TODO: gobble
---     tabline = tabline .. (#name and name or '[No Name]')
---
---     -- Modified
---     tabline = tabline .. modified and ' + ' or ' '
---   end
---
---   tabline = tabline .. '%#TabLineFill%T'
---
---   return tabline
--- end
---
--- vim.api.nvim_create_autocmd({ 'BufEnter', 'BufLeave', 'WinEnter', 'WinLeave' }, {
---   pattern = '*',
---   group = vim.api.nvim_create_augroup('tabline', { clear = true }),
---   callback = function()
---     vim.opt_local.statusline = get_tabline()
---   end,
--- })
---
--- vim.opt.tabline = get_tabline()
+local function gobble(str, max, sep)
+  max = max or 16
+  sep = sep or '/'
+
+  local path = vim.split(str, sep, { plain = true })
+  local size = #path
+
+  for i, segment in ipairs(path) do
+    local length = #table.concat(path, sep)
+    if i ~= size and length > max then
+      path[i] = segment:match('^%.') and segment:sub(1, 2) or segment:sub(1, 1)
+    end
+  end
+
+  return table.concat(path, sep)
+end
+
+_G.tabline = function()
+  local prev_tab = vim.fn.tabpagenr('#')
+  local result = ''
+
+  for i = 1, vim.fn.tabpagenr('$') do
+    local active = vim.fn.tabpagenr()
+    local current = i
+
+    local buflist = vim.fn.tabpagebuflist(current)
+    local winnr = vim.fn.tabpagewinnr(current)
+    local bufnr = buflist[winnr]
+    local name = vim.fn.bufname(bufnr)
+
+    result = result .. (active == current and '%#TabLineSel#' or '%#TabLine#')
+    result = result .. '%' .. current .. 'T ' .. current .. ' '
+
+    local marker = current == prev_tab and '#' or (active == current and '%%' or '')
+    result = result .. marker .. ' '
+
+    result = result .. (#name > 0 and gobble(name) or '[No Name]')
+    result = result .. (vim.fn.getbufvar(bufnr, '&modified') == 1 and ' +' or '') .. ' '
+  end
+
+  result = result .. '%#TabLineFill#%T'
+
+  return result
+end
+
+vim.o.tabline = '%!v:lua.tabline()'

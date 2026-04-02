@@ -8,11 +8,6 @@ function mkcd() {
   mkdir -p "$1" && cd "$1"
 }
 
-# load ripgrep results into helix
-function hxrg() {
-  hx $(rg --column --line-number --no-heading "$1" "${2:-.}" | cut -d':' -f1-3)
-}
-
 # Create a data URL from a file
 function datauri() {
 	local mimeType=$(file -b --mime-type "$1");
