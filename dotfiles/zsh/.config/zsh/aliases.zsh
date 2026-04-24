@@ -60,45 +60,18 @@ fi
 alias reload='clear && exec zsh'
 
 # llms
-alias llm-qwen35-small='llama-server \
-  -hf bartowski/Qwen_Qwen3.5-9B-GGUF:Q8_0 \
+alias llm-serve='llama-server \
   --host 0.0.0.0 \
   --port 8484 \
+  --models-max 1 \
+  --models-preset ~/.config/llama.cpp/models.ini \
+  --jinja \
+  --ctx-checkpoints 0 \
+  --cache-reuse 256 \
   --batch-size 1024 \
   --ubatch-size 1024 \
-  --jinja \
-  --min-p 0.00 \
-  --presence-penalty 1.25 \
-  --repeat-penalty 1.0 \
-  --temp 0.6 \
-  --top-k 20 \
-  --top-p 0.95 \
-  --ctx-size 131071'
-alias llm-qwen35-dense='llama-server \
-  -hf bartowski/Qwen_Qwen3.5-27B-GGUF:Q4_K_M \
-  --host 0.0.0.0 \
-  --port 8484 \
-  --batch-size 1024 \
-  --ubatch-size 1024 \
-  --jinja \
-  --min-p 0.00 \
-  --presence-penalty 1.25 \
-  --repeat-penalty 1.0 \
-  --temp 0.6 \
-  --top-k 20 \
-  --top-p 0.95 \
-  --ctx-size 131071'
-alias llm-qwen35-moe='llama-server \
-  -hf bartowski/Qwen_Qwen3.5-35B-A3B-GGUF:Q4_K_M \
-  --host 0.0.0.0 \
-  --port 8484 \
-  --batch-size 1024 \
-  --ubatch-size 1024 \
-  --jinja \
-  --min-p 0.00 \
-  --presence-penalty 1.25 \
-  --repeat-penalty 1.0 \
-  --temp 0.6 \
-  --top-k 20 \
-  --top-p 0.95 \
-  --ctx-size 131071'
+  --n-gpu-layers all \
+  --threads 12 \
+  --mlock \
+  --no-mmap \
+  --flash-attn on'
