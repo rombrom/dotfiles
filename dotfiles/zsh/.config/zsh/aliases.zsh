@@ -22,9 +22,6 @@ alias cp='cp -R'
 alias mkdir='mkdir -p'
 alias nom='npm'
 
-# quick question
-alias qq=',llm'
-
 # Always enable colored `grep` output
 alias grep='grep --color'
 
@@ -60,18 +57,20 @@ fi
 alias reload='clear && exec zsh'
 
 # llms
-alias llm-serve='llama-server \
+alias qq='container exec -t jeeves mise exec node@26.1.0 -- pi -nt -p --thinking off'
+alias jeeves='container exec -it jeeves'
+alias killjeeves='container kill jeeves' # sorry mate
+alias pi='container exec -it jeeves bash -c "cd $PWD && mise exec node@26.1.0 -- pi"'
+
+alias llm-serve-single='llama-server \
   --host 0.0.0.0 \
   --port 8484 \
-  --models-max 1 \
-  --models-preset ~/.config/llama.cpp/models.ini \
-  --jinja \
-  --ctx-checkpoints 0 \
-  --cache-reuse 256 \
-  --batch-size 1024 \
-  --ubatch-size 1024 \
-  --n-gpu-layers all \
-  --threads 12 \
-  --mlock \
-  --no-mmap \
-  --flash-attn on'
+  --models-preset ~/.config/llama.cpp/single.ini'
+alias llm-serve-concurrent='llama-server \
+  --host 0.0.0.0 \
+  --port 8484 \
+  --models-preset ~/.config/llama.cpp/concurrent.ini'
+alias llm-serve-parallel='llama-server \
+  --host 0.0.0.0 \
+  --port 8484 \
+  --models-preset ~/.config/llama.cpp/parallel.ini'
