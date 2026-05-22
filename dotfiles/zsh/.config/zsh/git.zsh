@@ -29,7 +29,14 @@ alias gpf='git push origin HEAD --force-if-includes --force-with-lease'
 alias gpn='git push origin HEAD --no-verify'
 alias gr='git rebase'
 alias grh='git reset --hard'
+alias gs='git show'
 alias gss='git status --short'
+
+alias gl-changes='git log --format=format: --name-only --since="1 year ago" | sort | uniq -c | sort -nr | head -20'
+alias gl-committers='git shortlog -sn --no-merges'
+alias gl-bugs='git log -i -E --grep="fix|bug|broken" --name-only --format='' | sort | uniq -c | sort -nr | head -20'
+alias gl-fires='git log --oneline --since="1 year ago" | grep -iE "revert|hotfix|emergency|rollback"'
+alias gl-cadence='git log --format="%ad" --date=format:"%Y-%m" | sort | uniq -c'
 
 function gcm() {
   if git rev-parse --verify main > /dev/null 2>&1; then

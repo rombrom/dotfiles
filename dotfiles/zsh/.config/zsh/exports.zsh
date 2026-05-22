@@ -12,8 +12,9 @@ export KEYTIMEOUT=1
 # Make commands use colors if possible
 export CLICOLOR=yes
 
-# Batpager
-export MANPAGER='col -b | bat --language=man --plain'
+# Man
+export MANPAGER='nvim +Man!'
+export MANWIDTH=88
 
 # Avoid issues with `gpg` as installed via Homebrew.
 # https://stackoverflow.com/a/42265848/96656

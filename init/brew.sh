@@ -30,7 +30,6 @@ brew install grep
 brew install hexyl
 brew install imagemagick
 brew install jj
-brew install llama.cpp
 brew install nmap
 brew install oha
 brew install opencode # not too sure about this one yet. should probably
@@ -52,11 +51,12 @@ brew install neovim
 brew install tree-sitter-cli
 brew install postgres-language-server
 
+# LLMs
+brew tap jundot/omlx https://github.com/jundot/omlx
+brew install llama.cpp
+
 # Containers
-# brew install docker
-# brew install docker-compose
-# brew install colima
-# brew services start colima
+# TODO: move this out of the brew file
 brew install container
 container system kernel set --recommended
 brew services start container
@@ -79,12 +79,12 @@ brew install --cask --force 1password
 brew install --cask --force appcleaner
 brew install --cask --force discord
 brew install --cask --force disk-inventory-x
+brew install --cask --force iina
 brew install --cask --force kitty
 brew install --cask --force slack
 brew install --cask --force steam
 brew install --cask --force telegram
 brew install --cask --force utm
-brew install --cask --force vlc
 brew install --cask --force whatsapp
 
 # Blurh

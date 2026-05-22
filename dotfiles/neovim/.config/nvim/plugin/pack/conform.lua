@@ -12,7 +12,7 @@ conform.setup({
       return
     end
 
-    return { timeout_ms = 500 }
+    return { lsp_format = "fallback", timeout_ms = 500 }
   end,
   formatters_by_ft = {
     css = prettier,
@@ -24,7 +24,6 @@ conform.setup({
     less = prettier,
     lua = { "stylua" },
     markdown = prettier,
-    ruby = { "standardrb" },
     scss = prettier,
     sql = { "pg_format" },
     svelte = prettier,

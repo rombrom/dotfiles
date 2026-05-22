@@ -51,10 +51,9 @@ vim.opt.showmatch = true
 vim.opt.signcolumn = 'yes'
 vim.opt.synmaxcol = 1000
 vim.opt.termguicolors = true
+require('vim._core.ui2').enable({})
 
 -- Windows
--- vim.opt.splitbelow = true
--- vim.opt.splitright = true
 vim.opt.winborder = "rounded"
 vim.opt.winheight = 44
 vim.opt.winminheight = 8
